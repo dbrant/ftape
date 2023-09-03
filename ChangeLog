@@ -1,0 +1,417 @@
+2000-07-25  Claus-Justus Heine  <heine@instmath.rwth-aachen.de (Claus-Justus Heine)>
+
+	* Release version 4.04a.
+
+2000-07-25  heine  <heine@anaximander>
+
+	* include/linux/ftape.h, INSTALL, MCONFIG, README, RELEASE-NOTES:
+	Bump version to 4.04a.
+
+	* scripts/kernel-inclusion/v2.4/Config.in:
+	Use "Comment" statement with empty string '', not without arg (looks
+	ugly with xconfig).
+
+	* ftape/internal/fdc-internal.c:
+	Seemingly, -1U is unequal to (unsigned short)-1. So better compare
+	fdc->sra with 0xffff. Caused a kernel Oops with linux-2.2.x.
+
+	* ftape/lowlevel/fdc-isr.c: Remove unprintable characters.
+
+2000-07-23  heine  <heine@anaximander>
+
+	* ChangeLog: Document release of 4.04.
+
+	* RELEASE-NOTES: Update for release of version 4.04.
+
+	* BUGS: Update. Report bug fixes.
+
+	* include/linux/ftape.h: Bump version to 4.04.
+
+	* ftape/zftape/zftape-ctl.c: Update of copyright notice.
+
+	* ftape/lowlevel/ftape-read.c:
+	New bug work-around for format parameter inconsistency caused by other
+	programs.
+
+2000-07-23  Claus-Justus Heine  <heine@instmath.rwth-aachen.de (Claus-Justus Heine)>
+
+	* Release version 4.04.
+
+2000-07-23  heine  <heine@anaximander>
+
+	* RELEASE-NOTES: Update for release of version 4.04.
+
+	* BUGS: Update. Report bug fixes.
+
+	* include/linux/ftape.h: Bump version to 4.04.
+
+	* ftape/zftape/zftape-ctl.c: Update of copyright notice.
+
+	* ftape/lowlevel/ftape-read.c:
+	New bug work-around for format parameter inconsistency caused by other
+	programs.
+
+2000-07-21  heine  <heine@anaximander>
+
+	* ftape/zftape/zftape-ctl.c:
+	Don't re-read the volume table segment with MTIOCFTREAD if it has
+	already been read in by the driver.
+
+	* ftape/zftape/zftape-vtbl.h: Purely cosmetic changes.
+
+2000-07-20  heine  <heine@anaximander>
+
+	* ftape/zftape/zftape-vtbl.c, ftape/zftape/zftape-vtbl.h:
+	Use a 3 byte signature "ZFT" for QIC-113 vendor extensions, with
+	attached one byte version (binary). The previous 10 bytes signature
+	really was overkill.
+
+	* ftape/zftape/zftape-init.c: Fix compilation for 2.0.x kernels.
+
+	* ftape/zftape/zftape-ctl.c, ftape/zftape/zftape-ctl.h,
+	ftape/zftape/zftape-init.c, ftape/zftape/zftape-inline.h,
+	ftape/zftape/zftape-vtbl.c, ftape/zftape/zftape-vtbl.h,
+	ftape/zftape/zftape-write.c: Fix volume table support for
+	cartridges with format code 6. Was badly broken.
+
+	Provide compatibility with old (broken) implementation. Use new vendor
+	extension, indicated by signature "LNX ZFT 2".
+
+	Soft write-protect the cartridge if a broken volume table is
+	discovered or if a EXVT signature is found (volume table extension is
+	unsupported).
+
+	Skip unsupported signatures (i.e. UTID and XTBL).
+
+	* Rules.make: Let the object files depend on the Makefiles.
+
+2000-07-13  testuser  <testuser@anaximander>
+
+	* MCONFIG: test.
+
+	* MCONFIG: test
+
+2000-07-13  heine  <heine@anaximander>
+
+	* MCONFIG: test.
+
+	* MCONFIG: Test.
+
+2000-07-12  heine  <heine@anaximander>
+
+	* ftape/zftape/zftape-buffers.c, ftape/zftape/zftape-ctl.h,
+	ftape/zftape/zftape-read.c, ftape/zftape/zftape-vtbl.c,
+	ftape/zftape/zftape-vtbl.h: Prepare for IDT brain-damage
+	work-around. Hold the volume table segment in memory permanently.
+
+2000-07-10  heine  <heine@anaximander>
+
+	* scripts/kernel-inclusion/v2.4/Configure.help.ftape:
+	Adjust configure help to new ftape devfs names.
+
+	* ftape/zftape/zftape-init.c:
+	Change naming scheme with devfs so that is conformes with ide-tape and
+	st.
+
+	* ftape/zftape/zftape-rw.c: Remove an obsolete comment.
+
+	* ftape/lowlevel/fdc-io.c: Change a trace message.
+
+2000-07-09  heine  <heine@anaximander>
+
+	* ftape/zftape/zftape-init.c:
+	Don't create compatibility links in kernel space.
+
+2000-07-07  heine  <heine@anaximander>
+
+	* README: Replace one instance of `ftape-4.02' with `ftape-4.x'.
+
+	* scripts/kernel-inclusion/Documentation/00-INDEX:
+	Add RELEASE-NOTES file.
+
+	* scripts/kernel-inclusion/gokernel.sh:
+	Coppy the release notes to Documentation/ftape/
+
+	* ftape/compressor/Makefile: EXTRA_CFLAGS no longer needed.
+
+2000-07-06  heine  <heine@anaximander>
+
+	* ftape/compressor/Makefile, Rules.make:
+	Allow CFLAGS_sourcefile variable. This replaces the special rule
+	needed for lzrw3.o.
+
+	* ftape/parport/trakker.c:
+	Fix trakkers auto irq detection. Bug reported and fixed by Jochen
+	Hoenicke.
+
+	* scripts/kernel-inclusion/v2.4/Configure.help.ftape,
+	scripts/kernel-inclusion/v2.4/Config.in: Cosmetics.
+
+	* scripts/kernel-inclusion/v2.4/Config.in,
+	scripts/kernel-inclusion/v2.4/Configure.help.ftape,
+	include/linux/zftape.h, ftape/zftape/zftape-init.h,
+	ftape/zftape/zftape-inline.h, ftape/zftape/zftape-read.c,
+	ftape/zftape/zftape-rw.c, ftape/zftape/zftape_syms.c,
+	ftape/zftape/zftape-vtbl.c, ftape/zftape/Makefile,
+	ftape/zftape/zftape-buffers.c, ftape/zftape/zftape-ctl.c,
+	ftape/zftape/zftape-ctl.h, ftape/zftape/zftape-init.c, MCONFIG:
+	Make ZFT_OBSOLETE a configuration option during kernel
+	configuration. Rename to CONFIG_ZFT_OBSOLETE.
+
+	* ftape/zftape/zftape-init.c:
+	Account for devfs API changes in 2.4.0-test3-pre3.
+
+	* ftape/compressor/lzrw3.c:
+	Fix compiler warning with 64 bit architectures.
+
+2000-07-04  heine  <heine@anaximander>
+
+	* ChangeLog: Final fixes for ftape-4.03 release.
+
+	* INSTALL, README, RELEASE-NOTES: Small updates.
+
+2000-07-04  Claus-Justus Heine  <heine@instmath.rwth-aachen.de (Claus-Justus Heine)>
+
+	* ftape-4.03 ready for release.
+
+2000-07-04  heine  <heine@anaximander>
+
+	* INSTALL, README, RELEASE-NOTES: Small updates.
+
+2000-07-03  heine  <heine@anaximander>
+
+	* ftape/lowlevel/ftape-init.h:
+	Needed to modify FTAPE_BANNER macro so that the stuff compiles with UP
+	kernels.
+
+	* Makefile:
+	Add ./include/linux/modftversions.h to distclean: target, as well as
+	ftape/parport/ftape-makecrc and ftape/parport/bpck-fdc-crctab.h.
+
+	* ftape/zftape/zftape-init.c:
+	Don't initialize "owner" component in file_operations struct for
+	pre-2.4 kernels.
+
+	* ftape/Makefile: Remove setup/ from MOD_SUB_DIRS.
+
+2000-06-30  heine  <heine@anaximander>
+
+	* ChangeLog: Add release entry.
+
+	* ftape/lowlevel/ftape-init.c:
+	Undo previous change to ftape_build_driver_list().
+
+	* include/linux/ftape.h, ftape/lowlevel/ftape-init.h, RELEASE-NOTES:
+	Update version information.
+
+	* scripts/kernel-inclusion/Documentation/ftape.txt,
+	ftape/setup/ftape-setup.c, ftape/parport/bpck-fdc.c,
+	ftape/parport/trakker.c, ftape/lowlevel/ftape-init.c,
+	ftape/internal/fdc-internal.c, ftape/internal/fdc-isapnp.c,
+	ftape/internal/fdc-isapnp.h: Fix kernel setup functions.
+
+2000-06-30  heine  <heine@anaximander>
+
+	* ftape/lowlevel/ftape-init.c:
+	Undo previous change to ftape_build_driver_list().
+
+	* include/linux/ftape.h, ftape/lowlevel/ftape-init.h, RELEASE-NOTES:
+	Update version information.
+
+	* scripts/kernel-inclusion/Documentation/ftape.txt,
+	ftape/setup/ftape-setup.c, ftape/parport/bpck-fdc.c,
+	ftape/parport/trakker.c, ftape/lowlevel/ftape-init.c,
+	ftape/internal/fdc-internal.c, ftape/internal/fdc-isapnp.c,
+	ftape/internal/fdc-isapnp.h: Fix kernel setup functions.
+
+2000-06-29  heine  <heine@anaximander>
+
+	* scripts/kernel-inclusion/v2.4/Configure.help.ftape:
+	Add some missing chapters.
+
+	* ftape/internal/fdc-isapnp.h: Fix proto type.
+
+	* ftape/zftape/zftape-init.c:
+	Only include zft_devfs_rm_entry() ifdef MODULE.
+
+	* scripts/kernel-inclusion/v2.4/Config.in,
+	scripts/kernel-inclusion/Documentation/ftape.txt,
+	scripts/kernel-inclusion/gokernel.sh,
+	scripts/kernel-inclusion/patch-charConfig.sh,
+	ftape/setup/ftape-setup.c, ftape/parport/fdc-parport.c,
+	ftape/parport/ftape-makecrc.c, ftape/parport/trakker.c,
+	ftape/parport/bpck-fdc.c, ftape/lowlevel/ftape-init.c,
+	ftape/internal/fdc-internal.c, ftape/internal/fdc-internal.h,
+	ftape/internal/fdc-isapnp.c: Updates for kernel-inclusion.
+
+	* MCONFIG: Buffer local variables for Emacs.
+
+2000-06-27  heine  <heine@anaximander>
+
+	* scripts/MAKEDEV.ftape:
+	Fix a little typo which prevented created of nrawft$i -> nqft$i symlink.
+
+	* ftape/parport/bpck-fdc.c: Debugging hack.
+
+	* scripts/kernel-inclusion/v2.4/Config.in, scripts/kernel-inclusion/gokernel.sh, ftape/setup/ftape-setup.c:
+	Adapted to v2.4.
+
+2000-06-26  heine  <heine@anaximander>
+
+	* ftape/zftape/zftape-init.c:
+	Change initializer for zft_cdev to use gcc "component: initializer"
+	syntax.
+
+	* ftape/parport/bpck-fdc.c:
+	Get rid of a compiler warning on 64 bit machines.
+
+	* MCONFIG: Fix a conditional for Alpha AXP machines.
+
+	* scripts/kernel-inclusion/v2.4/Config.in,
+	scripts/kernel-inclusion/v2.4/Configure.help.ftape: Initial
+	revision.
+
+	* ftape/internal/fdc-internal.h, ftape/internal/fdc-isapnp.c:
+	Rudimentary support for PnP cards during kernel configuration.
+
+	* scripts/kernel-inclusion/Documentation/00-INDEX,
+	scripts/kernel-inclusion/Documentation/ftape.txt: Update for
+	ISAPnP support.
+
+2000-06-25  heine  <heine@anaximander>
+
+	* RELEASE-NOTES: Update to ftape-4.03.
+
+	* ftape/lowlevel/ftape-init.h:
+	Forgot the final fullstop in the banner message.
+
+	* TODO, scripts/kernel-inclusion/README, patches/v2.1/README,
+	patches/v2.0/README, patches/v1.2/README, patches/README, INSTALL,
+	README, BUGS: Email adress update.
+
+2000-06-23  heine  <heine@anaximander>
+
+	* ChangeLog: Split the ChangeLog into ChangeLog and ChangeLog.1
+
+	* ChangeLog.1: Initial revision.
+
+	* ftape/zftape/zftape-init.c: Fix compilation for pre-2.3 kernels.
+
+	* ChangeLog: *** empty log message ***
+
+	* ChangeLog: Incorporate changes of the last months.
+
+	* ChangeLog: Change log update for the last 12 month or so.
+
+	* include/linux/ftape.h:
+	Use kernel supplied KERNEL_VERSION() macro if available.
+
+	* ftape/zftape/zftape-init.c:
+	devfs stuff. ftape devices go into a separate directory, namely
+	/dev/ftape. Create compatibility symlinks (i.e. /dev/qft0 ->
+	/dev/ftape/0/qft). Add an entry to /dev/tapes/ via devfs_register_tape().
+
+	* ftape/setup/ftape-setup.c:
+	Changes for post 2.2 kernels where setup functions can be declared
+	with the __setup() macro without having to change init/main.c
+
+	* ftape/parport/bpck-fdc.c, ftape/parport/fdc-parport.h:
+	Account for slight changes in the parport drivers.
+
+	* ftape/lowlevel/Makefile:
+	Added ftape-proc-old.[ch] for kernels <= 2.2.
+
+	* ftape/lowlevel/ftape-init.h, ftape/lowlevel/ftape-init.c:
+	Printk the load address of ftape_init() to the kernel log for debugging.
+
+	* ftape/lowlevel/ftape-proc.h, ftape/lowlevel/ftape-proc.c,
+	ftape/lowlevel/ftape-proc-old.c, ftape/lowlevel/ftape-proc-old.h:
+	Renamed ftape-proc.[ch] to ftape-proc-old.[ch], new files
+	ftape-proc.[ch] which implement the procfs interface to newer
+	kernels with less hacks.
+
+	* ftape/internal/fdc-internal.c, ftape/internal/Makefile:
+	Added ISAPnP stuff.
+
+	* ftape/internal/fc-10.c: fc10_enable() now has an __init prefix.
+
+	* ftape/internal/fdc-isapnp.c, ftape/internal/fdc-isapnp.h:
+	Initial revision.
+
+	* ftape/compressor/zftape-compress.c:
+	Update email adress in the message showed during module load.
+
+	* Rules.make:
+	Incorporate changes to prefix symbols with smp_ when using versioned symbols.
+
+	* Makefile:
+	Tune for parallel builds (prefix top level rules with a "+").
+
+	* MCONFIG:
+	Use KERNELRELEASE instead of KERNEL_VERSION. Use 2.2 definitions for
+	Alpha AXP for 2.3 and 2.4 kernels, too.
+
+	* INSTALL:
+	Cosmetic changes. Use KERNELRELEASE instead of KERNEL_VERSION because
+	this how it is called in MCONFIG.
+
+2000-06-23  heine  <heine@anaximander>
+
+	* ftape/zftape/zftape-init.c: Fix compilation for pre-2.3 kernels.
+
+	* ChangeLog: Incorporate changes of the last months.
+
+	* ChangeLog: Change log update for the last 12 month or so.
+
+	* include/linux/ftape.h:
+	Use kernel supplied KERNEL_VERSION() macro if available.
+
+	* ftape/zftape/zftape-init.c: devfs stuff. ftape devices go into a
+	separate directory, namely /dev/ftape. Create compatibility
+	symlinks (i.e. /dev/qft0 -> /dev/ftape/0/qft). Add an entry to
+	/dev/tapes/ via devfs_register_tape().
+
+	* ftape/setup/ftape-setup.c:
+	Changes for post 2.2 kernels where setup functions can be declared
+	with the __setup() macro without having to change init/main.c
+
+	* ftape/parport/bpck-fdc.c, ftape/parport/fdc-parport.h:
+	Account for slight changes in the parport drivers.
+
+	* ftape/lowlevel/Makefile:
+	Added ftape-proc-old.[ch] for kernels <= 2.2.
+
+	* ftape/lowlevel/ftape-init.h, ftape/lowlevel/ftape-init.c: Printk
+	the load address of ftape_init() to the kernel log for debugging.
+
+	* ftape/lowlevel/ftape-proc.h, ftape/lowlevel/ftape-proc.c,
+	ftape/lowlevel/ftape-proc-old.c, ftape/lowlevel/ftape-proc-old.h:
+	Renamed ftape-proc.[ch] to ftape-proc-old.[ch], new files
+	ftape-proc.[ch] which implement the procfs interface to newer
+	kernels with less hacks.
+
+	* ftape/internal/fdc-internal.c, ftape/internal/Makefile:
+	Added ISAPnP stuff.
+
+	* ftape/internal/fc-10.c: fc10_enable() now has an __init prefix.
+
+	* ftape/internal/fdc-isapnp.c, ftape/internal/fdc-isapnp.h:
+	Initial revision.
+
+	* ftape/compressor/zftape-compress.c:
+	Update email adress in the message showed during module load.
+
+	* Rules.make: Incorporate changes to prefix symbols with smp_ when
+	using versioned symbols.
+
+	* Makefile:
+	Tune for parallel builds (prefix top level rules with a "+").
+
+	* MCONFIG:
+	Use KERNELRELEASE instead of KERNEL_VERSION. Use 2.2 definitions for
+	Alpha AXP for 2.3 and 2.4 kernels, too.
+
+	* INSTALL:
+	Cosmetic changes. Use KERNELRELEASE instead of KERNEL_VERSION because
+	this how it is called in MCONFIG.
+

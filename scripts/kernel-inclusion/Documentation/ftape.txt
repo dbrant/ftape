@@ -1,0 +1,814 @@
+Intro
+=====
+
+This file describes some issues involved when using the "ftape" floppy
+tape device driver that comes with the Linux kernel. This document
+deals with ftape-4.x and later. Please read the section "Changes" for
+the most striking differences between version 4.x and previous
+versions.
+
+ftape-3.x developed as the re-unification of ftape-2.x and
+zftape. zftape was developed in parallel with the stock ftape-2.x
+driver sharing the same hardware support but providing an enhanced
+file system interface.
+
+ftape-4.x adds support for certain parallel port floppy tape drives
+and the Ditto 2GB and Ditto Max product line which no longer conforms
+to the publicly available QIC standards but use -- at least partly --
+a proprietary interface.
+
+Ftape-4.x removes the support for user transparent compression BUT
+adds hard write error recovery instead which is a major advantage over
+all previous ftape versions and is the reason for dropping the
+compression feature (or bug) as it would have been very hard to
+implement write error recovery while keeping the compression support.
+
+However, de-compression of old compressed archives written by pre-4.x
+versions of ftape _IS_ supported for compatibility reasons.
+
+ftape has a home page at
+
+http://www.instmath.rwth-aachen.de/~/heine/ftape/
+
+which contains further information about ftape. Please cross check
+this WWW address against the address given (if any) in the MAINTAINERS
+file located in the top level directory of the Linux kernel source
+tree.
+
+List of supported devices. See the Ftape-HOWTO and the documentation
+sources it points to for more information.
+
+-  all kind of internal floppy tape drives that conform to the
+   QIC_40/QIC-80/QIC-3010/QIC-3020 standards, include TR-1 and TR-3
+
+-  Iomega Ditto 2GB and Ditto Max (Pro)
+
+-  Colorado Trakker parallel port tape drive
+
+-  Iomega Ditto parallel port floppy tape drives. Maybe also parallel
+   port tape drives by Exabyte and Seagate, there seem to be problems
+   at least with Exabyte's parallel port tape drives. Generally, all
+   floppy tape drives that use Micro Solutions, Inc., Backpack (hence
+   the name `bpck-fdc') interface should be supported (this included
+   the Ditto product line).
+
+
+Contents
+========
+
+A minus 1: Ftape documentation
+
+A. Changes
+   1. Goal
+   2. I/O Block Size
+   3. Write Access when not at EOD (End Of Data) or BOT (Begin Of Tape)
+   4. MTBSF - backspace over file mark and position at its EOT side
+   5. Formatting
+   6. Interchanging cartridges with other operating systems
+   7. Multiple tape drive support
+
+B. Debugging Output
+   1. Introduction
+   2. Tuning the debugging output
+
+C. Boot and load time configuration
+   1. Setting boot time parameters
+   2. Modules load time parameters
+   3. Modules options
+   4. Kernel boot options
+   5. Options Summary
+
+D. Examples
+
+E. Support and contacts
+
+*******************************************************************************
+
+A minus 1. Ftape documentation
+==============================
+
+Finally, the Ftape-HOWTO has been updated. There is more information
+avaliable from the ftape home page at
+
+http://www.instmath.rwth-aachen.de/~/heine/ftape/
+
+The ftape HOWTO documents the ftape kernel driver only, while the web
+address given above also contains links to related packages and
+utilities and their documentation. Please check the MAINTAINERS file
+located in the top level directory of the Linux kernel source tree for
+a possibly more upto date web address if you have problem with the
+address given above.
+
+*******************************************************************************
+
+A. Changes
+==========
+
+
+1. Goal
+~~~~~~~
+
+   The goal of all that incompatibilities was to give ftape an interface
+   that resembles the interface provided by SCSI tape drives as close
+   as possible. Thus any Unix backup program that is known to work
+   with SCSI tape drives should also work with ftape-3.04 and above.
+
+   The concept of a fixed block size for read/write transfers is
+   rather unrelated to this SCSI tape compatibility at the file system
+   interface level. It developed out of a feature of zftape, a
+   block wise user transparent on-the-fly compression.
+
+   Now that the compression support has been dropped one could as well
+   set this minimal IO block size to 1 byte. For comparison: many SCSI
+   tape drives use a block size of 32k, the QIC-150 tape driver uses
+   512 bytes.
+
+
+2. I/O Block Size
+~~~~~~~~~~~~~~~~~
+
+   The probably most striking difference between ftape-2.x and
+   ftape-3.x and later with the zftape file system interface is the
+   concept of a fixed block size: data must be written to or read from
+   the tape in multiples of a fixed block size. The block size
+   defaults to 10k which is the default block size of GNU tar. While
+   this is quite usual for SCSI tapes (block size of 32k?) and the
+   QIC-150 driver `./drivers/char/tpqic02.c' ftape-2.x allowed data to
+   be written in arbitrary portions to the tape.
+
+   The block size can be tuned either during kernel configuration or
+   at runtime with the MTIOCTOP ioctl using the MTSETBLK operation
+   (i.e. do "mt -f /dev/qft0" setblk #BLKSZ). A block size of 0
+   switches to variable block size mode i.e. "mt setblk 0" switches
+   off the block size restriction.
+
+   The BLKSZ parameter must be given as a byte count and must be a
+   multiple of 32k or 0, i.e. use "mt setblk 32768" to switch to a
+   block size of 32k.
+
+   The typical symptom of a block size mismatch is an "invalid
+   argument" error message.
+
+
+3. Write Access when not at EOD (End Of Data) or BOT (Begin Of Tape)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   zftape (the file system interface of ftape-3.x and beyond) denies
+   write access to the tape cartridge when it isn't positioned either
+   at BOT or EOD. This inconvenience has been introduced as it was
+   reported that the former behaviour of ftape-2.x which allowed write
+   access at arbitrary locations already has caused data loss with
+   some backup programs.
+
+
+4. MTBSF - backspace over file mark and position at its EOT side
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   ftape-2.x didn't handle the MTBSF tape operation correctly. A MTBSF
+   call (i.e. "mt -f /dev/nqft0 bsf #COUNT") should space over #COUNT
+   file marks and then position at the EOT tape side of the the file
+   mark. This has to be taken literally, i.e. "mt -f /dev/nqft0 bsf 1"
+   should simply position at the start of the current volume.
+
+
+5. Formatting
+~~~~~~~~~~~~~
+   ftape-3.x and beyond DOES support formatting of floppy tape
+   cartridges. To format a floppy tape cartridge you need a user level
+   program called `ftformat'. This program is contained in the
+   `ftape-tools' package that can be found at 
+
+   ftp://sunsite.unc.edu/pub/Linux/kernel/tapes
+
+   or from the ftape home page at
+
+   http://www.instmath.rwth-aachen.de/~/heine/ftape/archives.html
+
+   The `ftape-tools' package contains some other tools as well that
+   used to be contained in the ftape module distribution until I
+   decided to build a separate `ftape-tools' distribution while
+   developing ftape-4.x.
+
+   Please note that the IOCTL interface used to format floppy tape
+   cartridges has changed from version 3.x to 4.x. This means, that
+   the old ftformat program shipped with ftape-3.x can no longer be
+   used to format floppy tape cartridges with the ftape-4.x kernel
+   driver. However, the `ftformat' tool contained in the `ftape-tools'
+   package still is able to talk to the older ftape-3.x driver, so it
+   might generally be a good idea to upgrade the ftape support
+   utilities.
+
+
+6. Interchanging cartridges with other operating systems
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   The internal emulation of Unix tape device file marks has changed
+   completely. ftape-3.x and beyond uses the volume table segment as
+   specified by the QIC-40/80/3010/3020/113 standards to emulate file
+   marks. As a consequence there is limited support to interchange
+   cartridges with other operating systems.
+
+   To be more precise: ftape will detect volumes written by other OS's
+   programs and other OS's programs will detect volumes written by
+   ftape-3.x (or later versions).
+
+   However, it isn't possible to extract the data dumped to the tape
+   by some MSDOG program with ftape-3.x. This exceeds the scope of a
+   kernel device driver. If you need such functionality, then go ahead
+   and write a user space utility that is able to do that. ftape-4.x
+   already provides all kernel level support necessary to do that.
+
+
+7. Multiple tape drive support
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   ftape-4.x supports simultaneous use of multiple floppy tape
+   drives. However, ftape is NOT able to share hardware when using
+   multiple floppy tape drives simultaneously, i.e. they must not hang
+   off the same FDC, and the two (or three of four) FDCs must not
+   share their IO address, IRQ and DMA channel.
+
+   This new feature is probably only useful if you have an internal
+   floppy tape drive and a parallel port floppy tape drive (or you are
+   developing a kernel driver for floppy tape drives ...)
+
+   As a consequence of the multiple tape drive support several kernel
+   and module parameters had to be multiplies as well. See below.
+
+
+*******************************************************************************
+
+B. Debugging Output
+===================
+
+1. Introduction
+~~~~~~~~~~~~~~~
+
+   The ftape driver can be very noisy in that it can print lots of
+   debugging messages to the kernel log files and the system console.
+   While this is useful for debugging it might be annoying during
+   normal use and enlarges the size of the driver by several
+   kilobytes.
+
+   To reduce the size of the driver you can trim the maximal amount of
+   debugging information available during kernel configuration. Please
+   refer to the kernel configuration script and its on-line help
+   functionality.
+
+   The amount of debugging output maps to the "tracing" boot time
+   option and the "ft_tracings" modules option as follows:
+
+   0              bugs
+   1              + errors
+   2              + warnings
+   3              + information
+   4              + more information
+   5              + program flow
+   6              + fdc/dma info
+   7              + data flow
+   8              + everything else
+
+   ftape maintains four different debugging levels for each of the
+   four possible ftape devices, as well as a fifth level for general
+   output that isn't related to a specific device.
+
+
+2. Tuning the debugging output
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   To reduce the amount of debugging output printed to the system
+   console you can
+
+   i)  trim the debugging output at run-time with
+
+       mt -f /dev/nqft0 setdensity #DBGLVL
+
+       where "#DBGLVL" is a number between 0 and 9
+
+   ii) trim the debugging output at module load time with
+
+       insmod ftape.o ft_tracings=T0,T1,T2,T3,GT
+
+       Here `T0' to `T3' are decimal numbers that give the trace
+       levels for the four ftape devices `dev/qft0' to `/dev/qft3' and
+       `GT' is the general ftape trace level for messages not related
+       to a specific device.
+
+       Of course, this applies only if you have configured the kernel
+       to compile ftape as a module.
+
+   iii) trim the debugging output during system boot time. Add the
+       following to the kernel command line:
+
+       ftape=T0,T1,T2,T3,GT,tracing
+
+       Here `T0' to `T3' are decimal numbers that give the trace
+       levels for the four ftape devices `dev/qft0' to `/dev/qft3' and
+       `GT' is the general ftape trace level for messages not related
+       to a specific device.
+
+       Of course, this applies only if you have configure your kernel
+       NOT to compile ftape as a module.
+
+       Please refer also to the next section if you don't know how to
+       set boot time parameters.
+
+*******************************************************************************
+
+C. Boot and load time configuration
+===================================
+
+1. Setting boot time parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+   Assuming that you use lilo, the LI)nux LO)ader, boot time kernel
+   parameters can be set by adding a line
+
+   append some_kernel_boot_time_parameter
+
+   to `/etc/lilo.conf' or at real boot time by typing in the options
+   at the prompt provided by LILO. I can't give you advice on how to
+   specify those parameters with other loaders as I don't use them.
+
+   ftape-4.x supports up to four floppy tape drives that may be used
+   simultaneously. Consequently, most ftape options are made up of up
+   to four numbers which give the option value for the respective
+   ftape devices `/dev/qft0' to `/dev/qft3'.
+
+   The trace level is an exception, but already has been dealt with in 
+   the previous section.
+
+   For ftape, most of the "some_kernel_boot_time_parameter" kernel
+   boot parameters look like
+
+   ftape=VAL0,VAL1,VAL2,VAL3,OPTIONNAME
+
+   where `VAL0' to `VAL3' give the value to be set for the option
+   specified by `OPTIONNAME' for each of the ftape devices.
+
+   NOTE: the value precedes the option name.
+
+   If you want to set the option for the first N, 0 <= N <= 3, devices
+   only, you may omit the trailing option values, i.e. for setting the
+   trace level for the first two ftape devices only it would suffice
+   to use
+
+   ftape=TR0,TR1,tracing
+
+   as kernel boot parameter.
+
+
+2. Modules load time parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Setting module load time parameters works similarly. Module
+   parameters can be specified either directly when invoking the
+   program 'insmod' at the shell prompt:
+
+   insmod MODULE OPTIONNAME=VAL0,VAL1,VAL2,VAL3
+
+   or by editing the file `/etc/conf.modules' in which case they take
+   affect each time when the module is loaded with `modprobe' (please
+   refer to the modules documentation, i.e. `modules.txt' and the
+   respective manual pages). Thus, you should add a line
+
+   options MODULE OPTIONNAME=VAL0,VAL1,VAL2,VAL3
+
+   where now you have to be careful because the ftape driver no longer 
+   consists of a single kernel module, as was the case with ftape-2.x, 
+   but of a chain of modules, and some options are understood by
+   specific modules only. Please refer to the next section.
+
+   Again, to set the trace level for the first two ftape device only
+   when ftape has been compiled as a module, would result in
+
+   insmod ftape.o ft_tracings=TR0,TR1
+
+   or as entry in `/etc/conf.modules'
+
+   options ftape ft_tracings=TR0,TR1
+
+
+3. Modules options
+~~~~~~~~~~~~~~~~~~
+
+   The first column gives the module that interpretes this option, the
+   second column gives an overview over the option. If you have
+   configured the kernel to compile ftape into the kernel, then refer
+   to the next section `Kernel boot options'.
+
+   There is another chapter `Options summary' which explains the
+   meaning of the options for both, kernel and module parameters, in
+   more detail.  In brief: `DRV0' to `DRV3' is a string that
+   determines which FDC driver module to use ("ftape-internal.o",
+   "trakker.o" or "bpck-fdc.o"). `HEX' is a hexadecimal number, `DEC'
+   is a decimal number, `EN' is a flag value, either `0' or `1'.
+
+   Module            |  Option
+   ============================================================
+   ftape.o           |  ft_tracings=TR0,TR1,TR2,TR3,GT
+                     |  ft_fdc_driver=DRV0,DRV1,DRV2,DRV3
+   ------------------------------------------------------------
+   zftape.o          |  NO OPTIONS AVAILABLE
+   ------------------------------------------------------------
+   ftape-internal.o  |  ft_fdc_base=HEX0,HEX1,HEX2,HEX3
+                     |  ft_fdc_irq=DEC0,DEC1,DEC2,DEC3
+                     |  ft_fdc_dma=DEC0,DEC1,DEC2,DEC3
+                     |  ft_fdc_threshold=DEC0,DEC1,DEC2,DEC3
+                     |  ft_fdc_rate_limit=DEC0,DEC1,DEC2,DEC3
+                     |  ft_fdc_fc10=EN0,EN1,EN2,EN3
+                     |  ft_fdc_mach2=EN0,EN1,EN2,EN3
+                     |  ft_fdc_pnp_vendor=VEN0,VEN1,VEN2,VEN3
+                     |  ft_fdc_pnp_dev=DEV0,DEV1,DEV2,DEV3
+                     |  ft_fdc_pnp_fct=FCT0,FCT1,FCT2,FCT3
+   ------------------------------------------------------------
+   trakker.o         |  ft_fdc_parport=DEC0,DEC1,DEC2,DEC3
+                     |  ft_fdc_threshold=DEC0,DEC1,DEC2,DEC3
+                     |  ft_fdc_rate_limit=DEC0,DEC1,DEC2,DEC3
+   ------------------------------------------------------------
+   bpck-fdc.o        |  ft_fdc_parport=DEC0,DEC1,DEC2,DEC3
+                     |  ft_fdc_threshold=DEC0,DEC1,DEC2,DEC3
+                     |  ft_fdc_rate_limit=DEC0,DEC1,DEC2,DEC3
+
+
+4. Kernel boot options
+~~~~~~~~~~~~~~~~~~~~~~
+
+   The first column gives the ftape module that understand this
+   parameter.
+
+   This means: you  must have  configured the  kernel  to compile this
+   part of ftape into the kernel image, otherwise you need to load the
+   ftape modules at runtime and refer to the previous section `Modules
+   options' for an overview of available options.
+
+   The second column gives an overview over the options.
+
+   There is another chapter `Options summary' which explains the
+   meaning of the options for both, kernel and module parameters, in
+   more detail.  In brief: `DRV0' to `DRV3' is a string that
+   determines which FDC driver module to use ("ftape-internal.o",
+   "trakker.o" or "bpck-fdc.o"). `HEX' is a hexadecimal number, `DEC'
+   is a decimal number, `EN' is a flag value, either `0' or `1'.
+
+   Ftape module      |  Boot parameter
+   ============================================================
+   ftape.o           |  ftape=TR0,TR1,TR2,TR3,GT,tracing
+                     |  ftape=DRV0,DRV1,DRV2,DRV3,driver
+   ------------------------------------------------------------
+   zftape.o          |  NO OPTIONS AVAILABLE
+   ------------------------------------------------------------
+   ftape-internal.o  |  ftape=HEX0,HEX1,HEX2,HEX3,base
+                     |  ftape=DEC0,DEC1,DEC2,DEC3,irq
+                     |  ftape=DEC0,DEC1,DEC2,DEC3,dma
+                     |  ftape=DEC0,DEC1,DEC2,DEC3,thr
+                     |  ftape=DEC0,DEC1,DEC2,DEC3,rate
+                     |  ftape=EN0,EN1,EN2,EN3,fc10
+                     |  ftape=EN0,EN1,EN2,EN3,mach2
+                     |  ftape=VENxxyy0,VENxxyy1,VENxxyy2,VENxxyy3,pnpdev
+   ------------------------------------------------------------
+   trakker.o         |  ftape=DEC0,DEC1,DEC2,DEC3,pp
+                     |  ftape=DEC0,DEC1,DEC2,DEC3,thr
+                     |  ftape=DEC0,DEC1,DEC2,DEC3,rate
+   ------------------------------------------------------------
+   bpck-fdc.o        |  ftape=DEC0,DEC1,DEC2,DEC3,pp
+                     |  ftape=DEC0,DEC1,DEC2,DEC3,thr
+                     |  ftape=DEC0,DEC1,DEC2,DEC3,rate
+
+
+5. Options Summary
+~~~~~~~~~~~~~~~~~~
+
+   i) Options for the ftape.o module
+   ---------------------------------
+
+        The trace level options already have been dealt with in
+        previous sections. The other -- very important option -- is
+        the fdc drivers options. As module option:
+
+        ft_fdc_driver=DRV0,DRV1,DRV2,DRV3
+
+        As kernel boot option:
+
+        ftape=DRV0,DRV1,DRV2,DRV3,driver
+
+        `DRV0' to `DRV3' are strings which describe which FDC module
+        to use for which device. Example for using an internal floppy
+        tape drive for the first ftape device and a parallel port tape
+        drive for the second ftape device (kernel boot parameter
+        only):
+
+        ftape=ftape-internal,trakker:bpck-fdc,driver
+
+        ftape will try to use the `ftape-internal' module for the
+        first device and either the `trakker' module or the `bpck-fdc'
+        module for the second device. If no appropriate FDC driver is
+        present then ftape will use the module auto-loading mechanism
+        to load it by passing the given name to the `request_module()' 
+        function. As can be seen in the example given above, the fdc
+        drivers parameter can be a colon separated list of possible
+        drivers for a given ftape device.
+
+        When no FDC driver has been specified for either of the ftape
+        devices then ftape tries whether any of the currently loaded
+        drivers can be used. To disable this auto-probing behaviour
+        one has to pass the special keyword "none" as driver
+        name. Passing the word "auto" is the same as passing no driver 
+        name at all. Example:
+
+        ftape=ftape-internal,,none,auto,driver
+
+        When accessing `/dev/qft1' the driver will try all FDC drivers
+        currently loaded (or compiled into the kernel). Trying to use
+        `/dev/qft2' will never succeed, and `/dev/qft3' exhibits the
+        same behaviour as `/dev/qft1'.
+
+   ii) Options for the zftape.o module
+   -----------------------------------
+
+        There are no options available. One can set the default IO
+        block size when configuring the kernel, but there are no boot
+        or load time parameters that can be specified.
+
+   iii) General options for the FDC modules
+   ----------------------------------------
+ 
+        All low level FDC modules (i.e. `ftape-internal.o',
+        `trakker.o', `bpck-fdc.o') understand the following two
+        options.
+
+        Kernel boot parameters:
+
+        ftape=DEC0,DEC1,DEC2,DEC3,thr
+        ftape=DEC0,DEC1,DEC2,DEC3,rate
+
+        Modules parameters:
+
+        ft_fdc_threshold=DEC0,DEC1,DEC2,DEC3
+        ft_fdc_rate_limit=DEC0,DEC1,DEC2,DEC3
+        
+        The FDC threshold values modifies the latency for DMA
+        transfers. Higher values of the thresholds increases the
+        latency before the FDC FIFO runs out of data, resulting in an
+        "overrun error". Lower values reduce the latency, but reduce
+        also the number of times the FDC requests DMA transfers from
+        the DMA controllers, resulting in less bus transfers.
+
+        It seems that the FDC threshold doesn't have too much an
+        effect. Well, setting this to the lowest allowable value of 0
+        guarantees FDC malfunction, but every value between 8 and the
+        maximum of 15 seems to be just fine. With the exception of the 
+        `trakker.o' module, which uses an internally hard wired value
+        of 15 for the threshold.
+
+        The other option -- the data rate limit -- reduces the maximum
+        data rate ftape tries to use. Due to poor ISA/PCI bus coupling
+        and general hardware design flaws it might be the case that so
+        called "high speed" controllers which try to use data rates of
+        2000 Mbps up to 4000 Mbps just doesn't work and result in
+        myriads of data over- and underrun errors. In this case ftape
+        automatically reduces the data rate until there are no more
+        than a few of those overrun errors. If you know that your
+        hardware suffers from those design flows and hardware bugs,
+        then you may want to use this option to reduce the data rate a
+        priori. The auto-reduction ftape uses always causes quite a
+        few retries and rewinds which need a considerably amount of
+        time. So if you know that your FDC can't be serviced by your
+        broken ISA dma controller well enough, because your broken
+        ISA/PCI bridge just was designed by some drunken engineer, you 
+        may want to tell ftape not to try the higher transfer rates
+        at all.
+
+        SPECIAL NOTE FOR DITTO MAX users: no -- NOT A SINGLE --
+        motherboard is known to me that is able to drive the Ditto MAX
+        EZ 4Mbit controller at its highest data transfer rate of
+        4Mbit/sec. The best you can hope is to get 3Mbit with
+        _especially_ well designed hardware. But you well may end up
+        with 2Mbit as well.
+
+
+   iv) Specific options for the ftape-internal FDC module
+   ------------------------------------------------------
+
+        General hardware settings.
+
+        Kernel boot parameters:
+
+        ftape=HEX0,HEX1,HEX2,HEX3,base
+        ftape=DEC0,DEC1,DEC2,DEC3,irq
+        ftape=DEC0,DEC1,DEC2,DEC3,dma
+
+        Modules parameters:
+
+        ft_fdc_base=HEX0,HEX1,HEX2,HEX3
+        ft_fdc_IRQ=DEC0,DEC1,DEC2,DEC3
+        ft_fdc_dma=DEC0,DEC1,DEC2,DEC3
+
+        As already stated above, `HEX' means some number in
+        hexadecimal notation and `DEC' means some number in decimal
+        notation.
+
+        With the three parameters given above you determine the
+        hardware setup of the FDC to use for your internal tape drive.
+
+        `ftape-internal.o' tries to perform IRQ auto-probing if you
+        set the IRQ parameter to -1.
+
+        The other two parameters that give the IO base and the DMA
+        channel are mandatory. If you have specified suitable defaults
+        during kernel configuration or if your tape drive hangs off
+        the standard FDC controller at 0x3f0 and uses DMA channel 2
+        and you have chosen "Standard" for the internal FDC for this
+        ftape device, then you don't need this options.
+
+        Probing for special hardware:
+        High speed 2Mbit controllers based on the 82078 Intel FDC or
+        the Iomega Ditto EZ 4Mbit controller aren't considered
+        `special' in this context. Just give the correct setting for
+        the IO base and DMA channel and the thing should work. Things
+        are different for more ancient tape controllers, the Colorado
+        FC-10/FC-30 and the Mountain MACH-2 controller. If you have
+        such a beast, you need to tell ftape that this is the case
+        with the following parameters:
+
+        Kernel boot parameters:
+
+        ftape=EN0,EN1,EN2,EN3,fc10
+        ftape=EN0,EN1,EN2,EN3,mach2
+
+        Module parameters:
+
+        ft_fdc_fc10=EN0,EN1,EN2,EN3
+        ft_fdc_mach2=EN0,EN1,EN2,EN3
+
+        Here `EN' refers to a flag value -- either `0' or `1'. Setting 
+        `ft_fdc_fc10' to `1' enables a special hardware check that
+        tries to detect and enable a Colorado FC-10/FC-20
+        controller. Setting `ft_fdc_mach2' to `1' modifies certain FDC 
+        reset and configuration sequences which is necessary to drive
+        that Mountain MACH-2 controller correctly.
+
+        Defaults for these parameters can be given during kernel
+        configuration. Please refer to the available on-line help for
+        the kernel configuration.
+
+        Since Linux-2.3.46 the kernel has builtin support for ISAPnP
+        cards. 
+
+	Kernel parameters:
+
+        ftape=VENxxyy0,VENxxyy1,VENxxyy2,VENxxyy3,pnpdev
+
+        Module parameters:
+
+        ft_fdc_pnp_vendor=VEN0,VEN1,VEN2,VEN3
+        ft_fdc_pnp_dev=DEV0,DEV1,DEV2,DEV3
+        ft_fdc_pnp_fct=FCT0,FCT1,FCT2,FCT3
+
+        Here `VEN' in the kernel boot paramter and module parameter
+        expect a vendor device id (e.g. `IOM' for the Iomega Ditto EZ
+        controller), the `xx' and `DEV' expect a 4 digit hexadecimal
+        number (_including_ leading zeros), `yy' and `FCT' expect a 4
+        digit hexadecimal number as well. 
+
+	As a special case, when passing the character `-1' as PnP
+	vendor the driver tries auto-detection, traversing a list of
+	known PnP devices. Passing a value of `-2' disables the ISAPnP
+	stuff for this device.
+
+   v) Specific options for the bpck-fdc.o and for the trakker.o FDC module
+   ---------------------------------------------------------------
+
+        There is a single option which controls which parallel port to
+        use.
+
+        Kernel boot parameter:
+
+        ftape=DEC0,DEC1,DEC2,DEC3,pp
+
+        Module parameter:
+
+        ft_fdc_parport=DEC0,DEC1,DEC2,DEC3
+
+        The option value simply specifies which parallel port to use
+        for the tape drive. Please refer to `parport.txt' for further
+        explanations about how parallel ports are numbered in 2.1
+        kernels.
+
+        Passing "-2" as module or kernel boot parameter disables
+        parallel port support for the given ftape device.
+
+        When "-1" as module or kernel boot parameter is given then
+        `trakker.o' and `bpck-fdc.o' simply try all available parallel
+        ports by calling `parport_enumerate()' until they find one
+        with a floppy tape connected.
+
+        The default value is '-1' for all devices unless configured
+        differently during kernel configuration. If unsure, just don't 
+        use this option.
+
+        Please note that the parallel port ftape modules `trakker.o'
+        and `bpck-fdc.o' don't perform any IRQ auto-probing, they rely
+        on the parport module to do this. Please refer to the parport
+        documentation to learn how to tell the parport module which
+        IRQ lines to use.
+        
+*******************************************************************************
+
+D. Examples
+===========
+
+1. Compiling everything into the kernel. Configuration for an internal 
+   floppy tape drive for the first ftape device `/dev/qft0', parallel
+   port floppy tape drive for `/dev/qft1'. Kernel boot parameters:
+
+   ftape=ftape-internal,trakker:bpck-fdc,driver
+   ftape=0x4711,base
+   ftape=-1,irq
+   ftape=42,dma
+   ftape=3000,1000,rate
+
+   This configures the `ftape-internal' FDC driver to perform IRQ
+   auto-probing because of the value "-1" for the "irq" parameter. The
+   internal floppy tape drive at `/dev/qft0' uses a data rate limit of
+   3000 Kbps, the parallel port tape drive uses a limit of 1000
+   Kbps. Note that the values for the IO-base and DMA channel for the
+   internal tape drive are really fancy in this case. If you need this
+   kernel options, you better also have an idea were your hardware is
+   located at ...
+
+   Same example, but everything compiled as modules, example
+   `/etc/conf.modules' lines:
+
+   alias char-major-27       zftape
+   options ftape ft_fdc_driver=ftape-internal,trakker:bpck-fdc,driver
+   options ftape-internal ft_fdc_base=0x4711 ft_fdc_dma=42 ft_fdc_rate_limit=3000
+   options trakker ft_fdc_rate_limit=0,1000
+   options bpck-fdc ft_fdc_rate_limit=0,1000
+
+   You may have difficulties to give modprobe negative modules
+   parameters, depending on the modutils version you are using ...
+
+2. Compiling everything into the kernel. Configuration for a parallel port
+   floppy tape drive for the first ftape device `/dev/qft0' using the
+   Trakker driver, parallel port floppy tape drive for
+   `/dev/qft1' using the BackPack driver. Kernel boot parameters:
+
+   ftape=trakker,bpck-fdc,driver
+   ftape=-1,-1,-2,-2,pp
+   
+   This configures the `trakker' FDC driver as well as the `bpck-fdc'
+   driver to probe at all available parallel ports for the
+   hardware. This is the meaning of the `-1'.
+
+   Normally ftape would also auto probe for additional tape drives for
+   `/dev/qft2' and `/dev/qft3', but the `-2' at position 2 and 3 of
+   the "pp" parameter tells the FDC modules `trakker' and `bpck-fdc'
+   not to look for any hardware when ftape tries to perform
+   auto-probing for `/dev/qft2' and `/dev/qft3'.
+
+3. Kernel boot parameters for single Ditto Max, connecting to Ditto EZ
+   controller:
+
+   ftape=ftape-internal,driver
+   ftape=0x320,base
+   ftape=-1,irq
+   ftape=0,dma
+   ftape=3000,rate
+   ftape=-1,pnpdev
+
+4. Same, but with module parameters:
+
+   alias char-major-27       zftape
+   options ftape ft_fdc_driver=ftape-internal
+   options ftape-internal ft_fdc_base=0x320 ft_fdc_dma=0 ft_fdc_rate_limit=3000 ft_fdc_pnp_vendor=-1
+
+*******************************************************************************
+
+E. Support and contacts
+=======================
+
+   Ftape is distributed under the GNU General Public License. There is
+   absolutely no warranty for this software. However, you can reach
+   the current maintainer of the ftape package under the email address
+   given in the MAINTAINERS file which is located in the top level
+   directory of the Linux kernel source tree. There you'll find also
+   the relevant mailing list to use as a discussion forum and the web
+   page to query for the most recent documentation, related work and
+   development versions of ftape.
+
+*******************************************************************************
+
+Claus-Justus Heine 6/00
+
+*******************************************************************************
+
+ LocalWords:  ftape Linux zftape http www rwth aachen claus EOD thr pp heine
+ LocalWords:  config GB datarate LocalWords BOT MTBSF EOT HOWTO QIC BackPack
+ LocalWords:  tpqic menuconfig TR MTIOCTOP MTSETBLK mt dev qft setblk utoprobe
+ LocalWords:  BLKSZ bsf zftape's xconfig GT nqft ftformat ftp sunsite Justus
+ LocalWords:  unc edu contrib ft MSDOG fdc Iomega VAL dma setdensity
+ LocalWords:  DBGLVL insmod lilo LI nux ader conf txt Trakker EZ
+ LocalWords:  modprobe IRQ BOOL ioport IRQ fc mach THR Exabyte bpck
+ LocalWords:  html FDCs OPTIONNAME DRV trakker parport ISA PCI Mbps
+ LocalWords:  myriads Mbit irq Kbps modutils

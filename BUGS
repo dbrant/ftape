@@ -1,0 +1,52 @@
+Hey, Emacs, we're -*-Text-*- mode!
+
+Known Bugs:
+
+* proc files system
+  The procfs entry causes kernel Oopses when the ftape module is
+  removed while somebody accesses the /proc/ftape entry. Unluckily
+  this can't be solved from inside ftape. The problem is that the
+  current procfs implementation provides no means to determine whether
+  the procfs entry is in use.
+
+  Solved for kernel versions > 2.1.58
+
+* llseek
+  Trying to seek the device special files will not return an error
+  although llseek isn't implemented. This is much the same with st.c
+  and tpqic.c and ide-tape.c
+  Should this be fixed? Maybe supply zftape with a dummy llseek() that
+  simply returns -ESPIPE.
+
+  Done.
+
+* formatting with Colorado Jumbo 350
+  This doesn't seem to work. I don't think that the kernel driver
+  needs to be changed; it should be possible to fix this in user
+  space, modifying ftformat.
+
+* You can't use the Iomega Ditto MAX drives with any other device than
+  the first one, i.e. with /dev/nqft0, /dev/qft0 etc. This seems to be
+  a peculiarity of the Ditto MAX, i.e. a hardware bug of either the
+  Ditto Max drive or the Ditto EZ controller.
+
+* The Ditto EZ 4Mbps controller will break the standard floppy disk
+  controller when configured to use DMA channel 2 (the one used by the
+  standard FDC). Apparently it doesn't help to try to disable the DMA
+  gate of the Ditto EZ controller. I think this is a hardware bug of
+  the EZ controller.
+
+* Ftape versions prior to ftape-4.04  have a bug concerning the volume
+  table  of format code 6  cartridges (i.e.  cartridges with more than
+  2^16 segments). Sharing such cartridges with other operating systems
+  and ftape will cause data loss (ONLY for versions prior to 4.04).
+
+FIXME!
+
+Claus-Justus Heine <heine@instmath.rwth-aachen.de>
+
+-------------------------------------------------------------------------------
+ LocalWords:  procfs ftape llseek tpqic zftape ESPIPE ftformat Iomega
+ LocalWords:  dev nqft qft FIXME Justus claus momo rwth aachen
+ LocalWords:  LocalWords EZ Mbps FDC tjones estinc Linux SMP
+ LocalWords:  sigpending fttools README heine

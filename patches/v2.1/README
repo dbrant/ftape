@@ -1,0 +1,68 @@
+Hey, Emacs, we're -*-Text-*- mode!
+
+This directory contains a patch to the
+
+[/usr/src/linux/]drivers/block/floppy.c 
+
+floppy driver for Linux v2.1.115 and earlier. Maybe it will be fixed
+in v2.1.116.
+
+********************************************************************
+*                                                                  *
+* Don't apply this patch if you are running other kernel versions. *
+*                                                                  *
+********************************************************************
+
+Unluckily, the v2.1.x floppy driver (as of Linux v2.1.115 and earlier
+versions) requests the floppy interrupt before grabbing the floppy IO
+regions. This can lead to problems in case there is a floppy interrupt
+pending, because in this case the floppy interrupt handler will be
+called immediately after registering it, and it will access the floppy
+IO ports to determine the cause of the interrupt.
+
+The patch this directory changes the order in which the IO resources
+are requested. After applying the patch, the floppy driver will
+request the interrupt line AFTER grabbing the IO regions.
+
+Of course, if you don't want to plug your tape drive into the standard
+floppy controller, then you don't need this patch and can live with
+the buggy floppy driver.
+
+To apply this patch, change to the directory where the Linux v2.1.x
+kernel sources are located. Probably this is `/usr/src/linux/' or
+similar and use the `patch' command like follows:
+
+cd /usr/src/linux/
+patch -p1 < /usr/src/ftape-4.00/patches/v2.1/floppy.c.dif
+
+where you have to replace
+
+/usr/src/ftape-4.00/patches/v2.1/floppy.c.dif
+
+by the real pathname of the `floppy.c.dif' which is located in the
+same directory as this `README' file.
+
+Afterwards you have to recompile your kernel and reinstall it. The
+safest way to do so is the following
+
+cd /usr/src/linux/
+make dep
+make clean
+make zImage
+make modules
+make modules_install
+
+You probably will have to replace the `make zImage' by the proper
+command to make and install your kernel image. Possibilities are `make
+zlilo' or `make zdisk'. But this depends on your setup. If you got
+your Linux system as a CD distribution, then you probably also got a
+handbook where the necessary steps how to compile and install a new
+kernel version are explained.
+
+
+
+Claus-Justus Heine <heine@instmath.rwth-aachen.de>
+
+-------------------------------------------------------------------------------
+ LocalWords:  usr src linux FDC DBROKEN MCONFIG ftape cd dif README dep zImage
+ LocalWords:  zlilo zdisk Justus heine rwth aachen LocalWords

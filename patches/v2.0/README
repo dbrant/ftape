@@ -1,0 +1,77 @@
+Hey, Emacs, we're -*-Text-*- mode!
+
+This directory contains a patch to the
+
+[/usr/src/linux/]drivers/block/floppy.c 
+
+floppy driver for Linux v2.0.x.
+
+********************************************************************
+*                                                                  *
+* Don't apply this patch if you are running other kernel versions. *
+*                                                                  *
+********************************************************************
+
+Unluckily, the v2.0.x floppy driver (as of Linux v2.0.35 and earlier
+versions) unconditionally grabs the IO ports of the floppy controller
+(FDC) and don't release them back even when the floppy isn't in
+use. This is definitely a bug in the floppy driver.
+
+To work around this problems, one either can define the
+`-DBROKEN_FLOPPY_DRIVER' option in the `MCONFIG' file of the ftape
+kernel driver distribution. Or one can apply the patch in this
+directory.
+
+The first solution is deprecated, as it simply tells ftape to skip the
+IO region checking. In this case you have to be very careful not to
+use the floppy while the tape device is in use, and vice
+versa. Otherwise you most probably will get Kernel Oopses.
+
+The second solution really fixes this problem; it changes the floppy
+driver so that it releases ALL resources back to the system when the
+floppy isn't in use, and to properly check whether the corresponding
+IO regions aren't occupied by other drivers (such as ftape) before
+accessing the FDC registers.
+
+Of course, if you don't want to plug your tape drive into the standard
+floppy controller, then you don't need this patch and can live with
+the buggy floppy driver.
+
+To apply this patch, change to the directory where the Linux v2.0.x
+kernel sources are located. Probably this is `/usr/src/linux/' or
+similar and use the `patch' command like follows:
+
+cd /usr/src/linux/
+patch -p1 < /usr/src/ftape-4.00/patches/v2.0/floppy.c.dif
+
+where you have to replace
+
+/usr/src/ftape-4.00/patches/v2.0/floppy.c.dif
+
+by the real pathname of the `floppy.c.dif' which is located in the
+same directory as this `README' file.
+
+Afterwards you have to recompile your kernel and reinstall it. The
+safest way to do so is the following
+
+cd /usr/src/linux/
+make dep
+make clean
+make zImage
+make modules
+make modules_install
+
+You probably will have to replace the `make zImage' by the proper
+command to make and install your kernel image. Possibilities are `make
+zlilo' or `make zdisk'. But this depends on your setup. If you got
+your Linux system as a CD distribution, then you probably also got a
+handbook where the necessary steps how to compile and install a new
+kernel version are explained.
+
+
+
+Claus-Justus Heine <heine@instmath.rwth-aachen.de>
+
+-------------------------------------------------------------------------------
+ LocalWords:  usr src linux FDC DBROKEN MCONFIG ftape cd dif README dep zImage
+ LocalWords:  zlilo zdisk Justus heine rwth aachen LocalWords

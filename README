@@ -1,0 +1,186 @@
+Hey, Emacs, we're -*-Text-*- mode!
+
+Abstract
+~~~~~~~~
+
+This directory and its subdirectories contain the sources for
+
+                            ftape-4.04a
+
+`ftape'  is a  device driver  for floppy tape  drives written  for the
+operating system Linux.
+
+Currently, the  driver  supports many  QIC-40/QIC-80/QIC-3010/QIC-3020
+tape   drives that   conform   to  the respective   QIC-*  development
+standards, as well as the Iomega Ditto 2GB and Max drives.
+
+Some parallel port tape drives are  also supported, too. These are the
+Colorado Trakker and  several kinds of parallel  port  drives that use
+the Micro   Solutions' "Backpack"   protocol, i.e. the    Iomega Ditto
+parallel port  drives, and some parallel  port floppy tape drives made
+by Exabyte and Seagate.
+
+Contents
+~~~~~~~~
+
+1. Things to read through for getting started
+2. Related packages and further documentation
+3. Downloading
+4. RTFM and problem reports, questions, contacts
+
+
+
+1. Things to read through for getting started
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+COPYING         GNU GENERAL PUBLIC LICENSE, Version 2, June 1991
+                This software comes without ANY warranty.
+
+README          The file you are reading right now
+
+RELEASE-NOTES   Summary of the changes between different `ftape'
+                releases. Reaches back until ftape-2.01, 08/01/95.
+                
+BUGS            List of known bugs.
+
+TODO            List of things that still need to be done.
+
+README.PCI      Notes about PCI motherboards. Might be slightly out of 
+                date.
+
+INSTALL         Short installation instructions. Get the
+                `ftape-4.x-doc' package for more detailed
+                documentation!
+
+THANKS          Incomplete list of people who contributed to the
+                `ftape' project.
+
+ChangeLog       The detailed commit log of my CVS source repository.
+
+
+
+2. Related packages and further documentation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ftape-4.x-doc-REVISION 
+                The `ftape documentation  package' which contains  the
+                `ftape-manual'   as   well as  the   `Ftape-HOWTO' and
+                `Ftape-FAQ' for local installation. REVISION refers to
+                the revision of the `ftape-4.x-doc' manual package. It
+                is recommended that you download this package, too.
+
+ftape-tools-VERSION
+                This is  an additional  `ftape support  package' which
+                contains  some  utilities   needed  to  exploit   some
+                features of the `ftape-4.x'  driver. VERSION refers to
+                the    version    of  the     `ftape-tools'   package.
+                `ftape-tools'    contains  utilities like   `swapout',
+                `ftmt',`ftformat' and  `vtblc' and some others.  It is
+                recommended that you download this package, too.
+Ftape-HOWTO
+                The Ftape-HOWTO  is  contained in the  `ftape-4.x-doc'
+                package, but the primary source for the Ftape-HOWTO is
+
+                http://sunsite.unc.edu/LDP/HOWTO/Ftape-HOWTO.html
+
+Ftape-FAQ
+                A version  of the Ftape-FAQ  is also  contained in the
+                `ftape-4.x-doc' package for reference, but the primary
+                source is
+
+                http://www.correct.nl/~ftape
+
+
+
+3. Downloading
+~~~~~~~~~~~~~~
+                     
+Recent  versions of  the `ftape'  driver    and the related   packages
+mentioned above can be obtained from
+
+                ftp://sunsite.unc.edu/pub/Linux/kernel/tapes/
+
+or from the ftape home page
+
+                http://www.instmath.rwth-aachen.de/~heine/ftape/
+
+The ftape home page
+
+                http://www.instmath.rwth-aachen.de/~heine/ftape/
+
+also contains some useful links to related software and documentation.
+
+
+
+4. RTFM and problem reports, questions, contacts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+`RTFM' is a shortcut for `Read those fine manuals'.
+
+Feel free to contact me if something goes wrong, but first try to read
+the available  manuals. The   `ftape-manual'   comes with  a    fairly
+extensive index so you can search for suitable keywords there and jump
+directly to suitable passages in the  manual without having to read it
+in its entirety.
+
+Please post your questions to the `linux-tape' mailing list:
+
+        linux-tape@vger.rutgers.edu
+
+You can  benefit from the experiences  of other people that share your
+problems.
+
+If you want to subscribe to the mailing list, send mail to 
+
+        majordomo@vger.rutgers.edu
+
+with the text
+
+        subscribe linux-tape 
+
+in the message body.
+
+NOTE: PLEASE  DON'T   POST LARGE  MESSAGES TO THE    MAILING LIST (for
+example  large  excerpts of your  kernel  log files).  I'm not talking
+about 5 kilobyte  mails. But if your  message exceeds 10kb or so, then
+think  a  moment  about  whether this    mail  is really    of general
+interest. If you  find it necessary to  send large emails to me,  then
+send them directly to
+
+        heine@instmath.rwth-aachen.de
+
+Please keep in mind that  quite a lot  of people might read the  Linux
+tape  mailing  list, and  some  of them  might  have to  pay for their
+Internet connection. Don't waste the mailing list bandwidth.
+
+Please try to describe your problem as exact as possible. I can't help
+if  you simply send  me messages like  `ftape  doesn't work'. SO WHAT! 
+Please include the version of the kernel you  are running, the version
+of  ftape you are using  and (of course)  tell  me what kind of floppy
+tape you are using.
+
+If   you encountered errors during  tape  operation, try to provide an
+exact     command  sequence  that     reproduces   the  error if  ever
+possible. Please don't send me messages  like `ftape sometimes doesn't
+skip   to  the next file'.   Instead, give  me  the  exact sequence of
+commands that  you  typed in  when the  unexpected  behaviour or error
+occurred, if ever possible.
+
+Please don't feel annoyed if it takes some days before you get a reply
+to your email (or  don't get any  reply at all). I get  quite a lot of
+messages, and I'm  doing the ftape  support in  my spare time.  Simply
+resend your  message if you have the  impression that you don't get an
+answer (gimme  a break: please wait  a couple of days before resending
+your email)
+
+
+Have fun
+
+Claus-Justus Heine <heine@instmath.rwth-aachen.de>
+
+
+-------------------------------------------------------------------------------
+ LocalWords:  ftape Linux QIC Iomega GB Trakker Exabyte README TODO
+ LocalWords:  PCI CVS unc ChangeLog HOWTO swapout ftmt ftformat vtblc
+ LocalWords:  sunsite edu http www rwth aachen claus Justus heine RTFM
+ LocalWords:  LDP html nl linux vger rutgers kb LocalWords

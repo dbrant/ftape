@@ -1,0 +1,14 @@
+Index of files in Documentation/ftape/. If you think something about
+floppy tape drives needs an entry here, or needs correction or if you
+have written more elaborate documentation, please mail me so that it
+can be included here.
+				Claus-Justus Heine
+				<heine@instmath.rwth-aachen.de>
+
+00-INDEX
+	- this file.
+RELEASE-NOTES
+	- Revision history.
+ftape.txt
+	- general notes and configuration options.
+

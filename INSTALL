@@ -1,0 +1,225 @@
+Hey, Emacs, we're -*-Text-*- mode!
+
+Contents
+~~~~~~~~
+
+1. Preliminaries
+2. Read the file `README'
+3. Installation
+4. Autoloading via kerneld or kmod
+
+
+
+1. Preliminaries
+~~~~~~~~~~~~~~~~
+
+What you need:
+
+a) a floppy tape drive (of course).
+
+b) a  recent version of the Linux  kernel. ftape still might work with
+   Linux v1.2.13 but I haven't tested it. v2.0.x and later should work
+   just fine.
+
+c) utilities  for loading  kernel modules, i.e.  `modutils-2.x.x'. You
+   can get  them from the  same locations  where you  can download the
+   Linux          kernel                  sources                from.
+   (e.g.   `ftp.kernel.org:/pub/linux/utils/kernel/modutils')   Please
+   read `[/usr/src/linux/]Documentation/modules.txt' also.
+
+   BIG   FAT WARNING: do not  use   modutils-2.0.0 -- or   to be  more
+   precise:  in case you   encounter  problems with loading  the ftape
+   modules,  upgrade  to a   more    recent version  of the   modutils
+   package.
+
+   The modutils packages   are intended  to be backwards   compatible,
+   i.e.  you should be  able to  use the  latest modutils package with
+   older kernels.
+
+d) The sources of the kernel you intend  to run `ftape' with. It might
+   be possible that you can live without it. In this case refer to the
+   remarks at the beginning of the `MCONFIG' file in this directory.
+
+e) Usual utilities to compile C source code (make, gcc, ld, as, etc.).
+   You probably don't need to worry about this point.
+
+f) In case you have a `Ditto EZ' controller, the you need a package to
+   configure `Plug'n Play' cards as well. One package is `isapnptools'
+   to be obtained from
+
+        http://www.roestock.demon.co.uk/isapnptools/
+
+   This package isn't needed   any  longer when using  ftape-4.03  (or
+   later) with linux-2.4.0 (or later).
+
+
+
+2. Read the file `README'
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Please read the file `README'  in this directory. It lists  additional
+documentation  and packages that  might be useful  when  trying to use
+`ftape'.  It  is strongly recommended  that you obtain the `ftape-doc'
+and  the `ftape-tools'  package as well.    Please  refer to  the file
+`README'.
+
+
+
+3. Installation
+~~~~~~~~~~~~~~~
+
+1. `cd' to the directory  containing the sources of `ftape-4.04a'. You
+   probably already  have done this.  Edit the file `MCONFIG'  in this
+   directory and try    to    follow  the  instructions      contained
+   therein.   Most settings which   are  tunable  in `MCONFIG' can  be
+   changed   at   module  load  time by   setting   appropriate module
+   parameters.   Examples     are  given  below   and   in   the  file
+   `./modules/insert'.
+
+2. If you are using Linux v1.2.13 or v2.0.x,  then you should consider
+   to apply the patches  under `./patches/v1.2' or `./patches/v2.0' to
+   your   kernel.   Please     refer to  `./patches/v1.2/README'   and
+   `./patches/v2.0'  README for  more information.  After applying the
+   patches you will have to recompile and install your new kernel.
+
+3. Type  `make'  to  compile `ftape-4.04a'.   There   shouldn't be any
+   warnings  and  no errors.   If  you get warnings  or  errors during
+   compilation, then  please check  first  whether  the value   of the
+   variable  `LINUX_LOCATION'  in the  file  `./MCONFIG' is set to the
+   location of your  kernel    source tree.  The kernel   source  tree
+   (probably  `/usr/src/linux')  should  have been configured properly
+   prior to attempting to compile `ftape', and you should have typed a
+   `make dep' in the directory containing the kernel sources (probably
+   `/usr/src/linux').
+
+4. If everything went fine try to install  the package by typing `make
+   install'. Per default this will install the kernel modules under
+
+   /lib/modules/KERNELRELEASE/misc/
+
+   where KERNELRELEASE refers to a number like `2.0.35' and stands for
+   the version   of the  kernel you  compiled  `ftape'  for, i.e.  the
+   version of  the   kernel which's   sources  are  contained  in  the
+   directory  you have specified with   the LINUX_LOCATION variable in
+   the file `./MCONFIG'.
+
+5. Try to  test   load the driver   by  changing to the   `./modules/'
+   directory and typing `. insert'  to execute the commands  contained
+   in `./modules/insert' file.    Please   read through   that    file
+   first. You will have to change some values like  the IO base of the
+   FDC controller and such. If  you have edited `./modules/insert'  to
+   reflect your setup, then `cd' to the modules directory and load the
+   modules with
+
+   cd modules/
+   . insert
+
+   If this  fails, then please refer  to  the `ftape-4.x-doc' package,
+   the  `Ftape-FAQ'   and the  `Ftape-HOWTO'.   Please  read  the file
+   `README' for   information  where  to  obtain the   `ftape-4.x-doc'
+   package.
+
+6. Test the driver by running some small  backup and restore sessions.
+   If you  don't  know how  to  do this,  then   please  refer to  the
+   `ftape-manual' contained  in the  `ftape-4.x-doc' package. Read the
+   file `README' in this   directory for informations about  where  to
+   obtain it from and what else might be available.
+
+   The `ftape-tools' package contains some test cases which can be run
+   with the command  `make  check'  when compiling the   `ftape-tools'
+   package.
+
+7. Before trying  to recompile  the driver  for another  kernel source
+   tree (e.g. if   you have a   "stable"  kernel source  tree  and one
+   unstable you are playing with) you should run
+
+   make distclean
+
+   This   removes   a couple    of  files  which   would  hinder   the
+   recompilation.
+
+
+
+4. Autoloading via kerneld or kmod
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Below are  three examples how to  set up `/etc/conf.modules'. They are
+meant  as   examples only. I   assume that   the  modules are  already
+installed  in the right place under `/lib/modules/KERNELRELEASE/misc/'
+where `modprobe' can find them. You have to adjust  the values for the
+IO base, IRQ channel and DMA channel yourself.  The values given below
+are nonsense.
+
+	PLEASE NOTE THAT YOU NEED TO LOAD AT LEAST ftape.o AND
+	zftape.o AND ONE OF THE FDC MODULES bpck-fdc.o,
+	ftape-internal.o or trakker.o.
+
+The  examples   given  below    are   meant   to  be  added   to   the
+`/etc/conf.modules'   file,  otherwise  they   don't  make any   sense
+(i.e. don't try to type them in at the shell  prompt ...). Please make
+sure that there is no other
+
+alias char-major-27   SOMETHING
+
+line in  `/etc/conf.modules'. If  there  is  one, comment  it  out  by
+inserting.  a hash (i.e. `#') character right at the beginning of that
+line. You need to be `root' to edit `/etc/conf.modules'.
+
+1. single internal tape drive, FDC controller located at 0x4711, using
+   IRQ channel 42, and DMA channel 13
+
+        alias char-major-27       zftape
+        options ftape ft_fdc_driver=ftape-internal,none,none,none
+        options ftape-internal ft_fdc_base=0x4711 ft_fdc_irq=42 ft_fdc_dma=13
+        pre-install ftape-internal /usr/local/bin/swapout 15
+
+   Note the `swapout'  program might  be  installed elsewhere than  in
+   `/usr/local/bin/'. Or not installed at all. It  is contained in the
+   `ftape-tools' package. See `./README'.
+
+2. single  parallel port tape drive,  using  the `trakker' module. The
+   parallel port is  located  at 0x378, 0x278   or 0x3bc so   that the
+   trakker module can  find it itself, or  you are using the `parport'
+   interface with the  v2.1.x kernels. In that  case, be sure to  tell
+   the  `parport'     module  which  interrupt    to   use   and  read
+   `[/usr/src/linux/]Documentation/parport.txt'.
+
+        alias char-major-27       zftape
+        options ftape ft_fdc_driver=trakker,none,none,none
+
+3. Same as 2), but with `bpck-fdc' module.
+
+        alias char-major-27       zftape
+        options ftape ft_fdc_driver=bpck-fdc,none,none,none
+
+4. Same as 2.) and 3.), but with both parallel port modules
+
+        alias char-major-27       zftape
+        options ftape ft_fdc_driver=bpck-fdc:trakker,none,none,none
+
+   `ftape' will pick the  FDC module which  thinks it has detected the
+   hardware properly.
+
+5. Internal tape drive as under 1.),  but additionally a parallel port
+   tape drive using `/dev/qft1':
+
+        alias char-major-27       zftape
+        options ftape ft_fdc_driver=ftape-internal,bpck-fdc:trakker,none,none
+        options ftape-internal ft_fdc_base=0x4711 ft_fdc_irq=42 ft_fdc_dma=13
+        pre-install ftape-internal /usr/local/bin/swapout 15
+
+   Note the `swapout'  program might  be  installed elsewhere than  in
+   `/usr/local/bin/'. Or not installed at all.  It is contained in the
+   `ftape-tools' package. See `./README'.
+
+
+Good luck
+
+Claus-Justus Heine <heine@instmath.rwth-aachen.de>
+
+
+-------------------------------------------------------------------------------
+    LocalWords:  Linux ftape modutils org linux usr src txt MCONFIG gcc ld EZ
+    LocalWords:  Plug'n isapnptools http www roestock co uk README cd dep FDC
+    LocalWords:  HOWTO kerneld kmod conf modprobe IRQ zftape fdc irq dma bpck
+    LocalWords:  trakker parport dev qft Justus heine rwth aachen LocalWords

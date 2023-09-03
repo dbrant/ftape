@@ -1,0 +1,46 @@
+Hey, Emacs, we're -*-Text-*- mode!
+
+"-" means not done, "*" in progress, "+" done, "?" means contradictory
+test results or error reports and total confusion of the Ftape
+maintainer.
+
+(-) Formatting cartridges with Colorado Jumbo 350 drives is broken. As
+    usual, Colorado gives zero support.
+
+(-) Have a look at Jochen Hoenickes suggestions for better handling of
+    "no data errors" during verification of a newly formatted
+    cartridge.
+
+(-) Use GNU autoconf to figure out all those compatibility problems
+    and installation paths. Will probably never be done.
+
+(-) Support the FC-20 at 2Mbps. As usual Colorado (i.e. Hewlett
+    Packard) gives zero support. Not a single response from their
+    support team, not even a short note stating `We don't support
+    Linux' :-(
+
+(* or +) There are still "fdc_read timeout" errors. This is caused by
+    insufficient communication between the driver and its isr().
+    I think this is fixed now, so: "+"?
+
+(*) There are still deadlocks possible that cannot be aborted with a
+    signal. This really needs to be fixed. Maybe (+), unsure (?).
+
+(?) There are TR-3 EXtra cartridges out there that (sometimes?) are
+    detected as QIC-3010 (should be QIC-3020). Strange.
+
+(*) Push the whole thing into the kernel.
+
+(*) Update the documentation. This is a never ending story. But nearly
+    (+), now.
+
+(-) Maybe use GNU autoconf/automake. Would be nice.
+
+
+Claus-Justus Heine <heine@instmath.rwth-aachen.de>
+
+-------------------------------------------------------------------------------
+ LocalWords:  Ftape McGavran mcgavran rt com isapnptools fdc isr Jochen
+ LocalWords:  depmod FAQ tm TR EXtra QIC sftape zftape mt weof sgml Hoenickes
+ LocalWords:  texi www html momo HOWTO Justus claus rwth aachen
+ LocalWords:  autoconf LocalWords FC Mbps Linux heine

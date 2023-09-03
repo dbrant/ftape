@@ -1,0 +1,353 @@
+#
+# Ftape configuration
+#
+if [ "$CONFIG_ZFTAPE" != "y" -a "$CONFIG_ZFTAPE" != "m" ]; then
+    define_bool CONFIG_ZFTAPE m
+fi
+dep_tristate 'Zftape, the VFS interface' CONFIG_ZFTAPE $CONFIG_FTAPE y
+bool 'Enable obsolete backwards compatibility stuff' CONFIG_ZFT_OBSOLETE n
+if [ "$CONFIG_ZFT_OBSOLETE" = "y" ]; then
+    bool 'Enable read-back of ftape-3.x compressed archives' CONFIG_FT_UNCMPR n
+    if [ "$CONFIG_FT_UNCMPR" = "y" -a "$CONFIG_ZFT_OBSOLETE" = "y" ]; then
+	comment 'The de-compressor will be built as a module only!'
+	define_bool CONFIG_ZFT_COMPRESSOR m
+    else
+	define_bool CONFIG_ZFT_COMPRESSOR n
+    fi
+fi
+comment 'General ftape options'
+int 'Default block size' CONFIG_ZFT_DFLT_BLK_SZ 10240
+choice 'Debugging output'			\
+	"Normal		CONFIG_FT_NORMAL_DEBUG	\
+	 Excessive	CONFIG_FT_FULL_DEBUG	\
+	 Reduced	CONFIG_FT_NO_TRACE	\
+	 None		CONFIG_FT_NO_TRACE_AT_ALL" Normal
+if [ "$CONFIG_PROC_FS" = "y" ]; then
+  bool 'Enable procfs status report (+2kb)' CONFIG_FT_PROC_FS y
+fi
+comment 'FDC drivers'
+dep_tristate 'Driver for internal FDCs (FC-10/FC-20/82078/Ditto EZ)' CONFIG_FT_INTERNAL $CONFIG_FTAPE
+if [ "$CONFIG_FT_INTERNAL" = "y" -o \
+     "$CONFIG_FT_INTERNAL" = "m" -a \
+     "$CONFIG_EXPERIMENTAL" = "y" ]; then
+  int 'Number of ftape buffers for internal FDC (EXPERIMENTAL)' CONFIG_FT_NR_BUFFERS 3
+fi
+if [ "$CONFIG_FTAPE" = "y" -a "$CONFIG_PARPORT" = "y" ]; then
+    define_bool CONFIG_FT_PP_HACK y
+else
+    if [ "$CONFIG_FTAPE" != "n" -a "$CONFIG_PARPORT" != "n" ]; then
+	define_bool CONFIG_FT_PP_HACK m
+    else
+	define_bool CONFIG_FT_PP_HACK n
+    fi
+fi
+dep_tristate 'Driver for Colorado Trakker parport drive' CONFIG_FT_TRAKKER $CONFIG_FT_PP_HACK
+dep_tristate 'Driver for Micro Solutions Backpack parport drive' CONFIG_FT_BPCK $CONFIG_FT_PP_HACK
+if [ "$CONFIG_FT_TRAKKER" = "y" -o \
+     "$CONFIG_FT_TRAKKER" = "m" -o \
+     "$CONFIG_FT_BPCK"    = "y" -o \
+     "$CONFIG_FT_BPCK"    = "m" ]; then
+    define_bool CONFIG_FT_PARPORT y
+else
+    define_bool CONFIG_FT_PARPORT n
+fi
+if [ "$CONFIG_FT_INTERNAL" = "y" -o \
+     "$CONFIG_FT_INTERNAL" = "m" -o \
+     "$CONFIG_FT_PARPORT" = "y" ]; then
+    comment ''
+    comment 'Hardware configuration, first ftape device'
+    comment ''
+    #
+    # first device /dev/*ft0
+    #
+    choice 'FDC driver for first ftape device'			\
+	    "Internal			CONFIG_FT_INT_0		\
+	     Parallel			CONFIG_FT_PAR_0		\
+	     Auto                       CONFIG_FT_AUTO_0	\
+	     None                       CONFIG_FT_NONE_0" Auto
+    #
+    if [ "$CONFIG_FT_PARPORT" = "n" -a "$CONFIG_FT_PAR_0" = "y" ]; then
+	define_bool CONFIG_FT_SKIP_0 y
+    else
+	if [ "$CONFIG_FT_INTERNAL" = "n" -a "$CONFIG_FT_INT_0" = "y" ]; then
+	    define_bool CONFIG_FT_SKIP_0 y
+	else
+	    if [ "$CONFIG_FT_NONE_0" = "y" ]; then
+		define_bool CONFIG_FT_SKIP_0 y
+	    else
+		define_bool CONFIG_FT_SKIP_0 n
+	    fi
+	fi
+    fi
+
+    if [ "$CONFIG_FT_SKIP_0" != "y" ]; then
+	if [ "$CONFIG_FT_INTERNAL" != "n" ]; then
+	    if [ "$CONFIG_FT_INT_0" = "y" -o "$CONFIG_FT_AUTO_0" = "y" ]; then
+		comment 'Internal FDC setup'
+		choice 'Internal Floppy Tape Controllers'		\
+		"Standard			CONFIG_FT_STD_FDC_0	\
+		 MACH-2				CONFIG_FT_MACH2_0	\
+		 FC-10/FC-20			CONFIG_FT_FC10_0	\
+		 Alt/82078			CONFIG_FT_ALT_FDC_0     \
+		 ISAPnP-FDC                     CONFIG_FT_PNP_FDC_0" Standard
+	#
+		if [ "$CONFIG_FT_MACH2_0" = "y" -o \
+		     "$CONFIG_FT_FC10_0" = "y" -o \
+		     "$CONFIG_FT_PNP_FDC_0" = "y" -o \
+		     "$CONFIG_FT_ALT_FDC_0" = "y" ]; then
+		    bool 'Detailed Hardware Setup' CONFIG_FT_INT_HW_0 n
+		    if [ "$CONFIG_FT_INT_HW_0" = "y" ]; then
+			comment 'Consult the manuals of your tape drive for the correct settings!'
+			hex ' IO base of the floppy disk controller' \
+				CONFIG_FT_FDC_BASE_0 -1
+			int ' IRQ channel of the floppy disk controller' \
+				CONFIG_FT_FDC_IRQ_0 -1
+			int ' DMA channel of the floppy disk controller' \
+				CONFIG_FT_FDC_DMA_0 -1
+			comment ''
+		    fi
+		fi
+	    fi
+	fi
+	if [ "$CONFIG_FT_PARPORT" != "n" ]; then
+	    if [ "$CONFIG_FT_PAR_0" = "y" -o "$CONFIG_FT_AUTO_0" = "y" ]; then
+		comment 'Parallel Port FDC setup'
+		choice 'Parallel Port Floppy Tape Controllers'	    \
+		    "Trakker		CONFIG_FT_TRAKKER_0	    \
+		     Backpack		CONFIG_FT_BPCK_0	    \
+		     Trakker:Backpack	CONFIG_FT_TRAKKERBPCK_0 \
+		     Generic		CONFIG_FT_PAR_GENERIC_0"    \
+		     Trakker:Backpack
+		if [ "$CONFIG_FT_PAR_GENERIC_0" = "y" ]; then
+		    string 'List of Parallel Port Drivers' CONFIG_FT_FDC_DRIVER_0 "foo:bar:foobar"
+		fi
+		int 'Parport Number to Use' CONFIG_FT_FDC_PARPORT_0 -1
+	    fi
+	fi
+	comment 'General FDC options'
+	int 'Default FIFO threshold' CONFIG_FT_FDC_THRESHOLD_0 8
+	int 'Maximal data rate to use' CONFIG_FT_FDC_MAX_RATE_0 4000
+    fi
+    comment ''
+    comment 'Hardware configuration, second ftape device'
+    comment ''
+    #
+    # second device /dev/*ft1
+    #
+    choice 'FDC driver for second ftape device'			\
+	    "Internal			CONFIG_FT_INT_1		\
+	     Parallel			CONFIG_FT_PAR_1		\
+	     Auto                       CONFIG_FT_AUTO_1	\
+	     None                       CONFIG_FT_NONE_1" None
+    #
+    if [ "$CONFIG_FT_PARPORT" = "n" -a "$CONFIG_FT_PAR_1" = "y" ]; then
+	define_bool CONFIG_FT_SKIP_1 y
+    else
+	if [ "$CONFIG_FT_INTERNAL" = "n" -a "$CONFIG_FT_INT_1" = "y" ]; then
+	    define_bool CONFIG_FT_SKIP_1 y
+	else
+	    if [ "$CONFIG_FT_NONE_1" = "y" ]; then
+		define_bool CONFIG_FT_SKIP_1 y
+	    else
+		define_bool CONFIG_FT_SKIP_1 n
+	    fi
+	fi
+    fi
+
+    if [ "$CONFIG_FT_SKIP_1" != "y" ]; then
+	if [ "$CONFIG_FT_INTERNAL" != "n" ]; then
+	    if [ "$CONFIG_FT_INT_1" = "y" -o "$CONFIG_FT_AUTO_1" = "y" ]; then
+		comment 'Internal FDC setup'
+		choice 'Internal Floppy Tape Controllers'		\
+		"Standard			CONFIG_FT_STD_FDC_1	\
+		 MACH-2				CONFIG_FT_MACH2_1	\
+		 FC-10/FC-20			CONFIG_FT_FC10_1	\
+		 Alt/82078			CONFIG_FT_ALT_FDC_1     \
+		 ISAPnP-FDC                     CONFIG_FT_PNP_FDC_1" Standard
+	#
+		if [ "$CONFIG_FT_MACH2_1" = "y" -o \
+		     "$CONFIG_FT_FC10_1" = "y" -o \
+		     "$CONFIG_FT_PNP_FDC_1" = "y" -o \
+		     "$CONFIG_FT_ALT_FDC_1" = "y" ]; then
+		    bool 'Detailed Hardware Setup' CONFIG_FT_INT_HW_1 n
+		    if [ "$CONFIG_FT_INT_HW_1" = "y" ]; then
+			comment 'Consult the manuals of your tape drive for the correct settings!'
+			hex ' IO base of the floppy disk controller' \
+				CONFIG_FT_FDC_BASE_1 -1
+			int ' IRQ channel of the floppy disk controller' \
+				CONFIG_FT_FDC_IRQ_1 -1
+			int ' DMA channel of the floppy disk controller' \
+				CONFIG_FT_FDC_DMA_1 -1
+			comment ''
+		    fi
+		fi
+	    fi
+	fi
+	if [ "$CONFIG_FT_PARPORT" != "n" ]; then
+	    if [ "$CONFIG_FT_PAR_1" = "y" -o "$CONFIG_FT_AUTO_1" = "y" ]; then
+		comment 'Parallel Port FDC setup'
+		choice 'Parallel Port Floppy Tape Controllers'	    \
+		    "Trakker		CONFIG_FT_TRAKKER_1	    \
+		     Backpack		CONFIG_FT_BPCK_1	    \
+		     Trakker:Backpack	CONFIG_FT_TRAKKERBPCK_1 \
+		     Generic		CONFIG_FT_PAR_GENERIC_1"    \
+		     Trakker:Backpack
+		if [ "$CONFIG_FT_PAR_GENERIC_1" = "y" ]; then
+		    string 'List of Parallel Port Drivers' CONFIG_FT_FDC_DRIVER_1 "foo:bar:foobar"
+		fi
+		int 'Parport Number to Use' CONFIG_FT_FDC_PARPORT_1 -1
+	    fi
+	fi
+	comment 'General FDC options'
+	int 'Default FIFO threshold' CONFIG_FT_FDC_THRESHOLD_1 8
+	int 'Maximal data rate to use' CONFIG_FT_FDC_MAX_RATE_1 4000
+    fi
+    comment ''
+    comment 'Hardware configuration, third ftape device'
+    comment ''
+    #
+    # third device /dev/*ft2
+    #
+    choice 'FDC driver for third ftape device'			\
+	    "Internal			CONFIG_FT_INT_2		\
+	     Parallel			CONFIG_FT_PAR_2		\
+	     Auto                       CONFIG_FT_AUTO_2	\
+	     None                       CONFIG_FT_NONE_2" None
+    #
+    if [ "$CONFIG_FT_PARPORT" = "n" -a "$CONFIG_FT_PAR_2" = "y" ]; then
+	define_bool CONFIG_FT_SKIP_2 y
+    else
+	if [ "$CONFIG_FT_INTERNAL" = "n" -a "$CONFIG_FT_INT_2" = "y" ]; then
+	    define_bool CONFIG_FT_SKIP_2 y
+	else
+	    if [ "$CONFIG_FT_NONE_2" = "y" ]; then
+		define_bool CONFIG_FT_SKIP_2 y
+	    else
+		define_bool CONFIG_FT_SKIP_2 n
+	    fi
+	fi
+    fi
+
+    if [ "$CONFIG_FT_SKIP_2" != "y" ]; then
+	if [ "$CONFIG_FT_INTERNAL" != "n" ]; then
+	    if [ "$CONFIG_FT_INT_2" = "y" -o "$CONFIG_FT_AUTO_2" = "y" ]; then
+		comment 'Internal FDC setup'
+		choice 'Internal Floppy Tape Controllers'		\
+		"Standard			CONFIG_FT_STD_FDC_2	\
+		 MACH-2				CONFIG_FT_MACH2_2	\
+		 FC-10/FC-20			CONFIG_FT_FC10_2	\
+		 Alt/82078			CONFIG_FT_ALT_FDC_2     \
+		 ISAPnP-FDC                     CONFIG_FT_PNP_FDC_2" Standard
+	#
+		if [ "$CONFIG_FT_MACH2_2" = "y" -o \
+		     "$CONFIG_FT_FC10_2" = "y" -o \
+		     "$CONFIG_FT_PNP_FDC_2" = "y" -o \
+		     "$CONFIG_FT_ALT_FDC_2" = "y" ]; then
+		    bool 'Detailed Hardware Setup' CONFIG_FT_INT_HW_2 n
+		    if [ "$CONFIG_FT_INT_HW_2" = "y" ]; then
+			comment 'Consult the manuals of your tape drive for the correct settings!'
+			hex ' IO base of the floppy disk controller' \
+				CONFIG_FT_FDC_BASE_2 -1
+			int ' IRQ channel of the floppy disk controller' \
+				CONFIG_FT_FDC_IRQ_2 -1
+			int ' DMA channel of the floppy disk controller' \
+				CONFIG_FT_FDC_DMA_2 -1
+			comment ''
+		    fi
+		fi
+	    fi
+	fi
+	if [ "$CONFIG_FT_PARPORT" != "n" ]; then
+	    if [ "$CONFIG_FT_PAR_2" = "y" -o "$CONFIG_FT_AUTO_2" = "y" ]; then
+		comment 'Parallel Port FDC setup'
+		choice 'Parallel Port Floppy Tape Controllers'	    \
+		    "Trakker		CONFIG_FT_TRAKKER_2	    \
+		     Backpack		CONFIG_FT_BPCK_2	    \
+		     Trakker:Backpack	CONFIG_FT_TRAKKERBPCK_2 \
+		     Generic		CONFIG_FT_PAR_GENERIC_2"    \
+		     Trakker:Backpack
+		if [ "$CONFIG_FT_PAR_GENERIC_2" = "y" ]; then
+		    string 'List of Parallel Port Drivers' CONFIG_FT_FDC_DRIVER_2 "foo:bar:foobar"
+		fi
+		int 'Parport Number to Use' CONFIG_FT_FDC_PARPORT_2 -1
+	    fi
+	fi
+	comment 'General FDC options'
+	int 'Default FIFO threshold' CONFIG_FT_FDC_THRESHOLD_2 8
+	int 'Maximal data rate to use' CONFIG_FT_FDC_MAX_RATE_2 4000
+    fi
+    comment ''
+    comment 'Hardware configuration, fourth ftape device'
+    comment ''
+    #
+    # fourth device /dev/*ft0
+    #
+    choice 'FDC driver for fourth ftape device'			\
+	    "Internal			CONFIG_FT_INT_3		\
+	     Parallel			CONFIG_FT_PAR_3		\
+	     Auto                       CONFIG_FT_AUTO_3	\
+	     None                       CONFIG_FT_NONE_3" None
+    #
+    if [ "$CONFIG_FT_PARPORT" = "n" -a "$CONFIG_FT_PAR_3" = "y" ]; then
+	define_bool CONFIG_FT_SKIP_3 y
+    else
+	if [ "$CONFIG_FT_INTERNAL" = "n" -a "$CONFIG_FT_INT_3" = "y" ]; then
+	    define_bool CONFIG_FT_SKIP_3 y
+	else
+	    if [ "$CONFIG_FT_NONE_3" = "y" ]; then
+		define_bool CONFIG_FT_SKIP_3 y
+	    else
+		define_bool CONFIG_FT_SKIP_3 n
+	    fi
+	fi
+    fi
+
+    if [ "$CONFIG_FT_SKIP_3" != "y" ]; then
+	if [ "$CONFIG_FT_INTERNAL" != "n" ]; then
+	    if [ "$CONFIG_FT_INT_3" = "y" -o "$CONFIG_FT_AUTO_3" = "y" ]; then
+		comment 'Internal FDC setup'
+		choice 'Internal Floppy Tape Controllers'		\
+		"Standard			CONFIG_FT_STD_FDC_3	\
+		 MACH-2				CONFIG_FT_MACH2_3	\
+		 FC-10/FC-20			CONFIG_FT_FC10_3	\
+		 Alt/82078			CONFIG_FT_ALT_FDC_3     \
+		 ISAPnP-FDC                     CONFIG_FT_PNP_FDC_3" Standard
+	#
+		if [ "$CONFIG_FT_MACH2_3" = "y" -o \
+		     "$CONFIG_FT_FC10_3" = "y" -o \
+		     "$CONFIG_FT_PNP_FDC_3" = "y" -o \
+		     "$CONFIG_FT_ALT_FDC_3" = "y" ]; then
+		    bool 'Detailed Hardware Setup' CONFIG_FT_INT_HW_3 n
+		    if [ "$CONFIG_FT_INT_HW_3" = "y" ]; then
+			comment 'Consult the manuals of your tape drive for the correct settings!'
+			hex ' IO base of the floppy disk controller' \
+				CONFIG_FT_FDC_BASE_3 -1
+			int ' IRQ channel of the floppy disk controller' \
+				CONFIG_FT_FDC_IRQ_3 -1
+			int ' DMA channel of the floppy disk controller' \
+				CONFIG_FT_FDC_DMA_3 -1
+			comment ''
+		    fi
+		fi
+	    fi
+	fi
+	if [ "$CONFIG_FT_PARPORT" != "n" ]; then
+	    if [ "$CONFIG_FT_PAR_3" = "y" -o "$CONFIG_FT_AUTO_3" = "y" ]; then
+		comment 'Parallel Port FDC setup'
+		choice 'Parallel Port Floppy Tape Controllers'	    \
+		    "Trakker		CONFIG_FT_TRAKKER_3	    \
+		     Backpack		CONFIG_FT_BPCK_3	    \
+		     Trakker:Backpack	CONFIG_FT_TRAKKERBPCK_3 \
+		     Generic		CONFIG_FT_PAR_GENERIC_3"    \
+		     Trakker:Backpack
+		if [ "$CONFIG_FT_PAR_GENERIC_3" = "y" ]; then
+		    string 'List of Parallel Port Drivers' CONFIG_FT_FDC_DRIVER_3 "foo:bar:foobar"
+		fi
+		int 'Parport Number to Use' CONFIG_FT_FDC_PARPORT_3 -1
+	    fi
+	fi
+	comment 'General FDC options'
+	int 'Default FIFO threshold' CONFIG_FT_FDC_THRESHOLD_3 8
+	int 'Maximal data rate to use' CONFIG_FT_FDC_MAX_RATE_3 4000
+    fi
+fi

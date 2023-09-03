@@ -1,0 +1,674 @@
+###############################################################################
+#
+#       Copyright (C) 1997-2000 Claus Heine.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; see the file COPYING.  If not, write to
+# the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# $RCSfile: MCONFIG,v $
+# $Revision: 1.79 $
+# $Date: 2000/07/25 10:53:59 $
+#
+#     Compile time configuration for the QIC-40/80/3010/3020 ftape
+#     driver for Linux
+#
+###############################################################################
+
+###############################################################################
+#
+# Pathnames. These should work just fine.
+#
+# change the following to point to the start of your kernel source tree:
+#
+
+# IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT
+
+LINUX_LOCATION = /usr/src/linux
+
+#
+# Ok. It looks ugly. It is ugly.
+#
+
+KERNELRELEASE = $(shell grep UTS_RELEASE $(LINUX_LOCATION)/include/linux/version.h|cut -d '"' -f 2)
+
+#
+# The following means that this package doesn't support
+# cross-compilation. Stolen from Linux v2.2
+#
+ARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ -e s/arm.*/arm/ -e s/sa110/arm/)
+
+#
+# Change the following to point to the directory where you want the 
+# modules to be installed.
+#
+
+MODULESDIR = /lib/modules/$(KERNELRELEASE)/misc
+
+#
+###############################################################################
+
+###############################################################################
+# IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT #
+###############################################################################
+#
+# Get the configuration of the kernel ftape is compiled for.
+#
+# This will only work with a configured kernel, but we need a fully
+# configured kernel anyways?? If `$(LINUX_LOCATION)/.config' DOESN'T
+# exist you'll need to set the variables of the "else" part of the
+# "ifeq" clause according to the configuration of the kernel you want
+# ftape to use with. If `$(LINUX_LOCATION)/.config' exists you can
+# skip this part and go on with the hardware configuration options
+# below.
+#
+#
+
+ifeq ($(LINUX_LOCATION)/.config,$(wildcard $(LINUX_LOCATION)/.config))
+include $(LINUX_LOCATION)/.config
+else
+
+#
+# If the file `$(LINUX_LOCATION)/.config' doesn't exists, then try to
+# tune the parameters in this "else" part of the "ifeq" clause above
+# to fit your setup. 
+#
+# If you attempt to use CONFIG_MODVERSIONS then make sure that
+# `$(LINUX_LOCATION)/include/linux/modversions.h' REALLY
+# EXISTS. Otherwise, don't use CONFIG_MODVERSIONS.
+#
+# You should also set the CONFIG_M386/486/586/686 according to your
+# processor type. When running an DEC alpha then comment out the
+# CONFIG_M486=y line and uncomment the CONFIG_ALPHA=y line.
+#
+
+#CONFIG_M386=y
+CONFIG_M486=y
+#CONFIG_M586=y
+#CONFIG_M686=y
+#CONFIG_MAMDK6
+#CONFIG_ALPHA=y
+#CONFIG_MODVERSIONS=y
+#CONFIG_SMP = 1
+
+#
+# DON'T touch the following two lines! To enable/disable the procfs
+# interface you should uncomment/comment out the CONFIG_FT_PROC_FS
+# option below and leave the CONFIG_PROC_FS option ENABLED.
+#
+
+CONFIG_PROC_FS=y
+CONFIG_MODULES=y
+
+endif
+
+#
+###############################################################################
+
+###############################################################################
+# IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT #
+###############################################################################
+#
+# You MUST uncomment the following line if you are running a SMP
+# (multi-processor) system UNLESS you are unsing Linux v2.2 (or later)
+# and MCONFIG has been given the correct location of you correctly
+# configured kernel source tree.
+#
+#CONFIG_SMP = 1
+#
+###############################################################################
+
+###############################################################################
+# IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT #
+###############################################################################
+#
+# Hardware configuration for the floppy tape drive.
+#
+# You need to take care of the following options if you didn't connect
+# your floppy tape to the standard floppy controller, i.e. if you
+# didn't plugged the floppy tape into the floppy controller already
+# contained in your computer system.
+#
+# Short description of available options
+# (`FDC' stands for `Floppy Disk Controller')
+#
+#       PROBE_FC10      - if defined will look for a FC-10 (or FC-20)
+#                         card.
+#       FDC_BASE        - sets base address if using non-standard fdc
+#       FDC_IRQ         - sets interrupt if FDC_BASE is defined
+#       FDC_DMA         - sets dma channel if FDC_BASE is defined
+#       MACH2           - Support for Mountain MACH-2 controller. You
+#                         have to specify its base address (either
+#                         0x1E0 or 0x3E0). 
+#       CLK_48MHZ       - must be defined and set to 0 if your 82078
+#                         is _not_ being run from a 48 Mhz clock
+#                         oscillator. Normally you don't need to worry
+#                         about it.
+#       
+#
+#
+# If you're using a non-standard floppy disk controller for the tape
+# drive, enable one (only!) of the following lines and set the
+# FDC_BASE, FDC_IRQ and FDC_DMA parameters to the actual values.
+#
+# `enable' means: `uncomment one of the lines starting with
+# "FDC_OPT = ..."'. `uncomment' means: remove the leading `#'
+#
+# The following values hopefully reflect the default settings for
+# those controllers.
+#
+# Note1: A FC-10/FC-20 controller must use either of DMA 1, 2, or 3.
+#        DMA 5 and 7 does NOT work!.
+#
+# Note2: IRQ 2 and IRQ 9 can be considered the same. When using IRQ 2
+#        on a controller you must specify IRQ 9 here!
+#
+# Note3: *_ALL_* parameters can as well be set as module parameters
+#        during module loading. This means that the following values
+#        only give the defaults in case you load the modules without
+#        any parameters.
+#
+# Note4: The "..._DEV=0" lines determine which device nodes to use
+#        with which floppy tape controller (/dev/qft0, ...,
+#        /dev/qft3).  In case you have an internal floppy tape plugged
+#        into the standard floppy controller and a parallel port
+#        floppy tape drive, then leave the "STD_DEV=0" line as it is
+#        and uncomment either the option settings for the Trakker or
+#        the BackPack tape drive and set either "TRAKKER_DEV=1" or
+#        "BPCK_DEV=1" to use the parallel port tape drive using
+#        "/dev/qft1".
+#
+FDC_OPT :=
+#
+# For a standard floppy tape controller or automatic configuration of
+# parallel port floppy tape drives uncomment the following line:
+#
+AUTO_DEV=0
+FDC_OPT +=      -DCONFIG_FT_STD_FDC_$(AUTO_DEV) \
+		-DCONFIG_FT_AUTO_$(AUTO_DEV)=1
+#
+# For a standard floppy tape controller, uncomment the following line:
+#
+STD_DEV=0
+#FDC_OPT +=      -DCONFIG_FT_STD_FDC_$(STD_DEV) \
+		-DCONFIG_FT_INT_$(STD_DEV)=1
+#
+# For a Mountain MACH-2 controller, try
+#
+MACH2_DEV=0
+#FDC_OPT +=	-DCONFIG_FT_MACH2_$(MACH2_DEV)=1	\
+		-DCONFIG_FT_FDC_BASE_$(MACH2_DEV)=0x1E0	\
+		-DCONFIG_FT_FDC_IRQ_$(MACH2_DEV)=6	\
+		-DCONFIG_FT_FDC_DMA_$(MACH2_DEV)=2	\
+		-DCONFIG_FT_NR_BUFFERS=3		\
+		-DCONFIG_FT_INT_$(MACH2_DEV)=1
+#
+# For Colorado CMS FC-10 or FC-20 controllers:
+#
+FC10_DEV=0
+#FDC_OPT +=	-DCONFIG_FT_FC10_$(FC10_DEV)=1	\
+		-DCONFIG_FT_FDC_BASE_$(FC10_DEV)=0x180	\
+		-DCONFIG_FT_FDC_IRQ_$(FC10_DEV)=9	\
+		-DCONFIG_FT_FDC_DMA_$(FC10_DEV)=3	\
+		-DCONFIG_FT_NR_BUFFERS=3		\
+		-DCONFIG_FT_INT_$(FC10_DEV)=1
+#
+# Secondary floppy disk controller:
+# including Ditto Dash 2Mbps controller, ExaByte accelerator card,
+# CTC-2Mb (Seagate) and hopefully any 82078 based FDC controller card.
+#
+82078_DEV=0
+#FDC_OPT =	-DCONFIG_FT_FDC_BASE_$(82078_DEV)=0x370	\
+		-DCONFIG_FT_FDC_IRQ_$(82078_DEV)=6	\
+		-DCONFIG_FT_FDC_DMA_$(82078_DEV)=2	\
+		-DCONFIG_FT_NR_BUFFERS=3		\
+		-DCONFIG_FT_INT_$(82078_DEV)=1
+#
+# Maybe one of the following alternatives work if you have a Ditto
+# Dash and the above setting doesn't work:
+#
+#FDC_OPT =	-DCONFIG_FT_FDC_BASE_$(82078_DEV)=0x370	\
+		-DCONFIG_FT_FDC_IRQ_$(82078_DEV)=5	\
+		-DCONFIG_FT_FDC_DMA_$(82078_DEV)=3	\
+		-DCONFIG_FT_NR_BUFFERS=3		\
+		-DCONFIG_FT_INT_$(82078_DEV)=1
+#FDC_OPT =	-DCONFIG_FT_FDC_BASE_$(82078_DEV)=0x370	\
+		-DCONFIG_FT_FDC_IRQ_$(82078_DEV)=2	\
+		-DCONFIG_FT_FDC_DMA_$(82078_DEV)=3	\
+		-DCONFIG_FT_NR_BUFFERS=3		\
+		-DCONFIG_FT_INT_$(82078_DEV)=1
+#
+# For a HP Colorado Trakker parallel port drive, try
+#
+TRAKKER_DEV=0
+#FDC_OPT +=	-DCONFIG_FT_FDC_PARPORT_$(TRAKKER_DEV)=-1 \
+                -DCONFIG_FT_PAR_$(TRAKKER_DEV)=1 \
+                -DCONFIG_FT_TRAKKER_$(TRAKKER_DEV)=1
+#
+# For a Micro Solutions opispo "backpack" based parallel port drive, try
+#
+BPCK_DEV=0
+#FDC_OPT +=	-DCONFIG_FT_FDC_PARPORT_$(BPCK_DEV)=-1 \
+                -DCONFIG_FT_PAR_$(BPCK_DEV)=1 \
+		-DCONFIG_FT_BPCK_$(BPCK_DEV)=1
+#
+#
+#
+#
+###############################################################################
+
+###############################################################################
+#
+# Generic ftape options.
+#
+# Valid ftape options are:
+#
+# GCC_2_4_5_BUG         - must be set if using gcc-2.4.5 to prevent
+#                         bad assembler-code for the dma
+#                         handling. Type `gcc --version' to determine
+#                         the version of gcc.
+#
+# CONFIG_FT_PROC_FS     - enables proc interface (read-only) to provide
+#                         information about kind of tape drive, data
+#                         rate etc. Consumes about 2 kb of memory.
+#                         Make sure to read the file `BUGS' before
+#                         enabling this option. THIS WILL NOT WORK
+#                         with Linux v1.2.13 (and older) kernels. It
+#                         is safe to use this option with v2.1.x and
+#                         later kernels
+#
+# BROKEN_FLOPPY_DRIVER  - leave this defined if you DON'T apply the patch
+#                         `patches/v2.0/floppy.c.dif' to the floppy
+#                         driver of the standard kernel distribution.
+#                         If you DON'T apply my patch, then you
+#                         definitely need this switch if you want to
+#                         create an emergency (rescue) disk with
+#                         ftape. DON'T define this if you are running
+#                         v2.1.x or later kernels. But if you are
+#                         running v2.1.115 (maybe also v2.1.116) or
+#                         previous kernels of the 2.1.x series, then
+#                         consider applying the patch
+#                         `patches/v2.1/floppy.c.dif' to your kernel.
+# CONFIG_ZFT_DFLT_BLK_SZ - minimum IO block size of the tape devices.
+#                         every read or write attempt must be a
+#                         multiple of this many bytes. Default is 10k
+#                         (block size used by tar). Many SCSI tapes
+#                         use 32k. Allowed values are multiples of
+#                         1024 up to 62k. A value of "0" lets zftape
+#                         use variable block size mode, i.e. every
+#                         read/write operation must be a multiple of 1
+#                         byte, i.e. arbitray block sizes are
+#                         admissible.  Compilation of the ftape
+#                         modules will fail if this parameter isn't
+#                         aligned to 1024 bytes.
+# CONFIG_ZFT_OBSOLETE   - If this is defined, then
+#                         a) support for /dev/rawft is added, i.e. the
+#                            minor device bit 5 toggles raw mode.
+#                         b) the MTIOC_ZFTAPE_GETBLKSZ is supported.
+#                         c) support for decompression of old ftape-3.x
+#                            archives is added.
+#                         d) in case devfs is supported then the old device
+#                            name /dev/qft0 is created as symlink to
+#                            /dev/ftape/0/qft. Likewise for all other
+#                            devices.
+#
+#                         When it is not defined: no decompression, no
+#                         old ioctls, raw-mode must be entered via new
+#                         MTIOCFTMODE ioctl, in the presence of devfs
+#                         all ftape devices are created below
+#                         `/dev/ftape/´.
+#
+
+FTAPE_OPT  = -DTHE_FTAPE_MAINTAINER=\"heine@instmath.rwth-aachen.de\"
+FTAPE_OPT += -DBROKEN_FLOPPY_DRIVER
+FTAPE_OPT += -DCONFIG_FT_PROC_FS
+#FTAPE_OPT += -DCONFIG_ZFT_DFLT_BLK_SZ=10240
+FTAPE_OPT += -DCONFIG_ZFT_OBSOLETE
+
+#
+###############################################################################
+
+###############################################################################
+#
+# Options that affect the amount of debugging messages printed to the
+# system console (or kernel log files). Also reduces the size of the
+# driver.
+#
+#  CONFIG_FT_FULL_DEBUG      - if NOT defined, all messages with trace
+#                              level 6 (i.e. ft_fdc_dma) or higher are
+#                              disabled. You probably don't want to
+#                              define this unless you want debug the
+#                              drive. If unsure, don't define this.
+#
+#  CONFIG_FT_NO_TRACE        - if defined, only information and errors
+#                              show up. If unsure, don't define it.
+#   
+#  CONFIG_FT_NO_TRACE_AT_ALL - if defined, no trace output shows
+#                              up. If unsure, don't define it.
+#
+
+#TRACE_FLAGS = -DCONFIG_FT_NO_TRACE
+#TRACE_FLAGS = -DCONFIG_FT_NO_TRACE_AT_ALL
+#TRACE_FLAGS = -DCONFIG_FT_FULL_DEBUG
+
+#
+###############################################################################
+
+###############################################################################
+#
+# Compiler options for your architecture
+#
+# ... in case you need any special options ...
+#
+
+# ARCH_OPT = 
+
+#
+###############################################################################
+
+###############################################################################
+#
+#  Don't change anything below this point!!!!
+#  
+#  Unless you know what you are doing. Don't expect me to help you.
+#
+
+ifeq ($(CONFIG_MODULES),n)
+ERROR_RULE:
+	@echo
+	@echo "*************************************************"
+	@echo
+	@echo "Please reconfigure your kernel to support runtime"
+	@echo "loadable modules. Retry making ftape afterwards."
+	@echo
+	@echo "*************************************************"
+	@echo
+	exit 1
+endif
+
+#
+# MODVERSIONS and MODULES stuff
+#
+MAKING_MODULES  = 1
+MODULE_OPT      = -DMODULE
+ifeq ($(CONFIG_MODVERSIONS),y)
+MODULE_OPT     += -DMODVERSIONS
+MODULE_OPT     += -include $(TOPDIR)/include/linux/modftversions.h
+GENKSYMS        = /sbin/genksyms
+endif
+
+#
+# assemble the compile time options 
+#
+CONFIG_OPT := $(FTAPE_OPT) $(FDC_OPT) $(TRACE_FLAGS) 
+CONFIG_OPT += -DCONFIG_FTAPE_MODULE
+CONFIG_OPT += -DCONFIG_FT_INTERNAL_MODULE
+CONFIG_OPT += -DCONFIG_FT_PARPORT
+CONFIG_OPT += -DCONFIG_FT_TRAKKER_MODULE
+CONFIG_OPT += -DCONFIG_FT_BPCK_MODULE
+CONFIG_OPT += -DCONFIG_ZFTAPE_MODULE
+ifneq ($(findstring, CONFIG_ZFT_OBSOLETE,$(FTAPE_OPT)),"")
+CONFIG_OPT += -DCONFIG_ZFT_COMPRESSOR_MODULE
+endif
+override CONFIG_FTAPE          := m
+override CONFIG_FT_INTERNAL    := m
+override CONFIG_FT_PARPORT     := m
+override CONFIG_FT_TRAKKER     := m
+override CONFIG_FT_BPCK        := m
+override CONFIG_ZFTAPE         := m
+ifneq ($(findstring, CONFIG_ZFT_OBSOLETE,$(FTAPE_OPT)),"")
+override CONFIG_ZFT_COMPRESSOR := m
+else
+override CONFIG_ZFT_COMPRESSOR :=
+endif
+ifneq ($(findstring, CONFIG_FT_PROC_FS,$(FTAPE_OPT)),"")
+CONFIG_FT_PROC_FS              := y
+endif
+
+#
+# options needed to compile kernel source
+#
+WARNINGS       := -Wall -Wstrict-prototypes
+COMPILE        := -O2 $(ARCH_OPT) -fomit-frame-pointer -fno-strength-reduce
+LD_OPT	       := -r -S
+INCLUDE_PATH   := -I. -I$(TOPDIR)/include -I$(LINUX_LOCATION)/include
+KERNEL_OPT     := -D__KERNEL__ $(INCLUDE_PATH)
+#
+# The alpha needs this defined early.
+#
+CC              = gcc
+HOSTCC          = gcc
+
+#
+# Linux v2.2 defines this via a configuration option (finally :-)
+#
+ifdef CONFIG_SMP
+KERNEL_OPT     += -D__SMP__
+endif
+#
+# processor and architecture specific options.
+#
+ifeq (i386,$(ARCH))
+
+ifdef CONFIG_M386
+KERNEL_OPT     += -m386 -DCPU=386
+endif
+
+ifdef CONFIG_M486
+KERNEL_OPT     += -m486 -DCPU=486
+endif
+
+ifdef CONFIG_M586
+KERNEL_OPT     += -m486 -malign-loops=2 -malign-jumps=2 -malign-functions=2 -DCPU=586
+endif
+
+ifdef CONFIG_M586TSC
+KERNEL_OPT     += -m486 -malign-loops=2 -malign-jumps=2 -malign-functions=2 -DCPU=586
+endif
+
+ifdef CONFIG_M686
+KERNEL_OPT     += -m486 -malign-loops=2 -malign-jumps=2 -malign-functions=2 -DCPU=686
+endif
+
+ifdef CONFIG_MAMDK6
+KERNEL_OPT     += -mamdk6 -frisc
+endif
+
+else # i386
+
+ifeq (alpha,$(ARCH))
+###############################################################################
+#
+# We start with options which apply to both, v2.0 and v2.2 kernels.
+#
+###############################################################################
+
+#
+#  The -dc flag is needed when using BFD insmod on an alpha !
+#  You should probably also remove -m486 when compiling on the alpha.
+#
+#  FIXME: Is this needed any more?????
+#
+LD_OPT         += -dc
+#
+#  Don't use floating point registers
+#
+KERNEL_OPT     += -mno-fp-regs
+
+###############################################################################
+#
+# Now follow the options for the v2.0 kernel
+#
+###############################################################################
+ifeq (2.0.,$(findstring 2.0.,$(KERNELRELEASE)))
+
+# Determine if we can use the BWX instructions with GAS.
+old_gas := $(shell if $(AS) --version 2>&1 | grep 'version 2.7' > /dev/null; then echo y; else echo n; fi)
+
+ifneq ($(old_gas),yes)
+ KERNEL_OPT     += -Wa,-m21164a -DBWX_USABLE
+
+# if PYXIS, then enable use of BWIO space
+ ifeq ($(CONFIG_ALPHA_PYXIS),y)
+  KERNEL_OPT     += -DBWIO_ENABLED
+ endif
+endif
+
+endif # v2.0
+
+###############################################################################
+#
+# Now follow the options for the v2.2 kernel
+#
+###############################################################################
+ifeq (2.2.,$(findstring 2.2.,$(KERNELRELEASE)))
+POST_2_1_KERNEL = true
+endif
+ifeq (2.3.,$(findstring 2.3.,$(KERNELRELEASE)))
+POST_2_1_KERNEL = true
+endif
+ifeq (2.4.,$(findstring 2.4.,$(KERNELRELEASE)))
+POST_2_1_KERNEL = true
+endif
+
+ifeq (true,$(POST_2_1_KERNEL))
+#
+#  When using post-2.0 kernels, register $8 is reserved to hold the
+#  pointer to the current task structure.
+#
+KERNEL_OPT     += -ffixed-8
+
+#
+# The remainder is copied from a v2.2 kernel, from arch/alpha/Makefile:
+#
+# Determine if GCC understands the -mcpu= option.
+have_mcpu := $(shell if $(CC) -mcpu=ev5 -S -o /dev/null -xc /dev/null > /dev/null 2>&1; then echo y; else echo n; fi)
+
+have_mcpu_pca56 := $(shell if $(CC) -mcpu=pca56 -S -o /dev/null -xc /dev/null > /dev/null 2>&1; then echo y; else echo n; fi)
+
+have_mcpu_ev6 := $(shell if $(CC) -mcpu=ev6 -S -o /dev/null -xc /dev/null > /dev/null 2>&1; then echo y; else echo n; fi)
+
+# Turn on the proper cpu optimizations.
+ifeq ($(have_mcpu),y)
+  # If GENERIC, make sure to turn off any instruction set extensions that
+  # the host compiler might have on by default.  Given that EV4 and EV5
+  # have the same instruction set, prefer EV5 because an EV5 schedule is
+  # more likely to keep an EV4 processor busy than vice-versa.
+  ifeq ($(CONFIG_ALPHA_GENERIC),y)
+    KERNEL_OPT += -mcpu=ev5
+  endif
+  ifeq ($(CONFIG_ALPHA_EV4),y)
+    KERNEL_OPT += -mcpu=ev4
+  endif
+  ifeq ($(CONFIG_ALPHA_PYXIS),y)
+    KERNEL_OPT += -mcpu=ev56
+  endif
+  ifeq ($(CONFIG_ALPHA_POLARIS),y)
+    ifeq ($(have_mcpu_pca56),y)
+      KERNEL_OPT += -mcpu=pca56
+    else
+      KERNEL_OPT += -mcpu=ev56
+    endif
+  endif
+  ifeq ($(CONFIG_ALPHA_EV6),y)
+    ifeq ($(have_mcpu_ev6),y)
+      KERNEL_OPT += -mcpu=ev6
+    else
+      ifeq ($(have_mcpu_pca56),y)
+        KERNEL_OPT += -mcpu=pca56
+      else
+        KERNEL_OPT += -mcpu=ev56
+      endif
+    endif
+  endif
+endif
+
+# For TSUNAMI, we must have the assembler not emulate our instructions.
+# The same is true for POLARIS.
+# BWX is most important, but we don't really want any emulation ever.
+ifeq ($(old_gas),y)
+ ifneq ($(CONFIG_ALPHA_GENERIC)$(CONFIG_ALPHA_TSUNAMI)$(CONFIG_ALPHA_POLARIS),)
+   # How do we do #error in make?
+ERROR_RULE:
+	@echo
+	@echo "*************************************************"
+	@echo
+	@echo "Error: Please upgrade your assembler"
+	@echo
+	@echo "*************************************************"
+	@echo
+	exit 1
+ endif
+else
+ ifeq ($(CONFIG_ALPHA_GENERIC),y)
+   KERNEL_OPT += -Wa,-mev6
+ endif
+ ifeq ($(CONFIG_ALPHA_PYXIS),y)
+   KERNEL_OPT += -Wa,-m21164a -DBWIO_ENABLED
+ endif
+ ifeq ($(CONFIG_ALPHA_POLARIS),y)
+   KERNEL_OPT += -Wa,-m21164pc
+ endif
+ ifeq ($(CONFIG_ALPHA_TSUNAMI),y)
+   KERNEL_OPT += -Wa,-mev6
+ endif
+endif
+
+endif
+
+else  # alpha
+
+ERROR_RULE:
+	@echo
+	@echo "*************************************************"
+	@echo
+	@echo "Unluckily no other archives besides x86 and alpha"
+	@echo "are supported at this time. Sorry."
+	@echo
+	@echo "*************************************************"
+	@echo
+	exit 1
+
+endif # !alpha
+
+endif # !i386
+
+#
+# these are the flags referred to by the make rules in Rules.make.
+# 
+GKSFLAGS  = $(KERNEL_OPT) $(EXTRA_CFLAGS)
+CPPFLAGS  = $(KERNEL_OPT) $(MODULE_OPT) $(EXTRA_CFLAGS)
+CFLAGS    = $(WARNINGS) $(COMPILE) $(CPPFLAGS)
+SFLAGS    = -fverbose-asm $(CFLAGS)
+EXTRA_LDFLAGS = $(LD_OPT)
+
+INSTALL  = install -c -o root -g root
+
+#
+#  end of MCONFIG
+#
+################################################################################
+
+# Local Variables: ***
+# mode: Makefile ***
+# End: ***
+
+# LocalWords:  cvs ftape MCONFIG QIC Linux usr src linux Ok UTS ifeq config FS
+# LocalWords:  wildcard MODVERSIONS modversions PROC MAMDK endif MODULESDIR lib
+# LocalWords:  misc swapout kdtime SBINDIR sbin INFODIR DOCDIR html dvi doc SMP
+# LocalWords:  MANDIR FDC FC IRQ DMA fd fdc dma CLK Mhz DCONFIG CMS Mbps CTC Mb
+# LocalWords:  ExaByte GCC gcc NR Sparc Mips proc kb dif DTHE claus momo rwth
+# LocalWords:  aachen DBROKEN DMODULE DMODVERSIONS TOPDIR GENKSYMS genksyms ZFT
+# LocalWords:  ZFTAPE ifneq findstring ifdef DCPU mamdk frisc Wstrict fomit fno
+# LocalWords:  LD dc BFD insmod CC GKSFLAGS CFLAGS CPPFLAGS SFLAGS fverbose asm
+# LocalWords:  LDFLAGS ftformat procfs LocalWords

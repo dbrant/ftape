@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+#     Copyright (C) 1997 Claus-Justus Heine
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; see the file COPYING.  If not, write to
+# the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#      create the devices for the QIC-40/80/3010/3020 floppy-tape
+#      driver "ftape" for Linux.
+#
+
+FTAPE_MAJOR=${1-27}
+DEV_DIR=${2-/dev}
+echo Creating device-special files for ftape in $DEV_DIR ...
+
+create_device()
+{
+    if ! [ -e $1 ] ; then
+	echo "Creating device $1, major $FTAPE_MAJOR, minor $2"
+	mknod $1 c $FTAPE_MAJOR $2 &&\
+	chown root $1 &&\
+	chgrp root $1 &&\
+	chmod 0600 $1
+    fi
+}
+
+cd $DEV_DIR
+for i in 0 1 2 3; do
+    DEV_NAMES="rft$i nrft$i qft$i nqft$i rawft$i nrawft$i"
+    for j in $DEV_NAMES ; do
+	if [ -e $j ] ; then
+	    existing=true
+	fi
+    done
+done 
+
+pwd
+if [ "$existing" = "true" ] ; then
+    echo "Some of the devices \"${DEV_NAMES}\" seem to exist already."
+    echo "Overwrite? (y/n) [n]"
+    read remove
+fi
+
+for i in 0 1 2 3; do
+    DEV_NAMES="rft$i nrft$i qft$i nqft$i rawft$i nrawft$i"
+    if [ "$remove" = "y" ]; then
+	rm -f $DEV_NAMES
+    fi
+    create_device qft$i $(($i)) 
+    create_device nqft$i $(($i + 4))
+    test -e rft$i || ln -s  qft$i rft$i
+    test -e nrft$i || ln -s nqft$i nrft$i
+    test -e rawft$i || ln -s  qft$i rawft$i
+    test -e nrawft$i || ln -s nqft$i nrawft$i
+done
+
+echo "Done!"
