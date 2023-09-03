@@ -25,7 +25,7 @@
  */
 
 #include <linux/errno.h>
-#include <linux/malloc.h>
+#include <linux/slab.h>
 #include <asm/segment.h>
 
 #include <linux/zftape.h>

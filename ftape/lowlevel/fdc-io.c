@@ -36,7 +36,7 @@
 #include <linux/interrupt.h>
 #include <linux/list.h>
 #include <linux/delay.h>
-#include <linux/malloc.h>
+#include <linux/slab.h>
 #include <asm/system.h>
 #include <asm/io.h>
 #include <asm/dma.h>

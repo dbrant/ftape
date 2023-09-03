@@ -31,7 +31,7 @@
 #include <linux/signal.h>
 #include <linux/mm.h>
 #include <linux/mman.h>
-#include <linux/malloc.h>
+#include <linux/slab.h>
 #include <linux/wrapper.h>
 
 #include <linux/ftape.h>
