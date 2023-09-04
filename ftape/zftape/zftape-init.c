@@ -655,4 +655,6 @@ void cleanup_module(void)
 	TRACE_EXIT;
 }
 
+MODULE_LICENSE("GPL");
+
 #endif /* MODULE */

@@ -170,6 +170,8 @@ FT_MOD_PARM(ft_tracings,        "1-5i",
 	    "Amount of debugging output, 0 <= tracing <= 8, default 3.");
 #endif
 
+MODULE_LICENSE("GPL");
+
 MODULE_AUTHOR(
 	"(c) 1993-1996 Bas Laarhoven, "
 	"(c) 1995-1996 Kai Harrekilde-Petersen, "
@@ -266,4 +268,5 @@ int __init ftape_lowlevel_setup(char *str)
 		       * setup funcs
 		       */
 }
+
 #endif

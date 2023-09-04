@@ -1017,6 +1017,8 @@ KERN_INFO "Compiled for kernel version %s"
 
 #ifdef MODULE
 #if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
+MODULE_LICENSE("GPL");
+
 MODULE_AUTHOR(
 	"(c) 1996-1998 Claus-Justus Heine <heine@instmath.rwth-aachen.de>");
 MODULE_DESCRIPTION(

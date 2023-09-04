@@ -851,6 +851,8 @@ FT_MOD_PARM(ft_fdc_fc10,       "1-4i",
 FT_MOD_PARM(ft_fdc_mach2,      "1-4i",
 	    "If non-zero, treat FDC as a Mountain MACH-2 controller.");
 
+MODULE_LICENSE("GPL");
+
 MODULE_AUTHOR(
 	"(c) 1997-2000 Claus-Justus Heine <heine@instmath.rwth-aachen.de>");
 MODULE_DESCRIPTION(

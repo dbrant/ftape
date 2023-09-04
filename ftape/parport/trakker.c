@@ -75,9 +75,9 @@ char trakker_dat[] __initdata = "$Date: 2000/07/06 14:58:17 $";
 #define MAX_DELAY 3
 #define MIN_DELAY 0
 
-static __inline__ int min(int x,int y)
+static __inline__ int min_(int x, int y)
 {
-	return (x<y)?x:y;
+        return (x<y)?x:y;
 }
 
 /*
@@ -379,7 +379,7 @@ static void trakker_write(fdc_info_t *fdc, buffer_struct *buff)
 		trakker->out(fdc, trakker->mode | REG18_WRITE, 0x18);
 	}
 	while (size) {
-		int count = min(size, WRITE_BLOCK_SIZE);
+		int count = min_(size, WRITE_BLOCK_SIZE);
 
 		fdc_disable_irq(fdc);
 
@@ -409,7 +409,7 @@ void trakker_read(fdc_info_t *fdc, buffer_struct *buff)
 	trakker->out(fdc, (source >>15) & 0xff, 0x12);
 	trakker->out(fdc, trakker->mode |= REG18_READ, 0x18);
 	while (size) {
-		int count = min(size, READ_BLOCK_SIZE);
+		int count = min_(size, READ_BLOCK_SIZE);
 
 		fdc_disable_irq(fdc);
 
@@ -1258,6 +1258,8 @@ int trakker_unregister(void)
 #if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 
 EXPORT_NO_SYMBOLS;
+
+MODULE_LICENSE("GPL");
 
 MODULE_AUTHOR(
   "(c) 1997 Jochen Hoenicke (jochen.hoenicke@informatik.uni-oldenburg.de)");
