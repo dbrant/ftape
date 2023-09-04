@@ -26,8 +26,8 @@
  */
 
 #include <linux/config.h>
-#define __NO_VERSION__
 #include <linux/module.h>
+#define __NO_VERSION__
 
 #include <linux/ftape.h>
 #include "ftape-tracing.h"
@@ -44,82 +44,68 @@
 #include "ftape-buffer.h"
 #include "ftape-format.h"
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
-# define FT_KSYM(sym) EXPORT_SYMBOL(##sym);
-#else
-# define FT_KSYM(sym) X(##sym),
-#endif
-
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-struct symbol_table ftape_symbol_table = {
-#include <linux/symtab_begin.h>
-#endif
 /* bad sector handling from ftape-bsm.c */
-FT_KSYM(ftape_get_bad_sector_entry)
-FT_KSYM(ftape_find_end_of_bsm_list)
+EXPORT_SYMBOL_GPL(ftape_get_bad_sector_entry);
+EXPORT_SYMBOL_GPL(ftape_find_end_of_bsm_list);
 /* from ftape-rw.c */
-FT_KSYM(ftape_set_state)
+EXPORT_SYMBOL_GPL(ftape_set_state);
 /* from ftape-ctl.c */
-FT_KSYM(ftape_seek_to_bot)
-FT_KSYM(ftape_seek_to_eot)
-FT_KSYM(ftape_abort_operation)
-FT_KSYM(ftape_get_status)
-FT_KSYM(ftape_enable)
-FT_KSYM(ftape_disable)
-FT_KSYM(ftape_destroy)
-FT_KSYM(ftape_calibrate_data_rate)
-FT_KSYM(ftape_get_drive_status)
+EXPORT_SYMBOL_GPL(ftape_seek_to_bot);
+EXPORT_SYMBOL_GPL(ftape_seek_to_eot);
+EXPORT_SYMBOL_GPL(ftape_abort_operation);
+EXPORT_SYMBOL_GPL(ftape_get_status);
+EXPORT_SYMBOL_GPL(ftape_enable);
+EXPORT_SYMBOL_GPL(ftape_disable);
+EXPORT_SYMBOL_GPL(ftape_destroy);
+EXPORT_SYMBOL_GPL(ftape_calibrate_data_rate);
+EXPORT_SYMBOL_GPL(ftape_get_drive_status);
 /* from ftape-io.c */
-FT_KSYM(ftape_reset_drive)
-FT_KSYM(ftape_command)
-FT_KSYM(ftape_parameter)
-FT_KSYM(ftape_ready_wait)
-FT_KSYM(ftape_report_operation)
-FT_KSYM(ftape_report_error)
-FT_KSYM(ftape_door_lock)
-FT_KSYM(ftape_door_open)
-FT_KSYM(ftape_set_partition)
+EXPORT_SYMBOL_GPL(ftape_reset_drive);
+EXPORT_SYMBOL_GPL(ftape_command);
+EXPORT_SYMBOL_GPL(ftape_parameter);
+EXPORT_SYMBOL_GPL(ftape_ready_wait);
+EXPORT_SYMBOL_GPL(ftape_report_operation);
+EXPORT_SYMBOL_GPL(ftape_report_error);
+EXPORT_SYMBOL_GPL(ftape_door_lock);
+EXPORT_SYMBOL_GPL(ftape_door_open);
+EXPORT_SYMBOL_GPL(ftape_set_partition);
 /* from ftape-read.c */
-FT_KSYM(ftape_ecc_correct)
-FT_KSYM(ftape_read_segment)
-FT_KSYM(ftape_zap_read_buffers)
-FT_KSYM(ftape_read_header_segment)
-FT_KSYM(ftape_decode_header_segment)
+EXPORT_SYMBOL_GPL(ftape_ecc_correct);
+EXPORT_SYMBOL_GPL(ftape_read_segment);
+EXPORT_SYMBOL_GPL(ftape_zap_read_buffers);
+EXPORT_SYMBOL_GPL(ftape_read_header_segment);
+EXPORT_SYMBOL_GPL(ftape_decode_header_segment);
 /* from ftape-write.c */
-FT_KSYM(ftape_write_segment)
-FT_KSYM(ftape_loop_until_writes_done)
-FT_KSYM(ftape_hard_error_recovery)
+EXPORT_SYMBOL_GPL(ftape_write_segment);
+EXPORT_SYMBOL_GPL(ftape_loop_until_writes_done);
+EXPORT_SYMBOL_GPL(ftape_hard_error_recovery);
 /* from fdc-io.c */
-FT_KSYM(fdc_infos)
-FT_KSYM(fdc_register)
-FT_KSYM(fdc_unregister)
-FT_KSYM(fdc_disable_irq)
-FT_KSYM(fdc_enable_irq)
+EXPORT_SYMBOL_GPL(fdc_infos);
+EXPORT_SYMBOL_GPL(fdc_register);
+EXPORT_SYMBOL_GPL(fdc_unregister);
+EXPORT_SYMBOL_GPL(fdc_disable_irq);
+EXPORT_SYMBOL_GPL(fdc_enable_irq);
 /* from ftape-buffer.h */
-FT_KSYM(ftape_vmalloc)
-FT_KSYM(ftape_vfree)
-FT_KSYM(ftape_kmalloc)
-FT_KSYM(ftape_kfree)
-FT_KSYM(fdc_set_nr_buffers)
-FT_KSYM(fdc_get_deblock_buffer)
-FT_KSYM(fdc_put_deblock_buffer)
+EXPORT_SYMBOL_GPL(ftape_vmalloc);
+EXPORT_SYMBOL_GPL(ftape_vfree);
+EXPORT_SYMBOL_GPL(ftape_kmalloc);
+EXPORT_SYMBOL_GPL(ftape_kfree);
+EXPORT_SYMBOL_GPL(fdc_set_nr_buffers);
+EXPORT_SYMBOL_GPL(fdc_get_deblock_buffer);
+EXPORT_SYMBOL_GPL(fdc_put_deblock_buffer);
 /* from ftape-format.h */
-FT_KSYM(ftape_format_track)
-FT_KSYM(ftape_format_status)
-FT_KSYM(ftape_verify_segment)
+EXPORT_SYMBOL_GPL(ftape_format_track);
+EXPORT_SYMBOL_GPL(ftape_format_status);
+EXPORT_SYMBOL_GPL(ftape_verify_segment);
 /* from ftape-ecc.c */
-FT_KSYM(ftape_ecc_set_segment_parity)
-FT_KSYM(ftape_ecc_correct_data)
+EXPORT_SYMBOL_GPL(ftape_ecc_set_segment_parity);
+EXPORT_SYMBOL_GPL(ftape_ecc_correct_data);
 /* from tracing.c */
 #ifndef CONFIG_FT_NO_TRACE_AT_ALL
-FT_KSYM(ftape_trace_call)
-FT_KSYM(ftape_trace_exit)
-FT_KSYM(ftape_trace_log)
-FT_KSYM(ftape_tracings)
-FT_KSYM(ftape_function_nest_levels)
+EXPORT_SYMBOL_GPL(ftape_trace_call);
+EXPORT_SYMBOL_GPL(ftape_trace_exit);
+EXPORT_SYMBOL_GPL(ftape_trace_log);
+EXPORT_SYMBOL_GPL(ftape_tracings);
+EXPORT_SYMBOL_GPL(ftape_function_nest_levels);
 #endif
-/* end of ksym table */
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-#include <linux/symtab_end.h>
-};
-#endif
+

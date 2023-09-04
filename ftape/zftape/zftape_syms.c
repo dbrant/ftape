@@ -25,8 +25,8 @@
  */		 
 
 #include <linux/config.h>
-#define __NO_VERSION__
 #include <linux/module.h>
+#define __NO_VERSION__
 
 #include <linux/zftape.h>
 
@@ -35,27 +35,13 @@
 #include "zftape-buffers.h"
 #include "zftape-ctl.h"
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
-# define FT_KSYM(sym) EXPORT_SYMBOL(##sym);
-#else
-# define FT_KSYM(sym) X(##sym),
-#endif
-
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-struct symbol_table zft_symbol_table = {
-#include <linux/symtab_begin.h>
-#endif
 #ifdef CONFIG_ZFT_COMPRESSOR_MODULE
 /* zftape-init.c */
-FT_KSYM(zft_cmpr_register)
-FT_KSYM(zft_cmpr_unregister)
+EXPORT_SYMBOL_GPL(zft_cmpr_register);
+EXPORT_SYMBOL_GPL(zft_cmpr_unregister);
 #endif
 /* zftape-read.c */
-FT_KSYM(zft_fetch_segment)
+EXPORT_SYMBOL_GPL(zft_fetch_segment);
 /* zftape-buffers.c */
-FT_KSYM(zft_vmalloc_once)
-FT_KSYM(zft_vmalloc_always)
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-#include <linux/symtab_end.h>
-};
-#endif
+EXPORT_SYMBOL_GPL(zft_vmalloc_once);
+EXPORT_SYMBOL_GPL(zft_vmalloc_always);
