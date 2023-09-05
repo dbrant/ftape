@@ -34,13 +34,13 @@
 
 # IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT
 
-LINUX_LOCATION = /usr/src/linux
+LINUX_LOCATION = /usr/src/linux-2.4
 
 #
 # Ok. It looks ugly. It is ugly.
 #
 
-KERNELRELEASE = $(shell grep UTS_RELEASE $(LINUX_LOCATION)/include/linux/version.h|cut -d '"' -f 2)
+KERNELRELEASE = 2.4.21-32.ELsmp
 
 #
 # The following means that this package doesn't support
@@ -54,6 +54,8 @@ ARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ -e s/arm.*/ar
 #
 
 MODULESDIR = /lib/modules/$(KERNELRELEASE)/misc
+# /lib/modules/2.4.21-32.EL/kernel/drivers/char/ftape
+# /lib/modules/$(KERNELRELEASE)/misc
 
 #
 ###############################################################################
@@ -93,13 +95,13 @@ else
 #
 
 #CONFIG_M386=y
-CONFIG_M486=y
+#CONFIG_M486=y
 #CONFIG_M586=y
-#CONFIG_M686=y
+CONFIG_M686=y
 #CONFIG_MAMDK6
 #CONFIG_ALPHA=y
-#CONFIG_MODVERSIONS=y
-#CONFIG_SMP = 1
+CONFIG_MODVERSIONS=y
+CONFIG_SMP=1
 
 #
 # DON'T touch the following two lines! To enable/disable the procfs
@@ -326,7 +328,7 @@ BPCK_DEV=0
 #                         old ioctls, raw-mode must be entered via new
 #                         MTIOCFTMODE ioctl, in the presence of devfs
 #                         all ftape devices are created below
-#                         `/dev/ftape/´.
+#                         `/dev/ftape/Å½.
 #
 
 FTAPE_OPT  = -DTHE_FTAPE_MAINTAINER=\"heine@instmath.rwth-aachen.de\"
@@ -439,10 +441,10 @@ endif
 # options needed to compile kernel source
 #
 WARNINGS       := -Wall -Wstrict-prototypes
-COMPILE        := -O2 $(ARCH_OPT) -fomit-frame-pointer -fno-strength-reduce
+COMPILE        := -c -O2 $(ARCH_OPT) -fomit-frame-pointer -fno-strength-reduce
 LD_OPT	       := -r -S
 INCLUDE_PATH   := -I. -I$(TOPDIR)/include -I$(LINUX_LOCATION)/include
-KERNEL_OPT     := -D__KERNEL__ $(INCLUDE_PATH)
+KERNEL_OPT     := -DUSE_PARPORT -DLINUX -D__KERNEL__ $(INCLUDE_PATH)
 #
 # The alpha needs this defined early.
 #
@@ -455,193 +457,35 @@ HOSTCC          = gcc
 ifdef CONFIG_SMP
 KERNEL_OPT     += -D__SMP__
 endif
+
 #
 # processor and architecture specific options.
 #
-ifeq (i386,$(ARCH))
 
 ifdef CONFIG_M386
 KERNEL_OPT     += -m386 -DCPU=386
 endif
 
 ifdef CONFIG_M486
-KERNEL_OPT     += -m486 -DCPU=486
+KERNEL_OPT     += -march=i486 -DCPU=486
 endif
 
 ifdef CONFIG_M586
-KERNEL_OPT     += -m486 -malign-loops=2 -malign-jumps=2 -malign-functions=2 -DCPU=586
+KERNEL_OPT     += -march=i486 -falign-loops=2 -falign-jumps=2 -falign-functions=2 -DCPU=586
 endif
 
 ifdef CONFIG_M586TSC
-KERNEL_OPT     += -m486 -malign-loops=2 -malign-jumps=2 -malign-functions=2 -DCPU=586
+KERNEL_OPT     += -march=i486 -falign-loops=2 -falign-jumps=2 -falign-functions=2 -DCPU=586
 endif
 
 ifdef CONFIG_M686
-KERNEL_OPT     += -m486 -malign-loops=2 -malign-jumps=2 -malign-functions=2 -DCPU=686
+KERNEL_OPT     += -march=i486 -falign-loops=2 -falign-jumps=2 -falign-functions=2 -DCPU=686
 endif
 
 ifdef CONFIG_MAMDK6
 KERNEL_OPT     += -mamdk6 -frisc
 endif
 
-else # i386
-
-ifeq (alpha,$(ARCH))
-###############################################################################
-#
-# We start with options which apply to both, v2.0 and v2.2 kernels.
-#
-###############################################################################
-
-#
-#  The -dc flag is needed when using BFD insmod on an alpha !
-#  You should probably also remove -m486 when compiling on the alpha.
-#
-#  FIXME: Is this needed any more?????
-#
-LD_OPT         += -dc
-#
-#  Don't use floating point registers
-#
-KERNEL_OPT     += -mno-fp-regs
-
-###############################################################################
-#
-# Now follow the options for the v2.0 kernel
-#
-###############################################################################
-ifeq (2.0.,$(findstring 2.0.,$(KERNELRELEASE)))
-
-# Determine if we can use the BWX instructions with GAS.
-old_gas := $(shell if $(AS) --version 2>&1 | grep 'version 2.7' > /dev/null; then echo y; else echo n; fi)
-
-ifneq ($(old_gas),yes)
- KERNEL_OPT     += -Wa,-m21164a -DBWX_USABLE
-
-# if PYXIS, then enable use of BWIO space
- ifeq ($(CONFIG_ALPHA_PYXIS),y)
-  KERNEL_OPT     += -DBWIO_ENABLED
- endif
-endif
-
-endif # v2.0
-
-###############################################################################
-#
-# Now follow the options for the v2.2 kernel
-#
-###############################################################################
-ifeq (2.2.,$(findstring 2.2.,$(KERNELRELEASE)))
-POST_2_1_KERNEL = true
-endif
-ifeq (2.3.,$(findstring 2.3.,$(KERNELRELEASE)))
-POST_2_1_KERNEL = true
-endif
-ifeq (2.4.,$(findstring 2.4.,$(KERNELRELEASE)))
-POST_2_1_KERNEL = true
-endif
-
-ifeq (true,$(POST_2_1_KERNEL))
-#
-#  When using post-2.0 kernels, register $8 is reserved to hold the
-#  pointer to the current task structure.
-#
-KERNEL_OPT     += -ffixed-8
-
-#
-# The remainder is copied from a v2.2 kernel, from arch/alpha/Makefile:
-#
-# Determine if GCC understands the -mcpu= option.
-have_mcpu := $(shell if $(CC) -mcpu=ev5 -S -o /dev/null -xc /dev/null > /dev/null 2>&1; then echo y; else echo n; fi)
-
-have_mcpu_pca56 := $(shell if $(CC) -mcpu=pca56 -S -o /dev/null -xc /dev/null > /dev/null 2>&1; then echo y; else echo n; fi)
-
-have_mcpu_ev6 := $(shell if $(CC) -mcpu=ev6 -S -o /dev/null -xc /dev/null > /dev/null 2>&1; then echo y; else echo n; fi)
-
-# Turn on the proper cpu optimizations.
-ifeq ($(have_mcpu),y)
-  # If GENERIC, make sure to turn off any instruction set extensions that
-  # the host compiler might have on by default.  Given that EV4 and EV5
-  # have the same instruction set, prefer EV5 because an EV5 schedule is
-  # more likely to keep an EV4 processor busy than vice-versa.
-  ifeq ($(CONFIG_ALPHA_GENERIC),y)
-    KERNEL_OPT += -mcpu=ev5
-  endif
-  ifeq ($(CONFIG_ALPHA_EV4),y)
-    KERNEL_OPT += -mcpu=ev4
-  endif
-  ifeq ($(CONFIG_ALPHA_PYXIS),y)
-    KERNEL_OPT += -mcpu=ev56
-  endif
-  ifeq ($(CONFIG_ALPHA_POLARIS),y)
-    ifeq ($(have_mcpu_pca56),y)
-      KERNEL_OPT += -mcpu=pca56
-    else
-      KERNEL_OPT += -mcpu=ev56
-    endif
-  endif
-  ifeq ($(CONFIG_ALPHA_EV6),y)
-    ifeq ($(have_mcpu_ev6),y)
-      KERNEL_OPT += -mcpu=ev6
-    else
-      ifeq ($(have_mcpu_pca56),y)
-        KERNEL_OPT += -mcpu=pca56
-      else
-        KERNEL_OPT += -mcpu=ev56
-      endif
-    endif
-  endif
-endif
-
-# For TSUNAMI, we must have the assembler not emulate our instructions.
-# The same is true for POLARIS.
-# BWX is most important, but we don't really want any emulation ever.
-ifeq ($(old_gas),y)
- ifneq ($(CONFIG_ALPHA_GENERIC)$(CONFIG_ALPHA_TSUNAMI)$(CONFIG_ALPHA_POLARIS),)
-   # How do we do #error in make?
-ERROR_RULE:
-	@echo
-	@echo "*************************************************"
-	@echo
-	@echo "Error: Please upgrade your assembler"
-	@echo
-	@echo "*************************************************"
-	@echo
-	exit 1
- endif
-else
- ifeq ($(CONFIG_ALPHA_GENERIC),y)
-   KERNEL_OPT += -Wa,-mev6
- endif
- ifeq ($(CONFIG_ALPHA_PYXIS),y)
-   KERNEL_OPT += -Wa,-m21164a -DBWIO_ENABLED
- endif
- ifeq ($(CONFIG_ALPHA_POLARIS),y)
-   KERNEL_OPT += -Wa,-m21164pc
- endif
- ifeq ($(CONFIG_ALPHA_TSUNAMI),y)
-   KERNEL_OPT += -Wa,-mev6
- endif
-endif
-
-endif
-
-else  # alpha
-
-ERROR_RULE:
-	@echo
-	@echo "*************************************************"
-	@echo
-	@echo "Unluckily no other archives besides x86 and alpha"
-	@echo "are supported at this time. Sorry."
-	@echo
-	@echo "*************************************************"
-	@echo
-	exit 1
-
-endif # !alpha
-
-endif # !i386
 
 #
 # these are the flags referred to by the make rules in Rules.make.

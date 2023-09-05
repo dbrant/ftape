@@ -29,6 +29,7 @@
  *
  */
 
+#define __initlocaldata __initdata
 #define FTAPE_VERSION "ftape v4.04a 07/25/2000"
 
 #ifdef __KERNEL__
