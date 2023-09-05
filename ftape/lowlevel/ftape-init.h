@@ -52,22 +52,25 @@
 
 extern inline void ft_sigblockall(sigset_t * oldmask)
 {
-       spin_lock_irq(&current->sigmask_lock);
+       spin_lock_irq(&current->sighand->siglock);
        *oldmask = current->blocked;
        sigfillset(&current->blocked);
-       recalc_sigpending(current);
-       spin_unlock_irq(&current->sigmask_lock);
+       sigdelset(&current->blocked, SIGKILL);
+       sigdelset(&current->blocked, SIGSTOP);
+       sigdelset(&current->blocked, SIGINT);
+       recalc_sigpending();
+       spin_unlock_irq(&current->sighand->siglock);
 }
 extern inline void ft_sigrestore(sigset_t* oldmask)
 {
-       spin_lock_irq(&current->sigmask_lock);
+       spin_lock_irq(&current->sighand->siglock);
        current->blocked = *oldmask;
-       recalc_sigpending(current);
-       spin_unlock_irq(&current->sigmask_lock);
+       recalc_sigpending();
+       spin_unlock_irq(&current->sighand->siglock);
 }
 extern inline int ft_sigtest(unsigned long mask)
 {
-	return (current->signal.sig[0] & mask);
+	return (current->sigpending & mask);
 }
 extern inline int ft_killed(void)
 {
