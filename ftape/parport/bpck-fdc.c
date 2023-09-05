@@ -28,7 +28,7 @@
 
 #include <linux/errno.h>
 #include <linux/sched.h>
-#include <linux/malloc.h>
+#include <linux/slab.h>
 #include <linux/ioport.h>
 #include <linux/mman.h>
 #include <linux/interrupt.h>
@@ -72,9 +72,9 @@ ft_bpck_proto_t parport_proto = ft_bpck_none;
 /* write a buffer of bytes to a register ... */
 #define WRB(reg, buf, sz) bpck_fdc_write_reg_vals(bpck, reg, buf, sz)
 /* write some bytes to a register ... */
-#define WRM(reg, val...)					\
+#define WRM(reg, ...)					\
 {								\
-	const __u8 _val[] = { ##val};				\
+	const __u8 _val[] = { __VA_ARGS__ };				\
 	bpck_fdc_write_reg_vals(bpck, reg, _val, sizeof(_val));	\
 }
 /* Write a three byte value to one of the address registers.  */
@@ -707,7 +707,7 @@ static void bpck_fdc_force_protocol(bpck_fdc_t *bpck,
  * We return -EIO on error.
  */
 #define TEST_LEN  256
-#define PRINT_T(m...) if (TRACE_LEVEL >= ft_t_noise) printk(##m )
+#define PRINT_T(...) if (TRACE_LEVEL >= ft_t_noise) printk( __VA_ARGS__ )
 
 static int bpck_fdc_test_protocol(bpck_fdc_t *bpck)
 {	
@@ -2201,6 +2201,9 @@ int bpck_fdc_unregister(void)
 
 FT_MOD_PARM(ecr_bits,        "i", "What to write to the econtrol ECR reg.");
 FT_MOD_PARM(parport_proto,   "i", "Parport protocol.");
+
+MODULE_LICENSE("GPL");
+
 MODULE_AUTHOR(
   "(c) 1998 Claus-Justus Heine");
 MODULE_DESCRIPTION("Ftape-interface for Bpck parallel port floppy tape");
