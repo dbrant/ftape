@@ -61,7 +61,6 @@ distclean: realclean
 	-rm -f ftape/parport/bpck-fdc-crctab.h
 	find . -name TAGS -exec rm -f \{\} \;
 	-rm -f include/linux/autoconf.h*
-	-rm -f include/linux/modftversions.h*
 
 tags:: TAGS
 

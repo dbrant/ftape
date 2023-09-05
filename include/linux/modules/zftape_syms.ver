@@ -1,0 +1,10 @@
+#define __ver_zft_cmpr_register	0d63424f
+#define zft_cmpr_register	_set_ver(zft_cmpr_register)
+#define __ver_zft_cmpr_unregister	b75c977a
+#define zft_cmpr_unregister	_set_ver(zft_cmpr_unregister)
+#define __ver_zft_fetch_segment	40d644bc
+#define zft_fetch_segment	_set_ver(zft_fetch_segment)
+#define __ver_zft_vmalloc_once	97a2f585
+#define zft_vmalloc_once	_set_ver(zft_vmalloc_once)
+#define __ver_zft_vmalloc_always	a78b5732
+#define zft_vmalloc_always	_set_ver(zft_vmalloc_always)
