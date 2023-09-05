@@ -30,6 +30,11 @@
 #include <linux/signal.h>
 #include <linux/major.h>
 
+#if defined(CONFIG_MODVERSIONS) && ! defined(MODVERSIONS)
+  #include <linux/modversions.h>
+  #define MODVERSIONS
+#endif
+
 #include <linux/ftape.h>
 #include <linux/qic117.h>
 #ifdef CONFIG_ZFTAPE

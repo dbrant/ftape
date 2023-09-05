@@ -110,9 +110,9 @@ extern void ftape_trace_log (atomic_t *function_nest_level,
 /*
  *   Abort with a message.
  */
-#define TRACE_ABORT(res, i...)			\
+#define TRACE_ABORT(res, ...)			\
 {						\
- 	TRACE(##i);				\
+ 	TRACE( __VA_ARGS__ );				\
 	TRACE_EXIT res;				\
 }
 
