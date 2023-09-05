@@ -19,6 +19,17 @@
 #      create the devices for the QIC-40/80/3010/3020 floppy-tape
 #      driver "ftape" for Linux.
 #
+#
+# Dmitry Brant, Sep 2023
+# Updated to correctly create devices with proper minor number for raw mode.
+#
+# The major number for ftape is always 27.
+# The minor number is the drive number, i.e. 0, 1, 2, 3.
+#   Bit 2 of the minor number makes it into a non-rewinding device,
+#     e.g. (0 + 4) will access drive 0 without rewinding.
+#   Bit 5 of the minor number makes it into a raw device.
+#     e.g. (1 + 32) will access drive 1 in raw mode.
+#
 
 FTAPE_MAJOR=${1-27}
 DEV_DIR=${2-/dev}
@@ -37,7 +48,7 @@ create_device()
 
 cd $DEV_DIR
 for i in 0 1 2 3; do
-    DEV_NAMES="rft$i nrft$i qft$i nqft$i rawft$i nrawft$i"
+    DEV_NAMES="rft$i nrft$i qft$i nqft$i rawft$i nrawft$i rawqft$i nrawqft$i"
     for j in $DEV_NAMES ; do
 	if [ -e $j ] ; then
 	    existing=true
@@ -53,16 +64,19 @@ if [ "$existing" = "true" ] ; then
 fi
 
 for i in 0 1 2 3; do
-    DEV_NAMES="rft$i nrft$i qft$i nqft$i rawft$i nrawft$i"
+    DEV_NAMES="rft$i nrft$i qft$i nqft$i rawft$i nrawft$i rawqft$i nrawqft$i"
     if [ "$remove" = "y" ]; then
 	rm -f $DEV_NAMES
     fi
     create_device qft$i $(($i)) 
     create_device nqft$i $(($i + 4))
+    create_device rawqft$i $(($i + 32)) 
+    create_device nrawqft$i $(($i + 36))
+
     test -e rft$i || ln -s  qft$i rft$i
     test -e nrft$i || ln -s nqft$i nrft$i
-    test -e rawft$i || ln -s  qft$i rawft$i
-    test -e nrawft$i || ln -s nqft$i nrawft$i
+    test -e rawft$i || ln -s  rawqft$i rawft$i
+    test -e nrawft$i || ln -s nrawqft$i nrawft$i
 done
 
 echo "Done!"
