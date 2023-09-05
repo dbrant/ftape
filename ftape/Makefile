@@ -33,56 +33,11 @@ include $(TOPDIR)/MCONFIG
 endif
 
 SUB_DIRS     := 
-MOD_SUB_DIRS := $(SUB_DIRS)
+
+MOD_SUB_DIRS := $(SUB_DIRS)     lowlevel internal parport \
+				zftape compressor
+
 ALL_SUB_DIRS := $(SUB_DIRS)	lowlevel internal parport \
 				zftape compressor setup
-
-ifeq ($(CONFIG_FTAPE),y)
-  O_TARGET := ftape.o
-  SUB_DIRS += lowlevel setup
-  O_OBJS   += lowlevel/ftape.o
-  O_OBJS   += setup/setup.o
-else
-  ifeq ($(CONFIG_FTAPE),m)
-    MOD_SUB_DIRS += lowlevel
-  endif
-endif
-
-ifeq ($(CONFIG_FT_INTERNAL),y)
-  SUB_DIRS += internal
-  O_OBJS   += internal/ftape-internal.o
-else
-  ifeq ($(CONFIG_FT_INTERNAL),m)
-    MOD_SUB_DIRS += internal
-  endif
-endif  
-
-ifeq ($(CONFIG_FT_PARPORT),y)
-  SUB_DIRS     += parport
-  MOD_SUB_DIRS += parport
-  O_OBJS       += parport/ftape-parport.o
-else
-  ifeq ($(CONFIG_FT_PARPORT),m)
-    MOD_SUB_DIRS += parport
-  endif
-endif
-
-ifeq ($(CONFIG_ZFTAPE),y)
-  SUB_DIRS += zftape
-  O_OBJS   += zftape/zftape.o
-else
-  ifeq ($(CONFIG_ZFTAPE),m)
-    MOD_SUB_DIRS += zftape
-  endif
-endif
-
-ifeq ($(CONFIG_ZFT_COMPRESSOR),y)
-  SUB_DIRS += compressor
-  O_OBJS   += compressor/zft-compressor.o
-else
-  ifeq ($(CONFIG_ZFT_COMPRESSOR),m)
-  MOD_SUB_DIRS += compressor
-  endif
-endif
 
 include $(TOPDIR)/Rules.make

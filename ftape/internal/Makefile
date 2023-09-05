@@ -32,31 +32,10 @@ TOPDIR=../..
 include $(TOPDIR)/MCONFIG
 endif
 
-SUB_DIRS     := 
-MOD_SUB_DIRS := $(SUB_DIRS)
-ALL_SUB_DIRS := $(SUB_DIRS)
-
 O_TARGET := ftape-internal.o
-O_OBJS   := fdc-internal.o fc-10.o
+O_OBJS   := fdc-internal.o fc-10.o fdc-isapnp.o
 
-#
-# can't use ISA PnP stuff if compiled into the kernel but isapnp compiled
-# as module, unless we would create a separate configuration module which
-# is loaded on demand ...
-#
-ifeq ($(CONFIG_FT_INTERNAL),m)
-  ifneq ($(CONFIG_ISAPNP),)
-    O_OBJS += fdc-isapnp.o
-  endif
-else
-  ifeq ($(CONFIG_ISAPNP),y)
-    O_OBJS += fdc-isapnp.o
-  endif
-endif
-
-ifeq ($(CONFIG_FT_INTERNAL),m)
-  M_OBJS = $(O_TARGET)
-endif
+M_OBJS = $(O_TARGET)
 
 include $(TOPDIR)/Rules.make
 
