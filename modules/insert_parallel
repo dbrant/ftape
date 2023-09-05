@@ -1,0 +1,52 @@
+#!/bin/bash
+#
+# Dmitry Brant, Sep 2023
+# ftape module insertion script, specifically for the
+# external (parallel port) Iomega Ditto 2GB drive,
+# and/or the Sony StorStation 2GB, which is just a rebranded Iomega.
+#
+# isapnp ./isapnp.conf
+insmod ./ftape.o ft_fdc_driver=bpck-fdc,none,none,none ft_tracings=3,3,3,3,3 # ft_fdc_driver=ftape-internal,bpck-fdc:trakker,none,none ft_tracings=3,3,3,3,3
+insmod ./zftape.o # ft_major_device_number=27 # ${27-FT_MAJOR}
+#
+# NOTE: YOU DON'T NEED zft-compressor.o UNLESS you want to decompress
+# compressed volumes created by ftape-3.x. Writing of compressed
+# volumes is no longer supported.
+#
+# insmod ./zft-compressor.o
+
+# NOTE: you can mess up things like hell if you specify wrong
+# parameters. Specifically, don't use the rate limit parameter if
+# everything works without it. Valid setting for "rate_limit" are
+# 4000, 3000, 2000, 1000 and 500 (500 is pretty useless).
+# 
+# If you have a Ditto Max tape drive, DO NOT attempt to specify a rate
+# limit below 2000Kbps! It _really_ needs at least 2000Kbps.
+#
+# TR-3 tape drives need at least 1000Kbps.
+# QIC-80 tape drives need at least 500Kbps.
+# QIC-40 tape drives work at 250Kbps.
+#
+# PLEASE MAKE SURE neither to forget any of the "0"s when specifying
+# the rate limit, nor to add an additional "0". There is really much
+# of a difference between "500" and "5000", or, even worse, "2000" and
+# "200".
+
+# Don't need to insert the internal module, since we'll be using the bpck module.
+# insmod ./ftape-internal.o ft_fdc_rate_limit=2000 # ft_fdc_fc10=0 ft_fdc_mach2=0 ft_fdc_base=0x210 ft_fdc_dma=0 ft_fdc_threshold=15 # ft_fdc_rate_limit=4000
+
+# remove any running instances of parport or related modules
+rmmod lp
+rmmod parport_pc
+rmmod parport
+
+# and now install our stuff.
+modprobe parport_pc io=0x378 irq=7
+modprobe parport
+insmod ./bpck-fdc.o
+
+echo "Done."
+echo "NOTE: If the modules load successfully, but you still get I/O errors" \
+"when trying to read from the drive, make sure your parallel port is" \
+"set to EPP in the BIOS, and the correct Port & IRQ numbers are provided" \
+"to the parport_pc module above. Check dmesg for more details." \
