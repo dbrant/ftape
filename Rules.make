@@ -152,7 +152,7 @@ ifneq "$(strip $(ALL_MOBJS))" ""
 	for i in $(ALL_MOBJS); do ln -f $$(pwd)/$$i $(TOPDIR)/modules/ ; done
 endif
 
-versions:: $(TOPDIR)/include/linux/modftversions.h 
+versions:: $(TOPDIR)/include/linux/modftversions_.h 
 ifdef MOD_SUB_DIRS
 	for i in $(MOD_SUB_DIRS); \
 	do \
@@ -247,15 +247,15 @@ $(MODINCL)/%.ver: %.c
 	  mv $@.tmp $@; \
 	else \
 	  echo  "rm -f $@.tmp; $(CC) $(GKSFLAGS) -E -D__GENKSYMS__ $<" \
-		"| $(GENKSYMS) $(MODINCL) 2> /dev/null; rm -f $@.tmp"; \
+		"| $(GENKSYMS) -k 2.4.21 > $@ 2> /dev/null; rm -f $@.tmp"; \
 	  $(CC) $(GKSFLAGS) -E -D__GENKSYMS__ $< \
-	  | $(GENKSYMS) $(MODINCL) 2> /dev/null; \
+	  | $(GENKSYMS) -k 2.4.21 > $@ 2> /dev/null; \
 	fi
 
 $(addprefix $(MODINCL)/,$(SYMTAB_OBJS:.o=.ver)): $(TOPDIR)/MCONFIG $(LINUX_LOCATION)/include/linux/autoconf.h $(TOPDIR)/include/linux/autoconf.h
 
-$(TOPDIR)/include/linux/modftversions.h: $(addprefix $(MODINCL)/,$(SYMTAB_OBJS:.o=.ver))
-	@echo updating $(TOPDIR)/include/linux/modftversions.h
+$(TOPDIR)/include/linux/modftversions_.h: $(addprefix $(MODINCL)/,$(SYMTAB_OBJS:.o=.ver))
+	@echo updating $(TOPDIR)/include/linux/modftversions_.h
 	@(echo "#ifndef _FTAPE_MODVERSIONS_H"; \
 	  echo "#define _FTAPE_MODVERSIONS_H"; \
 	  echo "#include <linux/version.h>"; \
@@ -276,29 +276,29 @@ realclean::
 
 else # SYMTAB_OBJS
 
-$(TOPDIR)/include/linux/modftversions.h:
+$(TOPDIR)/include/linux/modftversions_.h:
 	> $@
 
 endif # SYMTAB_OBJS 
 
-$(M_OBJS): $(TOPDIR)/include/linux/modftversions.h
+$(M_OBJS): $(TOPDIR)/include/linux/modftversions_.h
 ifdef MAKING_MODULES
-$(O_OBJS): $(TOPDIR)/include/linux/modftversions.h
+$(O_OBJS): $(TOPDIR)/include/linux/modftversions_.h
 endif
 
 else
 
-$(TOPDIR)/include/linux/modftversions.h:
+$(TOPDIR)/include/linux/modftversions_.h:
 	> $@
 
 endif # CONFIG_MODVERSIONS
 
 ifneq "$(strip $(SYMTAB_OBJS))" ""
-$(SYMTAB_OBJS): $(TOPDIR)/include/linux/modftversions.h $(SYMTAB_OBJS:.o=.c)
+$(SYMTAB_OBJS): $(TOPDIR)/include/linux/modftversions_.h $(SYMTAB_OBJS:.o=.c)
 	$(CC) $(CFLAGS) -DEXPORT_SYMTAB -c $(@:.o=.c)
 
 $(SYMTAB_OBJS:%.o=.%.d): $(SYMTAB_OBJS:%.o=%.c) \
-			 $(TOPDIR)/include/linux/modftversions.h \
+			 $(TOPDIR)/include/linux/modftversions_.h \
 			 $(TOPDIR)/MCONFIG
 	-@set -e ; $(CC) -M $(CPPFLAGS) -DEXPORT_SYMTAB $< | \
 	sed 's/\($*\.o\):/\1 $@:/g' > $@
@@ -317,7 +317,7 @@ endif
 
 realclean:: clean-no-recursion
 	- rm -f .*.d
-	- rm -f $(TOPDIR)/include/linux/modftversions.h
+	- rm -f $(TOPDIR)/include/linux/modftversions_.h
 ifdef ALL_SUB_DIRS
 	set -e; for i in $(ALL_SUB_DIRS); do 	\
 	$(MAKE) -C $$i NODEP=true $@ ; 		\
