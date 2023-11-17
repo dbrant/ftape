@@ -48,6 +48,8 @@
 /*      Global vars.
  */
 
+extern int ft_soft_retries;
+
 /* rien */
 
 /*      Local vars.
@@ -211,7 +213,7 @@ static void update_error_maps(fdc_info_t *fdc, buffer_struct *buff,
 		TRACE_EXIT;
 	}
 
-	if (buff->retry < FT_SOFT_RETRIES) {
+	if (buff->retry < ft_soft_retries) {
 		buff->soft_error_map |= (1 << error_offset);
 	} else {
 		buff->hard_error_map |= (1 << error_offset);
@@ -428,7 +430,7 @@ static void determine_verify_progress(fdc_info_t *fdc,
 #endif
 		default:
 			buff->short_start = 1;
-			buff->retry = FT_SOFT_RETRIES;
+			buff->retry = ft_soft_retries;
 			break;
 		}
 		if (TRACE_LEVEL >= ft_t_flow) {

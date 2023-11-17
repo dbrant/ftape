@@ -47,6 +47,8 @@
 /*      Global vars.
  */
 
+extern int ft_ignore_ecc_err;
+
 /*      Local vars.
  */
 
@@ -137,6 +139,20 @@ int ftape_ecc_correct(ftape_info_t *ftape, buffer_struct *buff)
 		      (unsigned long)mseg.corrected);
 		ftape->history.corrected += count_ones(mseg.corrected);
 	}
+
+
+
+	if (ft_ignore_ecc_err) {
+		if (result == ECC_CORRECTED || result == ECC_OK) {
+
+		} else {
+			TRACE(ft_t_info, ">>> Ignoring ECC failure at segment: %d", buff->segment_id);
+		}
+		TRACE_EXIT (mseg.blocks - 3) * FT_SECTOR_SIZE;
+	}
+
+
+
 	if (result == ECC_CORRECTED || result == ECC_OK) {
 		if (result == ECC_CORRECTED) {
 			TRACE(ft_t_info, "ecc corrected segment: %d",

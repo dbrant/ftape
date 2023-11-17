@@ -59,6 +59,9 @@ char ft_src[] __initdata = "$RCSfile: ftape-init.c,v $";
 char ft_rev[] __initdata = "$Revision: 1.28 $";
 char ft_dat[] __initdata = "$Date: 2000/06/30 12:02:37 $";
 
+static int ft_ignore_ecc_err = 0;
+static int ft_soft_retries = FT_SOFT_RETRIES;
+
 
 /* every ft_fdc_driver[sel] string may contain a colon separated list
  * of drivers wanted for a specific device. Replace the colons by zero
@@ -150,6 +153,9 @@ int __init ftape_init(void)
 #endif
 #endif
 
+	printk(">>> ft_soft_retries: %d\n", ft_soft_retries);
+	printk(">>> ft_ignore_ecc_err: %d\n", ft_ignore_ecc_err);
+
 	return 0;
 }
 
@@ -174,6 +180,12 @@ FT_MOD_PARM(ft_fdc_driver,     "1-4s",
 FT_MOD_PARM(ft_tracings,        "1-5i", 
 	    "Amount of debugging output, 0 <= tracing <= 8, default 3.");
 #endif
+
+
+/* [DB 2023] Added the following parameters:  */
+FT_MOD_PARM(ft_ignore_ecc_err, "i", "Whether to ignore ECC errors and proceed to the next segment (0 or 1).");
+FT_MOD_PARM(ft_soft_retries, "i", "Number of low-level soft retries (Default=6, set to 1 to skip over bad segments faster.).");
+
 
 MODULE_LICENSE("GPL");
 
