@@ -40,7 +40,7 @@ LINUX_LOCATION = /usr/src/linux-2.4
 # Ok. It looks ugly. It is ugly.
 #
 
-KERNELRELEASE = 2.4.21-32.ELsmp
+KERNELRELEASE = 2.4.21-32.EL
 
 #
 # The following means that this package doesn't support
@@ -101,7 +101,7 @@ CONFIG_M686=y
 #CONFIG_MAMDK6
 #CONFIG_ALPHA=y
 CONFIG_MODVERSIONS=y
-CONFIG_SMP=1
+CONFIG_SMP=0
 
 #
 # DON'T touch the following two lines! To enable/disable the procfs
