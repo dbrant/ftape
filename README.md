@@ -1,6 +1,6 @@
 # ftape
 
-This is a copy of the last official release of the `ftape` driver (version 4.04a) by Claus-Justus Heine et al, with some of my own tweaks for getting it to compile and run on CentOS 3.5.
+This is a copy of the last official release of the `ftape` driver (version 4.04a) by Claus-Justus Heine et al, with some of my (Dmitry Brant) own tweaks for getting it to compile and run on CentOS 3.5.
 
 DISCLAIMER: I am not a kernel developer, and I barely stumbled through getting this driver to compile and make it work the way I needed. In case anyone wants to learn from my mistakes (and in the spirit of GPL) I'm making this code and my changes available, but don't judge me for the horrible jury-rigging I did to make it work.
 
@@ -35,3 +35,8 @@ When (if) the build process finishes, it should make several kernel modules (`.o
 There is also `scripts/MAKEDEV.ftape` that you should run to create the necessary device nodes under `/dev/`.
 
 Once all of this is done, and the kernel modules get loaded without errors, you can interact with the device files, e.g. `/dev/nqft0`, `/dev/rawqft0` and so on.
+
+For extra convenience, there are scripts in the `modules/` directory for loading the modules with the proper parameters for specific types of drives (look inside these scripts for examples and explanations of the parameters):
+* `insert_floppy` for when you have a drive connected to the floppy controller (FDC), such as Colorado 250, etc.
+* `insert_max` for when you have a Ditto Max drive, specifically, connectd to the floppy controller.
+* `insert_parallel` for when you have a drive connected to the parallel port.
