@@ -88,7 +88,7 @@
 	if (ftape_tracing >= (ft_trace_t)(l) &&			\
 	    (ft_trace_t)(l) <= FT_TRACE_TOP_LEVEL) {		\
 		ftape_trace_log(&ftape_function_nest_level,	\
-				__FILE__, __FUNCTION__,		\
+				__FILE__, __func__,		\
 				TRACE_SEL);			\
 		printk(ft_trace_msg , ##__VA_ARGS__ );			\
 	}							\
@@ -107,7 +107,7 @@
 #define TRACE_FUN(level)						      \
 	const ft_trace_t _tracing = level;				      \
 	static char ft_trace_file[] FT_TRACE_ATTR = {__FILE__};	      \
-	static char ft_trace_function[] FT_TRACE_ATTR = {__FUNCTION__}; \
+	static char ft_trace_function[] FT_TRACE_ATTR = {__func__}; \
 	if (ftape_tracing >= (ft_trace_t)(level) &&			      \
 	    (ft_trace_t)(level) <= FT_TRACE_TOP_LEVEL)			      \
 		ftape_trace_call(&ftape_function_nest_level,		      \

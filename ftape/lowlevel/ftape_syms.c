@@ -25,7 +25,7 @@
  *      exports to it's high level clients
  */
 
-#include <linux/config.h>
+
 #include <linux/module.h>
 #define __NO_VERSION__
 

@@ -4,7 +4,7 @@
 /* automatically created by make -- do NOT edit */
 
 
-#include_next <linux/autoconf.h>
+/* #include_next <linux/autoconf.h> - not needed in modern kernels */
 
 #undef CONFIG_ZFTAPE_MODULE
 #define CONFIG_ZFTAPE_MODULE 1

@@ -26,7 +26,7 @@
  *     Configuration fill-in for internal floppy taper drives.
  */
 
-#include <linux/config.h>
+/* #include <linux/config.h> - not needed in modern kernels */
 #include <linux/ftape.h>
 
 /* Initialize missing configuration parameters.

@@ -24,7 +24,7 @@
  *      QIC-40/80/3010/3020 floppy-tape driver "ftape" for Linux.
  */
 
-#include <linux/config.h>
+
 
 #if defined(CONFIG_PROC_FS) && defined(CONFIG_FT_PROC_FS)
 
@@ -422,13 +422,10 @@ int __init ftape_proc_init(void)
 {
 	int i;
 
-	if ((proc_ftape = proc_mkdir("ftape", &proc_root)) == NULL) {
+	if ((proc_ftape = proc_mkdir("ftape", NULL)) == NULL) {
 		return -EIO;
 	}
-	/* protect us from being unloaded while ftape proc dir entry
-	 * is in use.
-	 */
-	proc_ftape->owner = THIS_MODULE;
+	/* proc entry owner is now handled automatically */
 	for (i = 0; i < 4; i++) {
 		if ((proc_ft_sel[i] = proc_mkdir(sel_names[i], proc_ftape))) {
 			(void)create_proc_read_entry("history", 0,
