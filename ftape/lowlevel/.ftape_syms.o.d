@@ -1,4 +1,4 @@
-fdc-isapnp.o: /home/unknown/ftape/ftape/internal/fdc-isapnp.c \
+ftape_syms.o: /home/unknown/ftape/ftape/lowlevel/ftape_syms.c \
  include/linux/compiler-version.h include/linux/kconfig.h \
  include/generated/autoconf.h include/linux/compiler_types.h \
  include/linux/compiler_attributes.h include/linux/compiler-gcc.h \
@@ -92,7 +92,7 @@ fdc-isapnp.o: /home/unknown/ftape/ftape/internal/fdc-isapnp.c \
  include/linux/kstrtox.h include/linux/log2.h include/linux/minmax.h \
  include/linux/sprintf.h include/linux/static_call_types.h \
  include/linux/instruction_pointer.h include/linux/bitmap.h \
- include/linux/errno.h include/uapi/linux/errno.h \
+ include/linux/cleanup.h include/linux/errno.h include/uapi/linux/errno.h \
  arch/x86/include/generated/uapi/asm/errno.h \
  include/uapi/asm-generic/errno.h include/uapi/asm-generic/errno-base.h \
  include/linux/find.h include/linux/string.h include/linux/err.h \
@@ -114,32 +114,32 @@ fdc-isapnp.o: /home/unknown/ftape/ftape/internal/fdc-isapnp.c \
  include/asm-generic/ioctl.h include/uapi/asm-generic/ioctl.h \
  arch/x86/include/asm/shared/msr.h include/linux/tracepoint-defs.h \
  arch/x86/include/asm/special_insns.h include/linux/irqflags.h \
- include/linux/irqflags_types.h include/linux/cleanup.h \
- arch/x86/include/asm/irqflags.h arch/x86/include/asm/fpu/types.h \
- arch/x86/include/asm/vmxfeatures.h arch/x86/include/asm/vdso/processor.h \
- arch/x86/include/asm/shstk.h include/linux/personality.h \
- include/uapi/linux/personality.h arch/x86/include/asm/tsc.h \
- arch/x86/include/asm/cpufeature.h include/vdso/time32.h \
- include/vdso/time.h include/linux/uidgid.h include/linux/uidgid_types.h \
- include/linux/highuid.h include/linux/buildid.h include/linux/kmod.h \
- include/linux/umh.h include/linux/gfp.h include/linux/mmzone.h \
- include/linux/spinlock.h include/linux/preempt.h \
- arch/x86/include/asm/preempt.h include/linux/thread_info.h \
- include/linux/restart_block.h arch/x86/include/asm/thread_info.h \
- include/linux/bottom_half.h include/linux/lockdep.h include/linux/smp.h \
- include/linux/smp_types.h include/linux/llist.h \
- arch/x86/include/asm/smp.h arch/x86/include/generated/asm/mmiowb.h \
- include/asm-generic/mmiowb.h include/linux/spinlock_types.h \
- include/linux/rwlock_types.h arch/x86/include/asm/spinlock.h \
- arch/x86/include/asm/qspinlock.h include/asm-generic/qspinlock.h \
- arch/x86/include/asm/qrwlock.h include/asm-generic/qrwlock.h \
- include/linux/rwlock.h include/linux/spinlock_api_smp.h \
- include/linux/rwlock_api_smp.h include/linux/list_nulls.h \
- include/linux/wait.h include/linux/seqlock.h include/linux/mutex.h \
- include/linux/osq_lock.h include/linux/debug_locks.h \
- include/linux/mutex_types.h include/linux/seqlock_types.h \
- include/linux/nodemask.h include/linux/nodemask_types.h \
- include/linux/random.h include/uapi/linux/random.h include/linux/irqnr.h \
+ include/linux/irqflags_types.h arch/x86/include/asm/irqflags.h \
+ arch/x86/include/asm/fpu/types.h arch/x86/include/asm/vmxfeatures.h \
+ arch/x86/include/asm/vdso/processor.h arch/x86/include/asm/shstk.h \
+ include/linux/personality.h include/uapi/linux/personality.h \
+ arch/x86/include/asm/tsc.h arch/x86/include/asm/cpufeature.h \
+ include/vdso/time32.h include/vdso/time.h include/linux/uidgid.h \
+ include/linux/uidgid_types.h include/linux/highuid.h \
+ include/linux/buildid.h include/linux/kmod.h include/linux/umh.h \
+ include/linux/gfp.h include/linux/mmzone.h include/linux/spinlock.h \
+ include/linux/preempt.h arch/x86/include/asm/preempt.h \
+ include/linux/thread_info.h include/linux/restart_block.h \
+ arch/x86/include/asm/thread_info.h include/linux/bottom_half.h \
+ include/linux/lockdep.h include/linux/smp.h include/linux/smp_types.h \
+ include/linux/llist.h arch/x86/include/asm/smp.h \
+ arch/x86/include/generated/asm/mmiowb.h include/asm-generic/mmiowb.h \
+ include/linux/spinlock_types.h include/linux/rwlock_types.h \
+ arch/x86/include/asm/spinlock.h arch/x86/include/asm/qspinlock.h \
+ include/asm-generic/qspinlock.h arch/x86/include/asm/qrwlock.h \
+ include/asm-generic/qrwlock.h include/linux/rwlock.h \
+ include/linux/spinlock_api_smp.h include/linux/rwlock_api_smp.h \
+ include/linux/list_nulls.h include/linux/wait.h include/linux/seqlock.h \
+ include/linux/mutex.h include/linux/osq_lock.h \
+ include/linux/debug_locks.h include/linux/mutex_types.h \
+ include/linux/seqlock_types.h include/linux/nodemask.h \
+ include/linux/nodemask_types.h include/linux/random.h \
+ include/uapi/linux/random.h include/linux/irqnr.h \
  include/uapi/linux/irqnr.h include/linux/prandom.h include/linux/once.h \
  include/linux/pageblock-flags.h include/linux/page-flags-layout.h \
  include/generated/bounds.h include/linux/mm_types.h \
@@ -268,30 +268,40 @@ fdc-isapnp.o: /home/unknown/ftape/ftape/internal/fdc-isapnp.c \
  include/linux/moduleparam.h include/linux/rbtree_latch.h \
  include/linux/error-injection.h include/asm-generic/error-injection.h \
  arch/x86/include/asm/module.h include/asm-generic/module.h \
- arch/x86/include/asm/orc_types.h include/generated/uapi/linux/version.h \
- include/linux/isapnp.h include/linux/pnp.h include/linux/device.h \
- include/linux/dev_printk.h include/linux/energy_model.h \
- include/linux/sched/cpufreq.h include/linux/sched/topology.h \
- include/linux/sched/idle.h include/linux/sched/sd_flags.h \
- include/linux/ioport.h include/linux/klist.h include/linux/pm.h \
- include/linux/device/bus.h include/linux/device/class.h \
- include/linux/device/driver.h arch/x86/include/asm/device.h \
- include/linux/pm_wakeup.h include/linux/mod_devicetable.h \
- include/uapi/linux/mei.h include/uapi/linux/mei_uuid.h \
- include/linux/console.h /home/unknown/ftape/include/linux/ftape.h \
- include/linux/mm.h include/linux/page_ext.h include/linux/stacktrace.h \
+ arch/x86/include/asm/orc_types.h \
+ /home/unknown/ftape/include/linux/ftape.h include/linux/mm.h \
+ include/linux/page_ext.h include/linux/stacktrace.h \
  include/linux/stackdepot.h include/linux/page_ref.h \
  include/linux/sizes.h include/linux/pgtable.h include/linux/memremap.h \
- include/linux/huge_mm.h include/linux/sched/coredump.h \
- include/linux/vmstat.h include/linux/vm_event_item.h \
+ include/linux/ioport.h include/linux/huge_mm.h \
+ include/linux/sched/coredump.h include/linux/vmstat.h \
+ include/linux/vm_event_item.h include/generated/uapi/linux/version.h \
  include/linux/mtio.h include/uapi/linux/mtio.h \
- /home/unknown/ftape/ftape/internal/../lowlevel/ftape-tracing.h \
- /home/unknown/ftape/ftape/internal/../lowlevel/../lowlevel/ftape-init.h \
- /home/unknown/ftape/ftape/internal/../lowlevel/../lowlevel/ftape-fake-tracing.h \
- /home/unknown/ftape/ftape/internal/../lowlevel/fdc-io.h \
- include/uapi/linux/fdreg.h \
- /home/unknown/ftape/ftape/internal/../lowlevel/../lowlevel/ftape-bsm.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-tracing.h \
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-init.h \
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-fake-tracing.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-init.h \
+ /home/unknown/ftape/ftape/lowlevel/fdc-io.h include/uapi/linux/fdreg.h \
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-bsm.h \
  /home/unknown/ftape/include/linux/ftape-header-segment.h \
- /home/unknown/ftape/ftape/internal/../lowlevel/../lowlevel/ftape-tracing.h \
- /home/unknown/ftape/ftape/internal/fdc-isapnp.h \
- /home/unknown/ftape/ftape/internal/../lowlevel/ftape-real-tracing.h
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-tracing.h \
+ /home/unknown/ftape/ftape/lowlevel/fdc-isr.h \
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/fdc-io.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-read.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-write.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-io.h \
+ /home/unknown/ftape/include/linux/qic117.h \
+ /home/unknown/ftape/include/linux/ftape-vendors.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-ctl.h \
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-rw.h \
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/../lowlevel/fdc-io.h \
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/../lowlevel/ftape-init.h \
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/../lowlevel/ftape-bsm.h \
+ arch/x86/include/generated/asm/unaligned.h \
+ include/asm-generic/unaligned.h include/linux/unaligned/packed_struct.h \
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-io.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-rw.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-ecc.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-bsm.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-buffer.h \
+ /home/unknown/ftape/ftape/lowlevel/ftape-format.h

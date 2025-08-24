@@ -1,8 +1,11 @@
-savedcmd_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := gcc-13 -Wp,-MMD,/home/unknown/ftape/ftape/lowlevel/.ftape-io.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -I./ubuntu/include -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -std=gnu11 -fshort-wchar -funsigned-char -fno-common -fno-PIE -fno-strict-aliasing -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fpatchable-function-entry=16,16 -fno-delete-null-pointer-checks -O2 -fno-allow-store-data-races -fstack-protector-strong -fno-omit-frame-pointer -fno-optimize-sibling-calls -ftrivial-auto-var-init=zero -fno-stack-clash-protection -fzero-call-used-regs=used-gpr -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -falign-functions=16 -fstrict-flex-arrays=3 -fno-strict-overflow -fno-stack-check -fconserve-stack -Wall -Wundef -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Werror=strict-prototypes -Wno-format-security -Wno-trigraphs -Wno-frame-address -Wno-address-of-packed-member -Wmissing-declarations -Wmissing-prototypes -Wframe-larger-than=1024 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-dangling-pointer -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-overflow -Wno-array-bounds -Wno-alloc-size-larger-than -Wimplicit-fallthrough=5 -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wenum-conversion -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-restrict -Wno-packed-not-aligned -Wno-format-overflow -Wno-format-truncation -Wno-stringop-truncation -Wno-override-init -Wno-missing-field-initializers -Wno-type-limits -Wno-shift-negative-value -Wno-maybe-uninitialized -Wno-sign-compare -g -gdwarf-5 -I/home/unknown/ftape/include -DTHE_FTAPE_MAINTAINER=\"ftape-maintainer@kernel.org\" -DCONFIG_FTAPE_MODULE -DCONFIG_FT_INTERNAL_MODULE -DCONFIG_ZFTAPE_MODULE -DFT_SOFT_RETRIES=6 -DCONFIG_FT_NO_TRACE_AT_ALL  -fsanitize=bounds-strict -fsanitize=shift -fsanitize=bool -fsanitize=enum  -DMODULE  -DKBUILD_BASENAME='"ftape_io"' -DKBUILD_MODNAME='"ftape_core"' -D__KBUILD_MODNAME=kmod_ftape_core -c -o /home/unknown/ftape/ftape/lowlevel/ftape-io.o /home/unknown/ftape/ftape/lowlevel/ftape-io.c   ; ./tools/objtool/objtool --hacks=jump_label --hacks=noinstr --hacks=skylake --retpoline --rethunk --sls --stackval --static-call --uaccess --prefix=16   --module /home/unknown/ftape/ftape/lowlevel/ftape-io.o
+savedcmd_/home/unknown/ftape/ftape-core.mod.o := gcc-13 -Wp,-MMD,/home/unknown/ftape/.ftape-core.mod.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -I./ubuntu/include -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -std=gnu11 -fshort-wchar -funsigned-char -fno-common -fno-PIE -fno-strict-aliasing -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fpatchable-function-entry=16,16 -fno-delete-null-pointer-checks -O2 -fno-allow-store-data-races -fstack-protector-strong -fno-omit-frame-pointer -fno-optimize-sibling-calls -ftrivial-auto-var-init=zero -fno-stack-clash-protection -fzero-call-used-regs=used-gpr -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -falign-functions=16 -fstrict-flex-arrays=3 -fno-strict-overflow -fno-stack-check -fconserve-stack -Wall -Wundef -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Werror=strict-prototypes -Wno-format-security -Wno-trigraphs -Wno-frame-address -Wno-address-of-packed-member -Wmissing-declarations -Wmissing-prototypes -Wframe-larger-than=1024 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-dangling-pointer -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-overflow -Wno-array-bounds -Wno-alloc-size-larger-than -Wimplicit-fallthrough=5 -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wenum-conversion -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-restrict -Wno-packed-not-aligned -Wno-format-overflow -Wno-format-truncation -Wno-stringop-truncation -Wno-override-init -Wno-missing-field-initializers -Wno-type-limits -Wno-shift-negative-value -Wno-maybe-uninitialized -Wno-sign-compare -g -gdwarf-5 -fsanitize=bounds-strict -fsanitize=shift -fsanitize=bool -fsanitize=enum -DMODULE -DKBUILD_BASENAME='"ftape_core.mod"' -DKBUILD_MODNAME='"ftape_core"' -D__KBUILD_MODNAME=kmod_ftape_core -c -o /home/unknown/ftape/ftape-core.mod.o /home/unknown/ftape/ftape-core.mod.c
 
-source_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := /home/unknown/ftape/ftape/lowlevel/ftape-io.c
+source_/home/unknown/ftape/ftape-core.mod.o := /home/unknown/ftape/ftape-core.mod.c
 
-deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
+deps_/home/unknown/ftape/ftape-core.mod.o := \
+    $(wildcard include/config/UNWINDER_ORC) \
+    $(wildcard include/config/MODULE_UNLOAD) \
+    $(wildcard include/config/RETPOLINE) \
   include/linux/compiler-version.h \
     $(wildcard include/config/CC_VERSION_TEXT) \
   include/linux/kconfig.h \
@@ -21,24 +24,56 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/CC_HAS_ASM_INLINE) \
   include/linux/compiler_attributes.h \
   include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
     $(wildcard include/config/GCC_ASM_GOTO_OUTPUT_WORKAROUND) \
     $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
     $(wildcard include/config/SHADOW_CALL_STACK) \
     $(wildcard include/config/KCOV) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/delay.h \
-  include/linux/math.h \
+  include/linux/module.h \
+    $(wildcard include/config/MODULES) \
+    $(wildcard include/config/SYSFS) \
+    $(wildcard include/config/MODULES_TREE_LOOKUP) \
+    $(wildcard include/config/LIVEPATCH) \
+    $(wildcard include/config/STACKTRACE_BUILD_ID) \
+    $(wildcard include/config/ARCH_USES_CFI_TRAPS) \
+    $(wildcard include/config/MODULE_SIG) \
+    $(wildcard include/config/GENERIC_BUG) \
+    $(wildcard include/config/KALLSYMS) \
+    $(wildcard include/config/SMP) \
+    $(wildcard include/config/TRACEPOINTS) \
+    $(wildcard include/config/TREE_SRCU) \
+    $(wildcard include/config/BPF_EVENTS) \
+    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
+    $(wildcard include/config/JUMP_LABEL) \
+    $(wildcard include/config/TRACING) \
+    $(wildcard include/config/EVENT_TRACING) \
+    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
+    $(wildcard include/config/KPROBES) \
+    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
+    $(wildcard include/config/KUNIT) \
+    $(wildcard include/config/PRINTK_INDEX) \
+    $(wildcard include/config/CONSTRUCTORS) \
+    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
+    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
+  include/linux/list.h \
+    $(wildcard include/config/LIST_HARDENED) \
+    $(wildcard include/config/DEBUG_LIST) \
+  include/linux/container_of.h \
+  include/linux/build_bug.h \
+  include/linux/compiler.h \
+    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
+    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
+    $(wildcard include/config/OBJTOOL) \
+    $(wildcard include/config/64BIT) \
+  arch/x86/include/generated/asm/rwonce.h \
+  include/asm-generic/rwonce.h \
+  include/linux/kasan-checks.h \
+    $(wildcard include/config/KASAN_GENERIC) \
+    $(wildcard include/config/KASAN_SW_TAGS) \
   include/linux/types.h \
     $(wildcard include/config/HAVE_UID16) \
     $(wildcard include/config/UID16) \
     $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
     $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
     $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
   include/uapi/linux/types.h \
   arch/x86/include/generated/uapi/asm/types.h \
@@ -55,125 +90,38 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/X86_32) \
   arch/x86/include/uapi/asm/posix_types_64.h \
   include/uapi/asm-generic/posix_types.h \
-  arch/x86/include/asm/div64.h \
-  include/asm-generic/div64.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/OBJTOOL) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
   include/linux/kcsan-checks.h \
     $(wildcard include/config/KCSAN) \
     $(wildcard include/config/KCSAN_WEAK_MEMORY) \
     $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
+  include/linux/poison.h \
+    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
   include/linux/const.h \
   include/vdso/const.h \
   include/uapi/linux/const.h \
-  include/linux/sched.h \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/LRU_GEN) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_CPU_PASID) \
-    $(wildcard include/config/CPU_SUP_INTEL) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/SCHED_MM_CID) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KMSAN) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/RV) \
-    $(wildcard include/config/USER_EVENTS) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-  include/uapi/linux/sched.h \
-  arch/x86/include/asm/current.h \
-    $(wildcard include/config/CALL_DEPTH_TRACKING) \
-  include/linux/build_bug.h \
+  arch/x86/include/asm/barrier.h \
+  arch/x86/include/asm/alternative.h \
+    $(wildcard include/config/CALL_THUNKS) \
+  include/linux/stringify.h \
+  arch/x86/include/asm/asm.h \
+  arch/x86/include/asm/extable_fixup_types.h \
+  arch/x86/include/asm/nops.h \
+  include/asm-generic/barrier.h \
+  include/linux/stat.h \
+  arch/x86/include/uapi/asm/stat.h \
+  include/uapi/linux/stat.h \
+  include/linux/time.h \
+    $(wildcard include/config/POSIX_TIMERS) \
   include/linux/cache.h \
     $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
+  include/uapi/linux/kernel.h \
+  include/uapi/linux/sysinfo.h \
   arch/x86/include/asm/cache.h \
     $(wildcard include/config/X86_L1_CACHE_SHIFT) \
     $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
     $(wildcard include/config/X86_VSMP) \
   include/linux/linkage.h \
     $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/stringify.h \
   include/linux/export.h \
     $(wildcard include/config/MODVERSIONS) \
   arch/x86/include/asm/linkage.h \
@@ -184,22 +132,30 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/UML) \
   arch/x86/include/asm/ibt.h \
     $(wildcard include/config/X86_KERNEL_IBT) \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/NR_CPUS) \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
+  include/linux/math64.h \
+    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
+  include/linux/math.h \
+  arch/x86/include/asm/div64.h \
+  include/asm-generic/div64.h \
+  include/vdso/math64.h \
+  include/linux/time64.h \
+  include/vdso/time64.h \
+  include/uapi/linux/time.h \
+  include/uapi/linux/time_types.h \
+  include/linux/time32.h \
+  include/linux/timex.h \
+  include/uapi/linux/timex.h \
+  include/uapi/linux/param.h \
+  arch/x86/include/generated/uapi/asm/param.h \
+  include/asm-generic/param.h \
+    $(wildcard include/config/HZ) \
+  include/uapi/asm-generic/param.h \
+  arch/x86/include/asm/timex.h \
+    $(wildcard include/config/X86_TSC) \
   arch/x86/include/asm/processor.h \
     $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
     $(wildcard include/config/X86_IOPL_IOPERM) \
+    $(wildcard include/config/STACKPROTECTOR) \
     $(wildcard include/config/VM86) \
     $(wildcard include/config/X86_USER_SHADOW_STACK) \
     $(wildcard include/config/PARAVIRT_XXL) \
@@ -211,6 +167,7 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   arch/x86/include/uapi/asm/processor-flags.h \
   include/linux/mem_encrypt.h \
     $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
+    $(wildcard include/config/AMD_MEM_ENCRYPT) \
   arch/x86/include/asm/mem_encrypt.h \
     $(wildcard include/config/X86_MEM_ENCRYPT) \
   include/linux/init.h \
@@ -227,8 +184,6 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/IA32_EMULATION) \
   arch/x86/include/asm/segment.h \
     $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/CALL_THUNKS) \
   arch/x86/include/asm/page_types.h \
     $(wildcard include/config/PHYSICAL_START) \
     $(wildcard include/config/PHYSICAL_ALIGN) \
@@ -254,23 +209,23 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
     $(wildcard include/config/PROC_FS) \
   arch/x86/include/asm/pgtable_64_types.h \
+    $(wildcard include/config/KMSAN) \
     $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
   arch/x86/include/asm/sparsemem.h \
     $(wildcard include/config/SPARSEMEM) \
     $(wildcard include/config/NUMA_KEEP_MEMINFO) \
   arch/x86/include/asm/nospec-branch.h \
     $(wildcard include/config/CALL_THUNKS_DEBUG) \
+    $(wildcard include/config/CALL_DEPTH_TRACKING) \
     $(wildcard include/config/NOINSTR_VALIDATION) \
     $(wildcard include/config/CPU_UNRET_ENTRY) \
     $(wildcard include/config/CPU_SRSO) \
     $(wildcard include/config/CPU_IBPB_ENTRY) \
   include/linux/static_key.h \
   include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
     $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
   arch/x86/include/asm/jump_label.h \
     $(wildcard include/config/HAVE_JUMP_LABEL_HACK) \
-  arch/x86/include/asm/nops.h \
   include/linux/objtool.h \
     $(wildcard include/config/FRAME_POINTER) \
   include/linux/objtool_types.h \
@@ -300,6 +255,17 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/uapi/linux/swab.h \
   arch/x86/include/uapi/asm/swab.h \
   include/linux/byteorder/generic.h \
+  arch/x86/include/asm/percpu.h \
+    $(wildcard include/config/X86_64_SMP) \
+  include/asm-generic/percpu.h \
+    $(wildcard include/config/DEBUG_PREEMPT) \
+    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
+  include/linux/threads.h \
+    $(wildcard include/config/NR_CPUS) \
+    $(wildcard include/config/BASE_SMALL) \
+  include/linux/percpu-defs.h \
+    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
+  arch/x86/include/asm/current.h \
   arch/x86/include/asm/asm-offsets.h \
   include/generated/asm-offsets.h \
   arch/x86/include/asm/GEN-for-each-reg.h \
@@ -317,7 +283,6 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/PARAVIRT_SPINLOCKS) \
     $(wildcard include/config/DEBUG_ENTRY) \
   include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
     $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
   arch/x86/include/asm/bug.h \
     $(wildcard include/config/DEBUG_BUGVERBOSE) \
@@ -334,22 +299,16 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
     $(wildcard include/config/EARLY_PRINTK) \
     $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
     $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
   include/linux/stdarg.h \
   include/linux/kern_levels.h \
   include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
   include/linux/spinlock_types_raw.h \
     $(wildcard include/config/DEBUG_SPINLOCK) \
     $(wildcard include/config/DEBUG_LOCK_ALLOC) \
   include/linux/lockdep_types.h \
     $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
+    $(wildcard include/config/LOCKDEP) \
     $(wildcard include/config/LOCK_STAT) \
   include/linux/dynamic_debug.h \
   include/linux/cpumask.h \
@@ -359,20 +318,21 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/CPUMASK_OFFSTACK) \
   include/linux/kernel.h \
     $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
+    $(wildcard include/config/PREEMPT_DYNAMIC) \
+    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
+    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
     $(wildcard include/config/PREEMPT_) \
+    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
+    $(wildcard include/config/MMU) \
     $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
   include/linux/align.h \
   include/linux/array_size.h \
   include/linux/limits.h \
   include/uapi/linux/limits.h \
   include/vdso/limits.h \
-  include/linux/container_of.h \
   include/linux/bitops.h \
   include/linux/typecheck.h \
   include/asm-generic/bitops/generic-non-atomic.h \
-  arch/x86/include/asm/barrier.h \
-  include/asm-generic/barrier.h \
   arch/x86/include/asm/bitops.h \
   arch/x86/include/asm/rmwcc.h \
   include/linux/args.h \
@@ -396,10 +356,14 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/linux/sprintf.h \
   include/linux/static_call_types.h \
     $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
   include/linux/instruction_pointer.h \
   include/linux/bitmap.h \
   include/linux/cleanup.h \
+  include/linux/errno.h \
+  include/uapi/linux/errno.h \
+  arch/x86/include/generated/uapi/asm/errno.h \
+  include/uapi/asm-generic/errno.h \
+  include/uapi/asm-generic/errno-base.h \
   include/linux/find.h \
   include/linux/string.h \
     $(wildcard include/config/BINARY_PRINTF) \
@@ -424,6 +388,7 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/KASAN_HW_TAGS) \
   include/linux/numa.h \
     $(wildcard include/config/NODES_SHIFT) \
+    $(wildcard include/config/NUMA) \
     $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
   arch/x86/include/asm/frame.h \
   arch/x86/include/asm/page.h \
@@ -437,7 +402,6 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/linux/pfn.h \
   include/asm-generic/getorder.h \
   arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
   arch/x86/include/asm/cpumask.h \
   arch/x86/include/uapi/asm/msr.h \
   include/uapi/linux/ioctl.h \
@@ -448,6 +412,8 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/linux/tracepoint-defs.h \
   arch/x86/include/asm/special_insns.h \
   include/linux/irqflags.h \
+    $(wildcard include/config/TRACE_IRQFLAGS) \
+    $(wildcard include/config/PREEMPT_RT) \
     $(wildcard include/config/IRQSOFF_TRACER) \
     $(wildcard include/config/PREEMPT_TRACER) \
     $(wildcard include/config/DEBUG_IRQFLAGS) \
@@ -460,98 +426,78 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   arch/x86/include/asm/shstk.h \
   include/linux/personality.h \
   include/uapi/linux/personality.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
+  arch/x86/include/asm/tsc.h \
+  arch/x86/include/asm/cpufeature.h \
+  include/vdso/time32.h \
+  include/vdso/time.h \
+  include/linux/uidgid.h \
+    $(wildcard include/config/MULTIUSER) \
+    $(wildcard include/config/USER_NS) \
+  include/linux/uidgid_types.h \
+  include/linux/highuid.h \
+  include/linux/buildid.h \
+    $(wildcard include/config/CRASH_CORE) \
+  include/linux/kmod.h \
+  include/linux/umh.h \
+  include/linux/gfp.h \
+    $(wildcard include/config/HIGHMEM) \
+    $(wildcard include/config/ZONE_DMA) \
+    $(wildcard include/config/ZONE_DMA32) \
+    $(wildcard include/config/ZONE_DEVICE) \
+    $(wildcard include/config/COMPACTION) \
+    $(wildcard include/config/CONTIG_ALLOC) \
+  include/linux/mmzone.h \
+    $(wildcard include/config/ARCH_FORCE_MAX_ORDER) \
+    $(wildcard include/config/CMA) \
+    $(wildcard include/config/MEMORY_ISOLATION) \
+    $(wildcard include/config/ZSMALLOC) \
+    $(wildcard include/config/UNACCEPTED_MEMORY) \
+    $(wildcard include/config/SWAP) \
+    $(wildcard include/config/NUMA_BALANCING) \
+    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
+    $(wildcard include/config/LRU_GEN) \
+    $(wildcard include/config/LRU_GEN_STATS) \
+    $(wildcard include/config/LRU_GEN_WALKS_MMU) \
+    $(wildcard include/config/MEMCG) \
+    $(wildcard include/config/MEMORY_FAILURE) \
+    $(wildcard include/config/PAGE_EXTENSION) \
+    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
+    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
+    $(wildcard include/config/SPARSEMEM_EXTREME) \
+    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
+  include/linux/spinlock.h \
+    $(wildcard include/config/PREEMPTION) \
+  include/linux/preempt.h \
+    $(wildcard include/config/PREEMPT_COUNT) \
+    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
+    $(wildcard include/config/PREEMPT_NOTIFIERS) \
+    $(wildcard include/config/PREEMPT_NONE) \
+    $(wildcard include/config/PREEMPT_VOLUNTARY) \
+    $(wildcard include/config/PREEMPT) \
+  arch/x86/include/asm/preempt.h \
   include/linux/thread_info.h \
+    $(wildcard include/config/THREAD_INFO_IN_TASK) \
     $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
     $(wildcard include/config/HARDENED_USERCOPY) \
     $(wildcard include/config/SH) \
   include/linux/restart_block.h \
   arch/x86/include/asm/thread_info.h \
-  arch/x86/include/asm/cpufeature.h \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NONE) \
-    $(wildcard include/config/PREEMPT_VOLUNTARY) \
-    $(wildcard include/config/PREEMPT) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/pid_types.h \
-  include/linux/sem_types.h \
-  include/linux/shm.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/kmsan_types.h \
-  include/linux/mutex_types.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-  include/linux/osq_lock.h \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  include/linux/plist_types.h \
-  include/linux/hrtimer_types.h \
-  include/linux/timerqueue_types.h \
-  include/linux/rbtree_types.h \
-  include/linux/timer_types.h \
-  include/linux/seccomp_types.h \
-    $(wildcard include/config/SECCOMP) \
-  include/linux/nodemask_types.h \
-  include/linux/refcount_types.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  include/uapi/linux/time_types.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch_types.h \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers_types.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/uapi/linux/rseq.h \
-  include/linux/seqlock_types.h \
-  include/linux/kcsan.h \
-  include/linux/rv.h \
-    $(wildcard include/config/RV_REACTORS) \
-  include/linux/livepatch_sched.h \
-  include/linux/uidgid_types.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/linux/spinlock.h \
+    $(wildcard include/config/COMPAT) \
   include/linux/bottom_half.h \
   include/linux/lockdep.h \
     $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
   include/linux/smp.h \
     $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/list.h \
-    $(wildcard include/config/LIST_HARDENED) \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
+  include/linux/smp_types.h \
+  include/linux/llist.h \
+    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
   arch/x86/include/asm/smp.h \
     $(wildcard include/config/DEBUG_NMI_SELFTEST) \
   arch/x86/include/generated/asm/mmiowb.h \
   include/asm-generic/mmiowb.h \
     $(wildcard include/config/MMIOWB) \
+  include/linux/spinlock_types.h \
+  include/linux/rwlock_types.h \
   arch/x86/include/asm/spinlock.h \
   arch/x86/include/asm/qspinlock.h \
   include/asm-generic/qspinlock.h \
@@ -589,114 +535,18 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
     $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
     $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  /home/unknown/ftape/include/linux/ftape.h \
-    $(wildcard include/config/KMOD) \
-    $(wildcard include/config/KERNELD) \
-    $(wildcard include/config/FT_NONE_0) \
-    $(wildcard include/config/FT_FDC_DRIVER_0) \
-    $(wildcard include/config/FT_INT_0) \
-    $(wildcard include/config/FT_PAR_0) \
-    $(wildcard include/config/FT_TRAKKER_0) \
-    $(wildcard include/config/FT_BPCK_0) \
-    $(wildcard include/config/FT_TRAKKERBPCK_0) \
-    $(wildcard include/config/FT_NONE_1) \
-    $(wildcard include/config/FT_FDC_DRIVER_1) \
-    $(wildcard include/config/FT_INT_1) \
-    $(wildcard include/config/FT_PAR_1) \
-    $(wildcard include/config/FT_TRAKKER_1) \
-    $(wildcard include/config/FT_BPCK_1) \
-    $(wildcard include/config/FT_TRAKKERBPCK_1) \
-    $(wildcard include/config/FT_NONE_2) \
-    $(wildcard include/config/FT_FDC_DRIVER_2) \
-    $(wildcard include/config/FT_INT_2) \
-    $(wildcard include/config/FT_PAR_2) \
-    $(wildcard include/config/FT_TRAKKER_2) \
-    $(wildcard include/config/FT_BPCK_2) \
-    $(wildcard include/config/FT_TRAKKERBPCK_2) \
-    $(wildcard include/config/FT_NONE_3) \
-    $(wildcard include/config/FT_FDC_DRIVER_3) \
-    $(wildcard include/config/FT_INT_3) \
-    $(wildcard include/config/FT_PAR_3) \
-    $(wildcard include/config/FT_TRAKKER_3) \
-    $(wildcard include/config/FT_BPCK_3) \
-    $(wildcard include/config/FT_TRAKKERBPCK_3) \
-    $(wildcard include/config/FT_FDC_THRESHOLD_0) \
-    $(wildcard include/config/FT_FDC_THRESHOLD_1) \
-    $(wildcard include/config/FT_FDC_THRESHOLD_2) \
-    $(wildcard include/config/FT_FDC_THRESHOLD_3) \
-    $(wildcard include/config/FT_FDC_MAX_RATE_0) \
-    $(wildcard include/config/FT_FDC_MAX_RATE_1) \
-    $(wildcard include/config/FT_FDC_MAX_RATE_2) \
-    $(wildcard include/config/FT_FDC_MAX_RATE_3) \
-    $(wildcard include/config/FTAPE) \
-    $(wildcard include/config/FT_INTERNAL) \
-    $(wildcard include/config/FT_TRAKKER) \
-    $(wildcard include/config/FT_BPCK) \
-    $(wildcard include/config/ZFTAPE) \
-    $(wildcard include/config/ZFT_COMPRESSOR) \
-  include/linux/mm.h \
-    $(wildcard include/config/SYSCTL) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/X86) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/STACK_GROWSUP) \
-    $(wildcard include/config/PER_VMA_LOCK) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/CMA) \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/ARCH_WANT_OPTIMIZE_DAX_VMEMMAP) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/KSM) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-    $(wildcard include/config/UNACCEPTED_MEMORY) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_IRQSOFF) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/gfp.h \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/ARCH_FORCE_MAX_ORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/LRU_GEN_STATS) \
-    $(wildcard include/config/LRU_GEN_WALKS_MMU) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
   include/linux/list_nulls.h \
   include/linux/wait.h \
   include/linux/seqlock.h \
   include/linux/mutex.h \
+    $(wildcard include/config/DEBUG_MUTEXES) \
+  include/linux/osq_lock.h \
   include/linux/debug_locks.h \
+  include/linux/mutex_types.h \
+    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
+  include/linux/seqlock_types.h \
   include/linux/nodemask.h \
+  include/linux/nodemask_types.h \
   include/linux/random.h \
     $(wildcard include/config/VMGENID) \
   include/uapi/linux/random.h \
@@ -713,25 +563,40 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
     $(wildcard include/config/HUGETLB_PMD_PAGE_TABLE_SHARING) \
     $(wildcard include/config/USERFAULTFD) \
+    $(wildcard include/config/ANON_VMA_NAME) \
+    $(wildcard include/config/PER_VMA_LOCK) \
+    $(wildcard include/config/SCHED_MM_CID) \
     $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
     $(wildcard include/config/MEMBARRIER) \
     $(wildcard include/config/AIO) \
     $(wildcard include/config/MMU_NOTIFIER) \
+    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
     $(wildcard include/config/IOMMU_MM_DATA) \
+    $(wildcard include/config/KSM) \
+  include/linux/mm_types_task.h \
+    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
+    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
+  arch/x86/include/asm/tlbbatch.h \
   include/linux/auxvec.h \
   include/uapi/linux/auxvec.h \
   arch/x86/include/uapi/asm/auxvec.h \
   include/linux/kref.h \
   include/linux/refcount.h \
+  include/linux/refcount_types.h \
   include/linux/rbtree.h \
+  include/linux/rbtree_types.h \
   include/linux/rcupdate.h \
+    $(wildcard include/config/PREEMPT_RCU) \
     $(wildcard include/config/TINY_RCU) \
     $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
     $(wildcard include/config/RCU_LAZY) \
     $(wildcard include/config/TASKS_RCU_GENERIC) \
     $(wildcard include/config/RCU_STALL_COMMON) \
+    $(wildcard include/config/NO_HZ_FULL) \
     $(wildcard include/config/KVM_XFER_TO_GUEST_WORK) \
     $(wildcard include/config/RCU_NOCB_CPU) \
+    $(wildcard include/config/TASKS_RCU) \
+    $(wildcard include/config/TASKS_TRACE_RCU) \
     $(wildcard include/config/TASKS_RUDE_RCU) \
     $(wildcard include/config/TREE_RCU) \
     $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
@@ -749,33 +614,20 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/linux/completion.h \
   include/linux/swait.h \
   include/linux/uprobes.h \
+    $(wildcard include/config/UPROBES) \
   arch/x86/include/asm/uprobes.h \
   include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
   include/linux/srcu.h \
     $(wildcard include/config/TINY_SRCU) \
     $(wildcard include/config/NEED_SRCU_NMI_SAFE) \
   include/linux/workqueue.h \
     $(wildcard include/config/DEBUG_OBJECTS_WORK) \
     $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
     $(wildcard include/config/WQ_WATCHDOG) \
   include/linux/timer.h \
     $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
   include/linux/ktime.h \
   include/linux/jiffies.h \
-  include/linux/time.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
   include/vdso/jiffies.h \
   include/generated/timeconst.h \
   include/vdso/ktime.h \
@@ -785,6 +637,7 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/linux/debugobjects.h \
     $(wildcard include/config/DEBUG_OBJECTS) \
     $(wildcard include/config/DEBUG_OBJECTS_FREE) \
+  include/linux/timer_types.h \
   include/linux/workqueue_types.h \
   include/linux/rcu_segcblist.h \
   include/linux/srcutree.h \
@@ -793,9 +646,12 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/RCU_FANOUT_LEAF) \
   include/linux/percpu_counter.h \
   include/linux/percpu.h \
-    $(wildcard include/config/MODULES) \
     $(wildcard include/config/RANDOM_KMALLOC_CACHES) \
     $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
+  include/linux/mmdebug.h \
+    $(wildcard include/config/DEBUG_VM) \
+    $(wildcard include/config/DEBUG_VM_IRQSOFF) \
+    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
   arch/x86/include/asm/mmu.h \
     $(wildcard include/config/MODIFY_LDT_SYSCALL) \
   include/linux/page-flags.h \
@@ -838,80 +694,52 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   arch/x86/include/asm/ist.h \
   arch/x86/include/uapi/asm/ist.h \
   include/video/edid.h \
+    $(wildcard include/config/X86) \
   include/uapi/video/edid.h \
   arch/x86/include/asm/apicdef.h \
   include/asm-generic/topology.h \
   include/linux/cpu_smt.h \
     $(wildcard include/config/HOTPLUG_SMT) \
-  include/linux/mmap_lock.h \
-  include/linux/percpu-refcount.h \
-  include/linux/bit_spinlock.h \
-  include/linux/shrinker.h \
-    $(wildcard include/config/SHRINKER_DEBUG) \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT) \
-    $(wildcard include/config/STACKDEPOT_MAX_FRAMES) \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/ARCH_HAS_NONLEAF_PMD_YOUNG) \
-    $(wildcard include/config/ARCH_HAS_HW_PTE_YOUNG) \
-    $(wildcard include/config/GUP_GET_PXX_LOW_HIGH) \
-    $(wildcard include/config/ARCH_WANT_PMD_MKWRITE) \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_64.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/uapi/asm/vsyscall.h \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-  include/linux/kasan-enabled.h \
-  include/linux/kasan-tags.h \
-  include/linux/memremap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/PCI_P2PDMA) \
-  include/linux/ioport.h \
-  include/linux/slab.h \
-    $(wildcard include/config/SLUB_DEBUG) \
-    $(wildcard include/config/SLUB_TINY) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/KFENCE) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/huge_mm.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
+  include/linux/sysctl.h \
+    $(wildcard include/config/SYSCTL) \
+  include/uapi/linux/sysctl.h \
+  include/linux/elf.h \
+    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
+    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
+  arch/x86/include/asm/elf.h \
+    $(wildcard include/config/X86_X32_ABI) \
+  arch/x86/include/asm/ia32.h \
+  include/linux/compat.h \
+    $(wildcard include/config/ARCH_HAS_SYSCALL_WRAPPER) \
+    $(wildcard include/config/COMPAT_OLD_SIGACTION) \
+    $(wildcard include/config/ODD_RT_SIGACTION) \
+  include/linux/sem.h \
+    $(wildcard include/config/SYSVIPC) \
+  include/uapi/linux/sem.h \
+  include/linux/ipc.h \
+  include/linux/rhashtable-types.h \
+  include/uapi/linux/ipc.h \
+  arch/x86/include/generated/uapi/asm/ipcbuf.h \
+  include/uapi/asm-generic/ipcbuf.h \
+  arch/x86/include/uapi/asm/sembuf.h \
+  include/linux/sem_types.h \
+  include/linux/socket.h \
+  arch/x86/include/generated/uapi/asm/socket.h \
+  include/uapi/asm-generic/socket.h \
+  arch/x86/include/generated/uapi/asm/sockios.h \
+  include/uapi/asm-generic/sockios.h \
+  include/uapi/linux/sockios.h \
+  include/linux/uio.h \
+    $(wildcard include/config/ARCH_HAS_COPY_MC) \
+  include/uapi/linux/uio.h \
+  include/uapi/linux/socket.h \
+  include/uapi/linux/if.h \
+  include/uapi/linux/libc-compat.h \
+  include/uapi/linux/hdlc/ioctl.h \
   include/linux/fs.h \
+    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
     $(wildcard include/config/FS_POSIX_ACL) \
+    $(wildcard include/config/SECURITY) \
     $(wildcard include/config/CGROUP_WRITEBACK) \
     $(wildcard include/config/IMA) \
     $(wildcard include/config/FILE_LOCKING) \
@@ -921,6 +749,7 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/EPOLL) \
     $(wildcard include/config/UNICODE) \
     $(wildcard include/config/QUOTA) \
+    $(wildcard include/config/FS_DAX) \
     $(wildcard include/config/BLOCK) \
   include/linux/wait_bit.h \
   include/linux/kdev_t.h \
@@ -930,24 +759,113 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/PROVE_RCU_LIST) \
   include/linux/rculist_bl.h \
   include/linux/list_bl.h \
+  include/linux/bit_spinlock.h \
   include/linux/lockref.h \
     $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
   include/linux/stringhash.h \
     $(wildcard include/config/DCACHE_WORD_ACCESS) \
+  include/linux/hash.h \
+    $(wildcard include/config/HAVE_ARCH_HASH) \
   include/linux/path.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
   include/linux/list_lru.h \
+    $(wildcard include/config/MEMCG_KMEM) \
+  include/linux/shrinker.h \
+    $(wildcard include/config/SHRINKER_DEBUG) \
   include/linux/xarray.h \
     $(wildcard include/config/XARRAY_MULTI) \
   include/linux/sched/mm.h \
     $(wildcard include/config/MMU_LAZY_TLB_REFCOUNT) \
     $(wildcard include/config/ARCH_HAS_MEMBARRIER_CALLBACKS) \
+  include/linux/sched.h \
+    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
+    $(wildcard include/config/SCHED_INFO) \
+    $(wildcard include/config/SCHEDSTATS) \
+    $(wildcard include/config/SCHED_CORE) \
+    $(wildcard include/config/FAIR_GROUP_SCHED) \
+    $(wildcard include/config/RT_GROUP_SCHED) \
+    $(wildcard include/config/RT_MUTEXES) \
+    $(wildcard include/config/UCLAMP_TASK) \
+    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
+    $(wildcard include/config/KMAP_LOCAL) \
+    $(wildcard include/config/CGROUP_SCHED) \
+    $(wildcard include/config/BLK_DEV_IO_TRACE) \
+    $(wildcard include/config/COMPAT_BRK) \
+    $(wildcard include/config/CGROUPS) \
+    $(wildcard include/config/BLK_CGROUP) \
+    $(wildcard include/config/PSI) \
+    $(wildcard include/config/PAGE_OWNER) \
+    $(wildcard include/config/EVENTFD) \
+    $(wildcard include/config/ARCH_HAS_CPU_PASID) \
+    $(wildcard include/config/CPU_SUP_INTEL) \
+    $(wildcard include/config/TASK_DELAY_ACCT) \
+    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
+    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
+    $(wildcard include/config/POSIX_CPUTIMERS) \
+    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
+    $(wildcard include/config/KEYS) \
+    $(wildcard include/config/DETECT_HUNG_TASK) \
+    $(wildcard include/config/IO_URING) \
+    $(wildcard include/config/AUDIT) \
+    $(wildcard include/config/AUDITSYSCALL) \
+    $(wildcard include/config/UBSAN) \
+    $(wildcard include/config/UBSAN_TRAP) \
+    $(wildcard include/config/TASK_XACCT) \
+    $(wildcard include/config/CPUSETS) \
+    $(wildcard include/config/X86_CPU_RESCTRL) \
+    $(wildcard include/config/FUTEX) \
+    $(wildcard include/config/PERF_EVENTS) \
+    $(wildcard include/config/RSEQ) \
+    $(wildcard include/config/FAULT_INJECTION) \
+    $(wildcard include/config/LATENCYTOP) \
+    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
+    $(wildcard include/config/BCACHE) \
+    $(wildcard include/config/VMAP_STACK) \
+    $(wildcard include/config/BPF_SYSCALL) \
+    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
+    $(wildcard include/config/X86_MCE) \
+    $(wildcard include/config/KRETPROBES) \
+    $(wildcard include/config/RETHOOK) \
+    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
+    $(wildcard include/config/RV) \
+    $(wildcard include/config/USER_EVENTS) \
+  include/uapi/linux/sched.h \
+  include/linux/pid_types.h \
+  include/linux/shm.h \
+  arch/x86/include/asm/shmparam.h \
+  include/linux/kmsan_types.h \
+  include/linux/plist_types.h \
+  include/linux/hrtimer_types.h \
+  include/linux/timerqueue_types.h \
+  include/linux/seccomp_types.h \
+    $(wildcard include/config/SECCOMP) \
+  include/linux/resource.h \
+  include/uapi/linux/resource.h \
+  arch/x86/include/generated/uapi/asm/resource.h \
+  include/asm-generic/resource.h \
+  include/uapi/asm-generic/resource.h \
+  include/linux/latencytop.h \
+  include/linux/sched/prio.h \
+  include/linux/sched/types.h \
+  include/linux/signal_types.h \
+    $(wildcard include/config/OLD_SIGACTION) \
+  include/uapi/linux/signal.h \
+  arch/x86/include/asm/signal.h \
+  arch/x86/include/uapi/asm/signal.h \
+  include/uapi/asm-generic/signal-defs.h \
+  arch/x86/include/uapi/asm/siginfo.h \
+  include/uapi/asm-generic/siginfo.h \
+  include/linux/syscall_user_dispatch_types.h \
+  include/linux/task_io_accounting.h \
+    $(wildcard include/config/TASK_IO_ACCOUNTING) \
+  include/linux/posix-timers_types.h \
+  include/uapi/linux/rseq.h \
+  include/linux/kcsan.h \
+  include/linux/rv.h \
+    $(wildcard include/config/RV_REACTORS) \
+  include/linux/livepatch_sched.h \
+  arch/x86/include/generated/asm/kmap_size.h \
+  include/asm-generic/kmap_size.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
   include/linux/sync_core.h \
     $(wildcard include/config/ARCH_HAS_SYNC_CORE_BEFORE_USERMODE) \
   arch/x86/include/asm/sync_core.h \
@@ -969,6 +887,7 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
     $(wildcard include/config/SCHED_AUTOGROUP) \
     $(wildcard include/config/BSD_PROCESS_ACCT) \
     $(wildcard include/config/TASKSTATS) \
+    $(wildcard include/config/STACK_GROWSUP) \
   include/linux/signal.h \
     $(wildcard include/config/DYNAMIC_SIGFRAME) \
   include/linux/sched/jobctl.h \
@@ -983,8 +902,8 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   arch/x86/include/asm/uaccess.h \
     $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
     $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
     $(wildcard include/config/X86_INTEL_USERCOPY) \
+  include/linux/mmap_lock.h \
   arch/x86/include/asm/smap.h \
   arch/x86/include/asm/extable.h \
     $(wildcard include/config/BPF_JIT) \
@@ -993,6 +912,29 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/linux/interval_tree.h \
   arch/x86/include/asm/invpcid.h \
   arch/x86/include/asm/pti.h \
+  arch/x86/include/asm/pgtable.h \
+    $(wildcard include/config/DEBUG_WX) \
+    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
+    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
+    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
+    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
+    $(wildcard include/config/PAGE_TABLE_CHECK) \
+  arch/x86/include/asm/pkru.h \
+  arch/x86/include/asm/fpu/api.h \
+    $(wildcard include/config/X86_DEBUG_FPU) \
+  arch/x86/include/asm/coco.h \
+  include/asm-generic/pgtable_uffd.h \
+  include/linux/page_table_check.h \
+  arch/x86/include/asm/pgtable_64.h \
+  arch/x86/include/asm/fixmap.h \
+    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
+    $(wildcard include/config/X86_IO_APIC) \
+    $(wildcard include/config/PCI_MMCONFIG) \
+    $(wildcard include/config/ACPI_APEI_GHES) \
+    $(wildcard include/config/INTEL_TXT) \
+  arch/x86/include/uapi/asm/vsyscall.h \
+  include/asm-generic/fixmap.h \
+  arch/x86/include/asm/pgtable-invert.h \
   arch/x86/include/asm/uaccess_64.h \
   include/asm-generic/access_ok.h \
     $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
@@ -1000,8 +942,6 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/linux/key.h \
     $(wildcard include/config/KEY_NOTIFICATIONS) \
     $(wildcard include/config/NET) \
-  include/linux/sysctl.h \
-  include/uapi/linux/sysctl.h \
   include/linux/assoc_array.h \
     $(wildcard include/config/ASSOCIATIVE_ARRAY) \
   include/linux/sched/user.h \
@@ -1030,6 +970,17 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/linux/fs_types.h \
   include/linux/mount.h \
   include/linux/mnt_idmapping.h \
+  include/linux/slab.h \
+    $(wildcard include/config/SLUB_DEBUG) \
+    $(wildcard include/config/SLUB_TINY) \
+    $(wildcard include/config/FAILSLAB) \
+    $(wildcard include/config/KFENCE) \
+  include/linux/percpu-refcount.h \
+  include/linux/kasan.h \
+    $(wildcard include/config/KASAN_STACK) \
+    $(wildcard include/config/KASAN_VMALLOC) \
+  include/linux/kasan-enabled.h \
+  include/linux/kasan-tags.h \
   include/uapi/linux/fs.h \
   include/linux/quota.h \
     $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
@@ -1039,40 +990,6 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/linux/dqblk_qtree.h \
   include/linux/projid.h \
   include/uapi/linux/quota.h \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/PER_VMA_LOCK_STATS) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-  include/generated/uapi/linux/version.h \
-  include/linux/mtio.h \
-  include/linux/compat.h \
-    $(wildcard include/config/ARCH_HAS_SYSCALL_WRAPPER) \
-    $(wildcard include/config/X86_X32_ABI) \
-    $(wildcard include/config/COMPAT_OLD_SIGACTION) \
-    $(wildcard include/config/ODD_RT_SIGACTION) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/socket.h \
-  arch/x86/include/generated/uapi/asm/socket.h \
-  include/uapi/asm-generic/socket.h \
-  arch/x86/include/generated/uapi/asm/sockios.h \
-  include/uapi/asm-generic/sockios.h \
-  include/uapi/linux/sockios.h \
-  include/linux/uio.h \
-  include/uapi/linux/uio.h \
-  include/uapi/linux/socket.h \
-  include/uapi/linux/if.h \
-  include/uapi/linux/libc-compat.h \
-  include/uapi/linux/hdlc/ioctl.h \
   include/uapi/linux/aio_abi.h \
   include/uapi/linux/unistd.h \
   arch/x86/include/asm/unistd.h \
@@ -1088,37 +1005,67 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o := \
   include/asm-generic/compat.h \
     $(wildcard include/config/COMPAT_FOR_U64_ALIGNMENT) \
   arch/x86/include/asm/syscall_wrapper.h \
-  include/uapi/linux/mtio.h \
-  /home/unknown/ftape/include/linux/qic117.h \
-  /home/unknown/ftape/ftape/lowlevel/ftape-tracing.h \
-    $(wildcard include/config/FT_NO_TRACE_AT_ALL) \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-init.h \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-fake-tracing.h \
-  /home/unknown/ftape/ftape/lowlevel/fdc-io.h \
-  include/uapi/linux/fdreg.h \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-bsm.h \
-  /home/unknown/ftape/include/linux/ftape-header-segment.h \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-tracing.h \
-  /home/unknown/ftape/ftape/lowlevel/ftape-io.h \
-  /home/unknown/ftape/include/linux/ftape-vendors.h \
-  /home/unknown/ftape/ftape/lowlevel/ftape-ctl.h \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-rw.h \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/../lowlevel/fdc-io.h \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/../lowlevel/ftape-init.h \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/../lowlevel/ftape-bsm.h \
-  arch/x86/include/generated/asm/unaligned.h \
-  include/asm-generic/unaligned.h \
-  include/linux/unaligned/packed_struct.h \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-io.h \
-  /home/unknown/ftape/ftape/lowlevel/ftape-rw.h \
-  /home/unknown/ftape/ftape/lowlevel/ftape-write.h \
-  /home/unknown/ftape/ftape/lowlevel/ftape-read.h \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/fdc-io.h \
-  /home/unknown/ftape/ftape/lowlevel/ftape-init.h \
-  /home/unknown/ftape/ftape/lowlevel/ftape-calibr.h \
+  arch/x86/include/asm/user.h \
+  arch/x86/include/asm/user_64.h \
+  arch/x86/include/asm/fsgsbase.h \
+  arch/x86/include/asm/vdso.h \
+  include/uapi/linux/elf.h \
+  include/uapi/linux/elf-em.h \
+  include/linux/kobject.h \
+    $(wildcard include/config/UEVENT_HELPER) \
+    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
+  include/linux/sysfs.h \
+  include/linux/kernfs.h \
+    $(wildcard include/config/KERNFS) \
+  include/linux/idr.h \
+  include/linux/kobject_ns.h \
+  include/linux/moduleparam.h \
+    $(wildcard include/config/ALPHA) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  arch/x86/include/asm/module.h \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  include/linux/build-salt.h \
+    $(wildcard include/config/BUILD_SALT) \
+  include/linux/elfnote.h \
+  include/linux/elfnote-lto.h \
+    $(wildcard include/config/LTO) \
+  include/linux/export-internal.h \
+    $(wildcard include/config/PARISC) \
+  include/linux/vermagic.h \
+    $(wildcard include/config/PREEMPT_BUILD) \
+  include/generated/utsrelease.h \
+  arch/x86/include/asm/vermagic.h \
+    $(wildcard include/config/M486SX) \
+    $(wildcard include/config/M486) \
+    $(wildcard include/config/M586) \
+    $(wildcard include/config/M586TSC) \
+    $(wildcard include/config/M586MMX) \
+    $(wildcard include/config/MCORE2) \
+    $(wildcard include/config/M686) \
+    $(wildcard include/config/MPENTIUMII) \
+    $(wildcard include/config/MPENTIUMIII) \
+    $(wildcard include/config/MPENTIUMM) \
+    $(wildcard include/config/MPENTIUM4) \
+    $(wildcard include/config/MK6) \
+    $(wildcard include/config/MK7) \
+    $(wildcard include/config/MK8) \
+    $(wildcard include/config/MELAN) \
+    $(wildcard include/config/MCRUSOE) \
+    $(wildcard include/config/MEFFICEON) \
+    $(wildcard include/config/MWINCHIPC6) \
+    $(wildcard include/config/MWINCHIP3D) \
+    $(wildcard include/config/MCYRIXIII) \
+    $(wildcard include/config/MVIAC3_2) \
+    $(wildcard include/config/MVIAC7) \
+    $(wildcard include/config/MGEODEGX1) \
+    $(wildcard include/config/MGEODE_LX) \
 
-/home/unknown/ftape/ftape/lowlevel/ftape-io.o: $(deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o)
+/home/unknown/ftape/ftape-core.mod.o: $(deps_/home/unknown/ftape/ftape-core.mod.o)
 
-$(deps_/home/unknown/ftape/ftape/lowlevel/ftape-io.o):
-
-/home/unknown/ftape/ftape/lowlevel/ftape-io.o: $(wildcard ./tools/objtool/objtool)
+$(deps_/home/unknown/ftape/ftape-core.mod.o):

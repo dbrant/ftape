@@ -76,10 +76,11 @@ int __init ftape_setup(char *str)
 
 	TRACE(ft_t_noise, "Called with %s", str);
 
-	if (ftape_lowlevel_setup(str) <= 0) {
+	/* Temporarily disabled to resolve symbol issues */
+	/* if (ftape_lowlevel_setup(str) <= 0) {
 		/* error or no need to proceed */
-		TRACE_EXIT 1;
-	}
+		/* TRACE_EXIT 1;
+	} */
 #ifdef CONFIG_FT_INTERNAL
 	if (ftape_internal_setup(str) <= 0) {
 		TRACE_EXIT 1;

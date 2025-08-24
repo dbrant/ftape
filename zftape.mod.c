@@ -1,0 +1,151 @@
+#include <linux/module.h>
+#define INCLUDE_VERMAGIC
+#include <linux/build-salt.h>
+#include <linux/elfnote-lto.h>
+#include <linux/export-internal.h>
+#include <linux/vermagic.h>
+#include <linux/compiler.h>
+
+#ifdef CONFIG_UNWINDER_ORC
+#include <asm/orc_header.h>
+ORC_HEADER;
+#endif
+
+BUILD_SALT;
+BUILD_LTO_INFO;
+
+MODULE_INFO(vermagic, VERMAGIC_STRING);
+MODULE_INFO(name, KBUILD_MODNAME);
+
+__visible struct module __this_module
+__section(".gnu.linkonce.this_module") = {
+	.name = KBUILD_MODNAME,
+	.init = init_module,
+#ifdef CONFIG_MODULE_UNLOAD
+	.exit = cleanup_module,
+#endif
+	.arch = MODULE_ARCH_INIT,
+};
+
+#ifdef CONFIG_RETPOLINE
+MODULE_INFO(retpoline, "Y");
+#endif
+
+KSYMTAB_FUNC(zft_fetch_segment, "_gpl", "");
+KSYMTAB_FUNC(zft_vmalloc_once, "_gpl", "");
+KSYMTAB_FUNC(zft_vmalloc_always, "_gpl", "");
+
+SYMBOL_CRC(zft_fetch_segment, 0xbf11f191, "_gpl");
+SYMBOL_CRC(zft_vmalloc_once, 0x94037ddd, "_gpl");
+SYMBOL_CRC(zft_vmalloc_always, 0x3d08b69e, "_gpl");
+
+static const char ____versions[]
+__used __section("__versions") =
+	"\x18\x00\x00\x00\x63\x3b\x05\x44"
+	"try_module_get\0\0"
+	"\x1c\x00\x00\x00\x0b\x48\xf7\x41"
+	"ftape_write_segment\0"
+	"\x1c\x00\x00\x00\x48\x9f\xdb\x88"
+	"__check_object_size\0"
+	"\x28\x00\x00\x00\x22\x6b\xcb\x18"
+	"ftape_loop_until_writes_done\0\0\0\0"
+	"\x1c\x00\x00\x00\xd9\xb2\xea\x64"
+	"fdc_set_nr_buffers\0\0"
+	"\x18\x00\x00\x00\x6f\x26\xf3\xad"
+	"ftape_door_lock\0"
+	"\x18\x00\x00\x00\xc2\x9c\xc4\x13"
+	"_copy_from_user\0"
+	"\x10\x00\x00\x00\xeb\x02\xe6\xb0"
+	"memmove\0"
+	"\x1c\x00\x00\x00\x67\xab\xd1\xaa"
+	"ftape_reset_drive\0\0\0"
+	"\x10\x00\x00\x00\x38\xdf\xac\x69"
+	"memcpy\0\0"
+	"\x14\x00\x00\x00\xf9\x21\x43\xd2"
+	"ftape_kfree\0"
+	"\x14\x00\x00\x00\x35\xe4\x57\x2d"
+	"pcpu_hot\0\0\0\0"
+	"\x1c\x00\x00\x00\x96\x3f\x39\xf1"
+	"ftape_seek_to_eot\0\0\0"
+	"\x18\x00\x00\x00\xd4\xd5\xc0\x7e"
+	"ftape_enable\0\0\0\0"
+	"\x14\x00\x00\x00\xf6\x51\x94\x32"
+	"ftape_vfree\0"
+	"\x18\x00\x00\x00\xfe\xc2\x79\xd0"
+	"ftape_vmalloc\0\0\0"
+	"\x14\x00\x00\x00\xbb\x6d\xfb\xbd"
+	"__fentry__\0\0"
+	"\x1c\x00\x00\x00\xd2\x7d\xd0\x5b"
+	"ftape_read_segment\0\0"
+	"\x24\x00\x00\x00\x97\x70\x48\x65"
+	"__x86_indirect_thunk_rax\0\0\0\0"
+	"\x10\x00\x00\x00\x7e\x3a\x2c\x12"
+	"_printk\0"
+	"\x1c\x00\x00\x00\x8d\xf5\x6a\xfb"
+	"recalc_sigpending\0\0\0"
+	"\x1c\x00\x00\x00\xcb\xf6\xfd\xf0"
+	"__stack_chk_fail\0\0\0\0"
+	"\x24\x00\x00\x00\xe3\xe2\x53\xf1"
+	"ftape_read_header_segment\0\0\0"
+	"\x18\x00\x00\x00\x81\xa5\xaf\x5e"
+	"ftape_disable\0\0\0"
+	"\x14\x00\x00\x00\x78\x96\x77\xa1"
+	"module_put\0\0"
+	"\x24\x00\x00\x00\x87\x86\x73\x46"
+	"ftape_find_end_of_bsm_list\0\0"
+	"\x28\x00\x00\x00\xb3\x1c\xa2\x87"
+	"__ubsan_handle_out_of_bounds\0\0\0\0"
+	"\x24\x00\x00\x00\x44\x0b\xf3\x08"
+	"ftape_get_bad_sector_entry\0\0"
+	"\x10\x00\x00\x00\xa8\x26\x6d\x1e"
+	"strstr\0\0"
+	"\x20\x00\x00\x00\xda\xcd\x4d\xe3"
+	"fdc_put_deblock_buffer\0\0"
+	"\x10\x00\x00\x00\x11\x13\x92\x5a"
+	"strncmp\0"
+	"\x20\x00\x00\x00\xd9\x0f\xbd\x42"
+	"ftape_abort_operation\0\0\0"
+	"\x24\x00\x00\x00\x09\x21\x21\xcf"
+	"ftape_hard_error_recovery\0\0\0"
+	"\x20\x00\x00\x00\x82\x35\xe0\xf5"
+	"ftape_zap_read_buffers\0\0"
+	"\x18\x00\x00\x00\xbf\x46\x92\x35"
+	"ftape_kmalloc\0\0\0"
+	"\x1c\x00\x00\x00\x94\xfa\x5c\xb2"
+	"ftape_seek_to_bot\0\0\0"
+	"\x10\x00\x00\x00\xa7\xd0\x9a\x44"
+	"memcmp\0\0"
+	"\x18\x00\x00\x00\xc7\x10\xa9\x40"
+	"ftape_set_state\0"
+	"\x10\x00\x00\x00\xc5\x8f\x57\xfb"
+	"memset\0\0"
+	"\x1c\x00\x00\x00\xca\x39\x82\x5b"
+	"__x86_return_thunk\0\0"
+	"\x18\x00\x00\x00\xe1\xbe\x10\x6b"
+	"_copy_to_user\0\0\0"
+	"\x1c\x00\x00\x00\x58\x33\xc5\xbf"
+	"ftape_get_status\0\0\0\0"
+	"\x10\x00\x00\x00\xfd\xf9\x3f\x3c"
+	"sprintf\0"
+	"\x20\x00\x00\x00\x90\x0c\x0e\xef"
+	"ftape_get_drive_status\0\0"
+	"\x1c\x00\x00\x00\xea\x0a\x92\x2f"
+	"__register_chrdev\0\0\0"
+	"\x20\x00\x00\x00\x2a\xfc\x57\x20"
+	"fdc_get_deblock_buffer\0\0"
+	"\x18\x00\x00\x00\xa8\x15\x70\x5a"
+	"ftape_door_open\0"
+	"\x1c\x00\x00\x00\x54\xe3\x03\x42"
+	"ftape_set_partition\0"
+	"\x18\x00\x00\x00\x4e\xc6\x24\xd8"
+	"param_ops_int\0\0\0"
+	"\x1c\x00\x00\x00\xc0\xfb\xc3\x6b"
+	"__unregister_chrdev\0"
+	"\x18\x00\x00\x00\x76\xf2\x0f\x5e"
+	"module_layout\0\0\0"
+	"\x00\x00\x00\x00\x00\x00\x00\x00";
+
+MODULE_INFO(depends, "ftape-core");
+
+
+MODULE_INFO(srcversion, "6533284E91ABC02C8746280");

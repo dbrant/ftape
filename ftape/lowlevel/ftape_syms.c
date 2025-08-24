@@ -108,4 +108,9 @@ EXPORT_SYMBOL_GPL(ftape_trace_log);
 EXPORT_SYMBOL_GPL(ftape_tracings);
 EXPORT_SYMBOL_GPL(ftape_function_nest_levels);
 #endif
+/* from ftape-init.c */
+extern int ft_ignore_ecc_err;
+extern int ft_soft_retries;
+EXPORT_SYMBOL_GPL(ft_ignore_ecc_err);
+EXPORT_SYMBOL_GPL(ft_soft_retries);
 

@@ -525,6 +525,7 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-buffer.o := \
   include/generated/bounds.h \
   include/linux/mm_types.h \
     $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
+    $(wildcard include/config/HUGETLB_PMD_PAGE_TABLE_SHARING) \
     $(wildcard include/config/USERFAULTFD) \
     $(wildcard include/config/ANON_VMA_NAME) \
     $(wildcard include/config/PER_VMA_LOCK) \

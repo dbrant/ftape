@@ -25,6 +25,7 @@ ftape-core-objs := ftape/lowlevel/ftape-init.o \
 		   ftape/lowlevel/fdc-io.o \
 		   ftape/lowlevel/fdc-isr.o \
 		   ftape/lowlevel/ftape-proc.o \
+		   ftape/lowlevel/ftape_syms.o \
 		   ftape/setup/ftape-setup.o
 
 # Internal FDC objects
@@ -39,7 +40,8 @@ zftape-objs := ftape/zftape/zftape-init.o \
 	       ftape/zftape/zftape-buffers.o \
 	       ftape/zftape/zftape-rw.o \
 	       ftape/zftape/zftape-vtbl.o \
-	       ftape/zftape/zftape-eof.o
+	       ftape/zftape/zftape-eof.o \
+	       ftape/zftape/zftape_syms.o
 
 # Include our local headers
 ccflags-y := -I$(src)/include

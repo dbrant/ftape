@@ -6,3 +6,4 @@
 /home/unknown/ftape/ftape/zftape/zftape-rw.o
 /home/unknown/ftape/ftape/zftape/zftape-vtbl.o
 /home/unknown/ftape/ftape/zftape/zftape-eof.o
+/home/unknown/ftape/ftape/zftape/zftape_syms.o

@@ -58,11 +58,13 @@ static inline void ft_sigblockall(sigset_t * oldmask)
        sigdelset(&newmask, SIGSTOP);
        sigdelset(&newmask, SIGINT);
        *oldmask = current->blocked;
-       set_current_blocked(&newmask);
+       current->blocked = newmask;
+       recalc_sigpending();
 }
 static inline void ft_sigrestore(sigset_t* oldmask)
 {
-       set_current_blocked(oldmask);
+       current->blocked = *oldmask;
+       recalc_sigpending();
 }
 static inline int ft_sigtest(unsigned long mask)
 {
