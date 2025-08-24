@@ -55,7 +55,13 @@ ftape-bpck-objs := ftape/parport/bpck-fdc.o
 # Include our local headers
 ccflags-y := -I$(src)/include
 ccflags-y += -DTHE_FTAPE_MAINTAINER=\"me@dmitrybrant.com\"
-# ccflags-y += -DCONFIG_FT_PROC_FS  # Disabled proc support for now
+
+ccflags-y += -DCONFIG_MODULES
+ccflags-y += -DCONFIG_PROC_FS
+#ccflags-y += -DCONFIG_FT_PROC_FS
+ccflags-y += -DCONFIG_SMP
+
+
 ccflags-y += -DCONFIG_FTAPE_MODULE
 ccflags-y += -DCONFIG_FT_INTERNAL_MODULE  
 ccflags-y += -DCONFIG_ZFTAPE_MODULE
@@ -63,10 +69,23 @@ ccflags-y += -DCONFIG_ZFTAPE_MODULE
 ccflags-y += -DCONFIG_FT_PARPORT
 ccflags-y += -DCONFIG_FT_TRAKKER
 ccflags-y += -DCONFIG_FT_BPCK
+
+
+ccflags-y += -DCONFIG_FT_STD_FDC_0
+ccflags-y += -DCONFIG_FT_AUTO_0=1
+
+
+
+# ccflags-y += -DCONFIG_ZFT_DFLT_BLK_SZ=10240
+
+
+
+
 ccflags-y += -DFT_SOFT_RETRIES=6
 
+
 # Disable some problematic features for now
-ccflags-y += -DCONFIG_FT_NO_TRACE_AT_ALL
+#ccflags-y += -DCONFIG_FT_NO_TRACE_AT_ALL
 
 all:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules

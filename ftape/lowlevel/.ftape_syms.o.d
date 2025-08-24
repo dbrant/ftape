@@ -279,7 +279,7 @@ ftape_syms.o: /home/unknown/ftape/ftape/lowlevel/ftape_syms.c \
  include/linux/mtio.h include/uapi/linux/mtio.h \
  /home/unknown/ftape/ftape/lowlevel/ftape-tracing.h \
  /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-init.h \
- /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-fake-tracing.h \
+ /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-real-tracing.h \
  /home/unknown/ftape/ftape/lowlevel/ftape-init.h \
  /home/unknown/ftape/ftape/lowlevel/fdc-io.h include/uapi/linux/fdreg.h \
  /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-bsm.h \

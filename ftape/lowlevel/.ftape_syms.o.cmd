@@ -1,4 +1,4 @@
-savedcmd_/home/unknown/ftape/ftape/lowlevel/ftape_syms.o := gcc-13 -Wp,-MMD,/home/unknown/ftape/ftape/lowlevel/.ftape_syms.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -I./ubuntu/include -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -std=gnu11 -fshort-wchar -funsigned-char -fno-common -fno-PIE -fno-strict-aliasing -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fpatchable-function-entry=16,16 -fno-delete-null-pointer-checks -O2 -fno-allow-store-data-races -fstack-protector-strong -fno-omit-frame-pointer -fno-optimize-sibling-calls -ftrivial-auto-var-init=zero -fno-stack-clash-protection -fzero-call-used-regs=used-gpr -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -falign-functions=16 -fstrict-flex-arrays=3 -fno-strict-overflow -fno-stack-check -fconserve-stack -Wall -Wundef -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Werror=strict-prototypes -Wno-format-security -Wno-trigraphs -Wno-frame-address -Wno-address-of-packed-member -Wmissing-declarations -Wmissing-prototypes -Wframe-larger-than=1024 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-dangling-pointer -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-overflow -Wno-array-bounds -Wno-alloc-size-larger-than -Wimplicit-fallthrough=5 -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wenum-conversion -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-restrict -Wno-packed-not-aligned -Wno-format-overflow -Wno-format-truncation -Wno-stringop-truncation -Wno-override-init -Wno-missing-field-initializers -Wno-type-limits -Wno-shift-negative-value -Wno-maybe-uninitialized -Wno-sign-compare -g -gdwarf-5 -I/home/unknown/ftape/include -DTHE_FTAPE_MAINTAINER=\"ftape-maintainer@kernel.org\" -DCONFIG_FTAPE_MODULE -DCONFIG_FT_INTERNAL_MODULE -DCONFIG_ZFTAPE_MODULE -DCONFIG_FT_PARPORT -DCONFIG_FT_TRAKKER -DCONFIG_FT_BPCK -DFT_SOFT_RETRIES=6 -DCONFIG_FT_NO_TRACE_AT_ALL  -fsanitize=bounds-strict -fsanitize=shift -fsanitize=bool -fsanitize=enum  -DMODULE  -DKBUILD_BASENAME='"ftape_syms"' -DKBUILD_MODNAME='"ftape_core"' -D__KBUILD_MODNAME=kmod_ftape_core -c -o /home/unknown/ftape/ftape/lowlevel/ftape_syms.o /home/unknown/ftape/ftape/lowlevel/ftape_syms.c   ; ./tools/objtool/objtool --hacks=jump_label --hacks=noinstr --hacks=skylake --retpoline --rethunk --sls --stackval --static-call --uaccess --prefix=16   --module /home/unknown/ftape/ftape/lowlevel/ftape_syms.o
+savedcmd_/home/unknown/ftape/ftape/lowlevel/ftape_syms.o := gcc-13 -Wp,-MMD,/home/unknown/ftape/ftape/lowlevel/.ftape_syms.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -I./ubuntu/include -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -std=gnu11 -fshort-wchar -funsigned-char -fno-common -fno-PIE -fno-strict-aliasing -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fpatchable-function-entry=16,16 -fno-delete-null-pointer-checks -O2 -fno-allow-store-data-races -fstack-protector-strong -fno-omit-frame-pointer -fno-optimize-sibling-calls -ftrivial-auto-var-init=zero -fno-stack-clash-protection -fzero-call-used-regs=used-gpr -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -falign-functions=16 -fstrict-flex-arrays=3 -fno-strict-overflow -fno-stack-check -fconserve-stack -Wall -Wundef -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Werror=strict-prototypes -Wno-format-security -Wno-trigraphs -Wno-frame-address -Wno-address-of-packed-member -Wmissing-declarations -Wmissing-prototypes -Wframe-larger-than=1024 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-dangling-pointer -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-overflow -Wno-array-bounds -Wno-alloc-size-larger-than -Wimplicit-fallthrough=5 -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wenum-conversion -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-restrict -Wno-packed-not-aligned -Wno-format-overflow -Wno-format-truncation -Wno-stringop-truncation -Wno-override-init -Wno-missing-field-initializers -Wno-type-limits -Wno-shift-negative-value -Wno-maybe-uninitialized -Wno-sign-compare -g -gdwarf-5 -I/home/unknown/ftape/include -DTHE_FTAPE_MAINTAINER=\"me@dmitrybrant.com\" -DCONFIG_MODULES -DCONFIG_PROC_FS -DCONFIG_SMP -DCONFIG_FTAPE_MODULE -DCONFIG_FT_INTERNAL_MODULE -DCONFIG_ZFTAPE_MODULE -DCONFIG_FT_PARPORT -DCONFIG_FT_TRAKKER -DCONFIG_FT_BPCK -DCONFIG_FT_STD_FDC_0 -DCONFIG_FT_AUTO_0=1 -DFT_SOFT_RETRIES=6  -fsanitize=bounds-strict -fsanitize=shift -fsanitize=bool -fsanitize=enum  -DMODULE  -DKBUILD_BASENAME='"ftape_syms"' -DKBUILD_MODNAME='"ftape_core"' -D__KBUILD_MODNAME=kmod_ftape_core -c -o /home/unknown/ftape/ftape/lowlevel/ftape_syms.o /home/unknown/ftape/ftape/lowlevel/ftape_syms.c   ; ./tools/objtool/objtool --hacks=jump_label --hacks=noinstr --hacks=skylake --retpoline --rethunk --sls --stackval --static-call --uaccess --prefix=16   --module /home/unknown/ftape/ftape/lowlevel/ftape_syms.o
 
 source_/home/unknown/ftape/ftape/lowlevel/ftape_syms.o := /home/unknown/ftape/ftape/lowlevel/ftape_syms.c
 
@@ -1135,7 +1135,9 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape_syms.o := \
   include/uapi/linux/mtio.h \
   /home/unknown/ftape/ftape/lowlevel/ftape-tracing.h \
   /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-init.h \
-  /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-fake-tracing.h \
+  /home/unknown/ftape/ftape/lowlevel/../lowlevel/ftape-real-tracing.h \
+    $(wildcard include/config/FT_NO_TRACE) \
+    $(wildcard include/config/FT_FULL_DEBUG) \
   /home/unknown/ftape/ftape/lowlevel/ftape-init.h \
   /home/unknown/ftape/ftape/lowlevel/fdc-io.h \
   include/uapi/linux/fdreg.h \
@@ -1169,51 +1171,56 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape_syms.o := \
 $(deps_/home/unknown/ftape/ftape/lowlevel/ftape_syms.o):
 
 /home/unknown/ftape/ftape/lowlevel/ftape_syms.o: $(wildcard ./tools/objtool/objtool)
-#SYMVER ftape_get_bad_sector_entry 0x08f30b44
+#SYMVER ftape_get_bad_sector_entry 0x0863210d
 #SYMVER ftape_find_end_of_bsm_list 0x46738687
-#SYMVER ftape_set_state 0x40a910c7
-#SYMVER ftape_seek_to_bot 0xb25cfa94
-#SYMVER ftape_seek_to_eot 0xf1393f96
-#SYMVER ftape_abort_operation 0x42bd0fd9
-#SYMVER ftape_get_status 0xbfc53358
+#SYMVER ftape_set_state 0xc7800b31
+#SYMVER ftape_seek_to_bot 0xd2f82945
+#SYMVER ftape_seek_to_eot 0xe5034c6c
+#SYMVER ftape_abort_operation 0x037343a7
+#SYMVER ftape_get_status 0x21c6e2a2
 #SYMVER ftape_enable 0x7ec0d5d4
 #SYMVER ftape_disable 0x5eafa581
 #SYMVER ftape_destroy 0xdd0e4abf
-#SYMVER ftape_calibrate_data_rate 0x4d3ce2d3
-#SYMVER ftape_get_drive_status 0xef0e0c90
-#SYMVER ftape_reset_drive 0xaad1ab67
-#SYMVER ftape_command 0x2a19a65e
-#SYMVER ftape_parameter 0x886b2f66
-#SYMVER ftape_ready_wait 0x35eca810
-#SYMVER ftape_report_operation 0xde08b54d
-#SYMVER ftape_report_error 0xf31efea5
-#SYMVER ftape_door_lock 0xadf3266f
-#SYMVER ftape_door_open 0x5a7015a8
-#SYMVER ftape_set_partition 0x4203e354
-#SYMVER ftape_ecc_correct 0x7ed47300
-#SYMVER ftape_read_segment 0x5bd07dd2
-#SYMVER ftape_zap_read_buffers 0xf5e03582
-#SYMVER ftape_read_header_segment 0xf153e2e3
-#SYMVER ftape_decode_header_segment 0x2f549456
-#SYMVER ftape_write_segment 0x41f7480b
-#SYMVER ftape_loop_until_writes_done 0x18cb6b22
-#SYMVER ftape_hard_error_recovery 0xcf212109
-#SYMVER fdc_infos 0xb8643314
-#SYMVER fdc_register 0x21f14a34
-#SYMVER fdc_unregister 0x24588a33
-#SYMVER fdc_disable_irq 0x0f98820c
-#SYMVER fdc_enable_irq 0x2d8c9f1d
+#SYMVER ftape_calibrate_data_rate 0x2feee8d4
+#SYMVER ftape_get_drive_status 0x5c1c888e
+#SYMVER ftape_reset_drive 0x744589dc
+#SYMVER ftape_command 0x11d9198e
+#SYMVER ftape_parameter 0x01515ac3
+#SYMVER ftape_ready_wait 0x769c2982
+#SYMVER ftape_report_operation 0x104f6e4e
+#SYMVER ftape_report_error 0x114a6027
+#SYMVER ftape_door_lock 0x53084231
+#SYMVER ftape_door_open 0x0036f036
+#SYMVER ftape_set_partition 0xa10ad991
+#SYMVER ftape_ecc_correct 0x2fb00534
+#SYMVER ftape_read_segment 0xc150c9f1
+#SYMVER ftape_zap_read_buffers 0xc7c0e00e
+#SYMVER ftape_read_header_segment 0x65af7249
+#SYMVER ftape_decode_header_segment 0xb1669c8d
+#SYMVER ftape_write_segment 0x04a82e15
+#SYMVER ftape_loop_until_writes_done 0x88aac44a
+#SYMVER ftape_hard_error_recovery 0x6676057d
+#SYMVER fdc_infos 0x85d28aa1
+#SYMVER fdc_register 0x06a987ac
+#SYMVER fdc_unregister 0xadc1a72e
+#SYMVER fdc_disable_irq 0xed88507b
+#SYMVER fdc_enable_irq 0xa7ba6147
 #SYMVER ftape_vmalloc 0xd079c2fe
 #SYMVER ftape_vfree 0x329451f6
 #SYMVER ftape_kmalloc 0x359246bf
 #SYMVER ftape_kfree 0xd24321f9
-#SYMVER fdc_set_nr_buffers 0x64eab2d9
-#SYMVER fdc_get_deblock_buffer 0x2057fc2a
-#SYMVER fdc_put_deblock_buffer 0xe34dcdda
-#SYMVER ftape_format_track 0x26d0fdc2
-#SYMVER ftape_format_status 0x642b94d7
-#SYMVER ftape_verify_segment 0xc9507ec0
+#SYMVER fdc_set_nr_buffers 0x48e30ca1
+#SYMVER fdc_get_deblock_buffer 0xc23d8e37
+#SYMVER fdc_put_deblock_buffer 0xe72c6f4a
+#SYMVER ftape_format_track 0x356dd799
+#SYMVER ftape_format_status 0xc8058917
+#SYMVER ftape_verify_segment 0x8c8ab5dd
 #SYMVER ftape_ecc_set_segment_parity 0x4ed68f4f
 #SYMVER ftape_ecc_correct_data 0xdd95e831
+#SYMVER ftape_trace_call 0x2e84adf8
+#SYMVER ftape_trace_exit 0x31111ad1
+#SYMVER ftape_trace_log 0x1203c91a
+#SYMVER ftape_tracings 0xfad7bffb
+#SYMVER ftape_function_nest_levels 0xe55fc8ee
 #SYMVER ft_ignore_ecc_err 0xcf1e7756
 #SYMVER ft_soft_retries 0xf854f9d8

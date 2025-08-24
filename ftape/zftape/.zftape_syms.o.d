@@ -282,7 +282,7 @@ zftape_syms.o: /home/unknown/ftape/ftape/zftape/zftape_syms.c \
  /home/unknown/ftape/include/linux/ftape-header-segment.h \
  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-tracing.h \
  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/ftape-init.h \
- /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/ftape-fake-tracing.h \
+ /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/ftape-real-tracing.h \
  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-ctl.h \
  /home/unknown/ftape/include/linux/ftape-vendors.h \
  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/ftape-rw.h \

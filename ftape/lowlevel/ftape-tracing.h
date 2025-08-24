@@ -78,8 +78,8 @@ typedef enum {
 /*      Global variables declared in tracing.c
  */
 
-ft_trace_t ftape_tracings[5];
-atomic_t ftape_function_nest_levels[5];
+extern ft_trace_t ftape_tracings[5];
+extern atomic_t ftape_function_nest_levels[5];
 
 /*      Global functions declared in tracing.c
  */
