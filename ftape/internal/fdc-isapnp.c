@@ -87,13 +87,11 @@ static unsigned short ft_fdc_pnp_fct[4] __initdata = {
 static struct pci_dev *pnp_devices[4] = { NULL, };
 static char *ft_fdc_pnp_vendor[4] = { NULL, };
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 #define FT_MOD_PARM(var,type,desc) \
 	MODULE_PARM(var,type); MODULE_PARM_DESC(var,desc)
 FT_MOD_PARM(ft_fdc_pnp_vendor, "1-4s", "PnP device vendor (three letters)");
 FT_MOD_PARM(ft_fdc_pnp_dev, "1-4h", "PnP device number");
 FT_MOD_PARM(ft_fdc_pnp_fct, "1-4h", "PnP function number");
-#endif
 #endif
 
 static int __init find_isapnp_fdc(fdc_info_t *fdc,

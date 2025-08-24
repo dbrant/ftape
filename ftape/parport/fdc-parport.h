@@ -36,7 +36,7 @@
 #define USE_PARPORT
 #endif
 
-#if defined(MODULE) && LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
+#if defined(MODULE)
 # define FT_MOD_PARM(var,type,desc) \
 	MODULE_PARM(var,type); MODULE_PARM_DESC(var,desc)
 #else
@@ -44,16 +44,7 @@
 #endif
 
 #ifdef USE_PARPORT
-# if LINUX_VERSION_CODE < KERNEL_VER(2,1,47)
-#  if LINUX_VERSION_CODE < KERNEL_VER(2,1,0)
-#   define port bus
-#  endif
-#  define pardevice ppd
-#  define PARPORT_MODE_PCPS2 PARPORT_MODE_PS2
-# endif
-# if LINUX_VERSION_CODE > KERNEL_VER(2,3,0)
 #  define PARPORT_MODE_PCPS2 PARPORT_MODE_TRISTATE
-# endif
 #endif
 
 #ifdef USE_PARPORT
@@ -104,24 +95,6 @@ typedef struct ft_parinfo {
 
 #ifdef USE_PARPORT
 
-# if LINUX_VERSION_CODE < KERNEL_VER(2, 3, 0)
-
-#  define ft_w_dtr(p,b) ({parport_write_data((p).dev->port, b); ft_p(p);})
-#  define ft_r_dtr(p)   (ft_p(p), parport_read_data((p).dev->port))
-#  define ft_w_str(p,b) ({parport_write_status((p).dev->port, b); ft_p(p);})
-#  define ft_r_str(p)   (ft_p(p), parport_read_status((p).dev->port))
-#  define ft_w_ctr(p,b) ({parport_write_control((p).dev->port, b);ft_p(p);})
-#  define ft_r_ctr(p)   (ft_p(p), parport_read_control((p).dev->port))
-
-#  define ft_epp_w_adr(p,b) \
-	({parport_epp_write_addr((p).dev->port,b);ft_p(p);})
-#  define ft_epp_r_adr(p)   (ft_p(p), parport_epp_read_addr((p).dev->port))
-#  define ft_epp_w_dtr(p, b) \
-	({parport_epp_write_data((p).dev->port, b); ft_p(p);})
-#  define ft_epp_r_dtr(p)   (ft_p(p), parport_epp_read_data((p).dev->port))
-
-# else
-
 #  define out_p(p,offs,byte) ({outb(byte, (p).dev->port->base+offs); ft_p(p);})
 #  define in_p(p,offs)       (ft_p(p), inb((p).dev->port->base+offs) & 0xff)
 
@@ -135,8 +108,6 @@ typedef struct ft_parinfo {
 #  define ft_epp_r_adr(p)    in_p((p), 3)
 #  define ft_epp_w_dtr(p, b) out_p((p), 4, b)
 #  define ft_epp_r_dtr(p)    in_p((p), 4)
-
-# endif
 
 /* multi byte IO never supported by the parport module.
  */
@@ -293,13 +264,8 @@ static int ft_parport_claim(fdc_info_t *fdc, const ft_parinfo_t *parinfo)
 	request_region(parinfo->base, parinfo->size, parinfo->id);
 	
 	if (parinfo->irq != -1) {
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 		if (request_irq(parinfo->irq, parinfo->handler, SA_INTERRUPT,
 				parinfo->id, fdc))
-#else
-		if (request_irq(parinfo->irq, parinfo->handler, SA_INTERRUPT,
-				parinfo->id))
-#endif
 		{
 			release_region(parinfo->base, parinfo->size);
 			TRACE_ABORT(-EBUSY, ft_t_bug, 
@@ -494,11 +460,7 @@ static void ft_parport_release(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 #else
 	release_region(parinfo->base, parinfo->size);
 	if (parinfo->irq != -1) {
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 		free_irq(parinfo->irq, (void *)fdc);
-#else
-		free_irq(parinfo->irq);
-#endif
 	}
 #endif /* USE_PARPORT */
 }	

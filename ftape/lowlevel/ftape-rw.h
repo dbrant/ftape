@@ -36,7 +36,6 @@
 #include "../lowlevel/ftape-init.h"
 #include "../lowlevel/ftape-bsm.h"
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,0,0)
 #include <asm/unaligned.h>
 
 #define GET2(address, offset) get_unaligned((__u16*)((__u8 *)address + offset))
@@ -45,14 +44,6 @@
 #define PUT2(address, offset , value) put_unaligned((value), (__u16*)((__u8 *)address + offset))
 #define PUT4(address, offset , value) put_unaligned((value), (__u32*)((__u8 *)address + offset))
 #define PUT8(address, offset , value) put_unaligned((value), (__u64*)((__u8 *)address + offset))
-#else
-#define GET2(address, offset) *(__u16*)((__u8 *)address + offset)
-#define GET4(address, offset) *(__u32*)((__u8 *)address + offset)
-#define GET8(address, offset) *(__u64*)((__u8 *)address + offset)
-#define PUT2(address, offset , value) *(__u16*)((__u8 *)address + offset) = (__u16)(value)
-#define PUT4(address, offset , value) *(__u32*)((__u8 *)address + offset) = (__u32)(value)
-#define PUT8(address, offset , value) *(__u64*)((__u8 *)address + offset) = (__u32)(value)
-#endif
 
 enum runner_status_enum {
 	idle = 0,

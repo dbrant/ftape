@@ -34,10 +34,6 @@
 #include <linux/ftape.h>
 #include "../lowlevel/ftape-tracing.h"
 
-#if LINUX_VERSION_CODE < KERNEL_VER(2,4,0)
-# error unsupported
-#endif
-
 #include "ftape-setup.h"
 
 /* the setup function are required to return 0 if they have handled an

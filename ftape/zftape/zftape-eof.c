@@ -113,20 +113,11 @@ int zft_ftape_validate_label(zftape_info_t *zftape, char *label)
 static __u8 * find_end_of_eof_list(__u8 * ptr, __u8 * limit)
 {
 	while (ptr + 3 < limit) {
-
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,0,0)
 		if (get_unaligned((__u32*)ptr)) {
 			ptr += sizeof(__u32);
 		} else {
 			return ptr;
 		}
-#else
-		if (*(__u32*)ptr) {
-			ptr += sizeof(__u32);
-		} else {
-			return ptr;
-		}
-#endif
 	}
 	return NULL;
 }

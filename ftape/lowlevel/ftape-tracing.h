@@ -79,15 +79,6 @@ typedef enum {
  */
 
 ft_trace_t ftape_tracings[5];
-#if LINUX_VERSION_CODE < KERNEL_VER(2,0,0)
-typedef int atomic_t;
-#define atomic_inc(p) ++(*p)
-#define atomic_dec(p) (*p)--
-#endif
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,0)
-#define atomic_read(p) *(p)
-#define atomic_set(p, val) *(p) = (val)
-#endif
 atomic_t ftape_function_nest_levels[5];
 
 /*      Global functions declared in tracing.c

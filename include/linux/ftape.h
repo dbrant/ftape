@@ -38,33 +38,13 @@
 #endif
 #include <linux/types.h>
 #include <linux/version.h>
-#ifdef KERNEL_VERSION
-# define KERNEL_VER(major,minor,sublvl) KERNEL_VERSION(major,minor,sublvl)
-#else
-# define KERNEL_VER(major,minor,sublvl) (((major)<<16)+((minor)<<8)+(sublvl))
-#endif
-/* autoconf.h not needed in modern kernels */
-#if LINUX_VERSION_CODE <= KERNEL_VER(1,2,13) 
-typedef daddr_t __kernel_daddr_t; /* needed for mtio.h */
-#endif
 #include <linux/mtio.h>
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,16)
 # include <linux/init.h>
-#else
-# define __initdata
-# define __initfunc(__arg) __arg
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,90)
+
 # ifdef CONFIG_KMOD
 #  include <linux/kmod.h>
 #  define FT_MODULE_AUTOLOAD
 # endif
-#else
-# ifdef CONFIG_KERNELD
-#  include <linux/kerneld.h>
-#  define FT_MODULE_AUTOLOAD
-# endif
-#endif
 
 #define FT_SECTOR(x)		(x+1)	/* sector offset into real sector */
 #define FT_SECTOR_SIZE		1024

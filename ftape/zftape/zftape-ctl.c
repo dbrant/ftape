@@ -33,11 +33,7 @@
 
 #include <linux/zftape.h>
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,6)
 #include <asm/uaccess.h>
-#else
-#include <asm/segment.h>
-#endif
 
 #define ZFTAPE_TRACING
 #include "zftape-init.h"
@@ -1340,15 +1336,9 @@ static int mtiocrdftseg(zftape_info_t *zftape,
 		TRACE_EXIT -EIO;
 	}
 #endif
-#if LINUX_VERSION_CODE > KERNEL_VER(2,1,3)
 	if (copy_to_user(mtftseg->mt_data, buffer, mtftseg->mt_result) != 0) {
 		TRACE_EXIT -EFAULT;
 	}
-#else
-	TRACE_CATCH(verify_area(VERIFY_WRITE, mtftseg->mt_data,
-				mtftseg->mt_result),);
-	memcpy_tofs(mtftseg->mt_data, buffer, mtftseg->mt_result);
-#endif
 	TRACE_EXIT 0;
 }
 #endif
@@ -1406,19 +1396,11 @@ static int mtiocwrftseg(zftape_info_t *zftape,
 		TRACE_ABORT(-EIO, ft_t_bug, "No deblock buffer");
 	}
 	if (mtftseg->mt_mode != FT_WR_DELETE) {
-#if LINUX_VERSION_CODE > KERNEL_VER(2,1,3)
 		if (copy_from_user(zftape->deblock_buf, 
 				   mtftseg->mt_data,
 				   FT_SEGMENT_SIZE) != 0) {
 			TRACE_EXIT -EFAULT;
 		}
-#else
-		TRACE_CATCH(verify_area(VERIFY_READ, 
-					mtftseg->mt_data, 
-					FT_SEGMENT_SIZE),);
-		memcpy_fromfs(zftape->deblock_buf, mtftseg->mt_data,
-			      FT_SEGMENT_SIZE);
-#endif
 	}
 	mtftseg->mt_result = ftape_write_segment(ftape,
 						 mtftseg->mt_segno, 
@@ -1857,14 +1839,9 @@ int _zft_ioctl(zftape_info_t *zftape, unsigned int command, void * arg)
 			    ft_t_info, "bad argument size: %d", arg_size);
 	}
 	if (dir & _IOC_WRITE) {
-#if LINUX_VERSION_CODE > KERNEL_VER(2,1,3)
 		if (copy_from_user(&krnl_arg, arg, arg_size) != 0) {
 			TRACE_EXIT -EFAULT;
 		}
-#else
-		TRACE_CATCH(verify_area(VERIFY_READ, arg, arg_size),);
-		memcpy_fromfs(&krnl_arg, arg, arg_size);
-#endif
 	}
 	TRACE(ft_t_flow, "called with ioctl command: 0x%08x", command);
 	switch (command) {
@@ -1922,14 +1899,9 @@ int _zft_ioctl(zftape_info_t *zftape, unsigned int command, void * arg)
 		break;
 	}
 	if ((result >= 0) && (dir & _IOC_READ)) {
-#if LINUX_VERSION_CODE > KERNEL_VER(2,1,3)
 		if (copy_to_user(arg, &krnl_arg, arg_size) != 0) {
 			TRACE_EXIT -EFAULT;
 		}
-#else
-		TRACE_CATCH(verify_area(VERIFY_WRITE, arg, arg_size),);
-		memcpy_tofs(arg, &krnl_arg, arg_size);
-#endif
 	}
 	TRACE_EXIT result;
 }

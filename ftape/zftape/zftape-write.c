@@ -31,11 +31,7 @@
 
 #include <linux/zftape.h>
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,6)
 #include <asm/uaccess.h>
-#else
-#include <asm/segment.h>
-#endif
 
 #define ZFTAPE_TRACING
 #include "zftape-init.h"
@@ -637,14 +633,9 @@ static int fill_deblock_buf(zftape_info_t *zftape,
 	 */
 	space_left = seg_sz - pos->seg_byte_pos;
 	cnt = req_len < space_left ? req_len : space_left;
-#if LINUX_VERSION_CODE > KERNEL_VER(2,1,3)
 	if (copy_from_user(dst_buf + pos->seg_byte_pos, usr_buf, cnt) != 0) {
 		TRACE_EXIT -EFAULT;
 	}
-#else
-	TRACE_CATCH(verify_area(VERIFY_READ, usr_buf, cnt),);
-	memcpy_fromfs(dst_buf + pos->seg_byte_pos, usr_buf, cnt);
-#endif
 	pos->volume_pos   += cnt;
 	pos->seg_byte_pos += cnt;
 	pos->tape_pos     += cnt;

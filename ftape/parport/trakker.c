@@ -39,12 +39,7 @@
 #include <asm/segment.h>
 
 #include <linux/ftape.h>
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,16)
 #include <linux/init.h>
-#else
-#define __initdata
-#define __initfunc(__arg) __arg
-#endif
 
 #define FDC_TRACING
 #include "../lowlevel/ftape-tracing.h"
@@ -117,27 +112,15 @@ static void trakker_outb_fast(fdc_info_t *fdc,
 #ifdef TESTING
 	TRACE_FUN(ft_t_any);
 #endif
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (!in_interrupt() && !fdc->irq_level++) {
 		disable_irq(trakker->IRQ);
 	}
-#else
-	if (!intr_count && !fdc->irq_level++) {
-		disable_irq(trakker->IRQ);
-	}
-#endif
 	w_fast(trakker, reg);
 	w_fast(trakker, value);
 	trakker->chksum ^= reg^value;
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (!in_interrupt() && !--fdc->irq_level) {
 		enable_irq(trakker->IRQ);
 	}
-#else
-	if (!intr_count && !--fdc->irq_level) {
-		enable_irq(trakker->IRQ);
-	}
-#endif
 
 #ifdef TESTING
 	TRACE(ft_t_data_flow, "out(%x,%x)",reg,value);
@@ -178,11 +161,7 @@ static void trakker_outb_hshake(fdc_info_t *fdc,
 #ifdef TESTING
 	TRACE_FUN(ft_t_any);
 #endif
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (!in_interrupt() && !fdc->irq_level++)
-#else
-	if (!intr_count && !fdc->irq_level++)
-#endif
 		disable_irq(trakker->IRQ);
 
 	w_dtr(reg);
@@ -191,11 +170,7 @@ static void trakker_outb_hshake(fdc_info_t *fdc,
 	w_ctr(trakker->ctr);
 	trakker->chksum ^= reg^value;
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (!in_interrupt() && !--fdc->irq_level)
-#else
-	if (!intr_count && !--fdc->irq_level)
-#endif
 		enable_irq(trakker->IRQ);
 
 #ifdef TESTING
@@ -428,17 +403,9 @@ void trakker_read(fdc_info_t *fdc, buffer_struct *buff)
 #define GLOBAL_TRACING
 #include "../lowlevel/ftape-real-tracing.h"
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 static void trakker_interrupt(int irq, void *dev_id, struct pt_regs *regs)
-#else
-static void trakker_interrupt(int irq, struct pt_regs *regs)
-#endif
 {
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	fdc_info_t *fdc = (fdc_info_t *)dev_id;
-#else
-	fdc_info_t *fdc = ft_find_fdc_by_irq(irq);
-#endif
 	struct trakker_struct *trakker;
 	static int interrupt_active = 0;
 	TRACE_FUN(ft_t_any);
@@ -452,12 +419,10 @@ static void trakker_interrupt(int irq, struct pt_regs *regs)
 		      "prepare for Armageddon", FT_FDC_MAGIC, fdc->magic);
 		goto err_out;
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	if (fdc->irq != irq) {
 		TRACE(ft_t_bug, "BUG: Wrong IRQ number (%d/%d)", irq, fdc->irq);
 		goto err_out;
 	}
-#endif
 
 	if ((trakker = (struct trakker_struct *)fdc->data) == NULL) {
 		TRACE(ft_t_bug, "BUG: "
@@ -1255,8 +1220,6 @@ int trakker_unregister(void)
 	return 0;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
-
 EXPORT_NO_SYMBOLS;
 
 MODULE_LICENSE("GPL");
@@ -1265,15 +1228,10 @@ MODULE_AUTHOR(
   "(c) 1997 Jochen Hoenicke (jochen.hoenicke@informatik.uni-oldenburg.de)");
 MODULE_DESCRIPTION("Ftape-interface for HP Colorado Trakker");
 
-#endif
-
 /* Called by modules package when installing the driver
  */
 int init_module(void)
 {
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-	register_symtab(0); /* remove global ftape symbols */
-#endif
 	return trakker_register();
 }
 

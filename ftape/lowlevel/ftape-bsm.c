@@ -220,7 +220,6 @@ static void print_bad_sector_map(ftape_info_t *ftape)
 		}
 		/*  Display old ftape's end-of-file marks
 		 */
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,0,0)
 		{
 			__u16 *u16_ptr = (__u16*)ptr;
 			while ((sector = get_unaligned(u16_ptr)) != 0) {
@@ -229,13 +228,7 @@ static void print_bad_sector_map(ftape_info_t *ftape)
 				      sector, get_unaligned(u16_ptr));
 				u16_ptr++;
 			}
-		}
-#else
-		while ((sector = *((__u16*)ptr)++) != 0) {
-			TRACE(ft_t_noise, "Old ftape eof mark: %4d/%2d",
-			      sector, *((__u16*)ptr)++);
-		}
-#endif			
+		}	
 	} else { /* fixed size format */
 		for (i = ftape->first_data_segment;
 		     i < (int)(ftape->segments_per_track * ftape->tracks_per_tape); ++i) {

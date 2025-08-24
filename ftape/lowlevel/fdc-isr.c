@@ -1354,11 +1354,7 @@ static void handle_stray_interrupt(fdc_info_t *fdc, int st0, int pcn)
 		      pcn, fdc->current_cylinder);
 		fdc->current_cylinder = pcn;
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,0,16)
 	if (waitqueue_active(&fdc->wait_intr))
-#else
-	if (fdc->wait_intr)
-#endif
 	{
 		TRACE(ft_t_fdc_dma, "awaited stray interrupt");
 		TRACE_EXIT;
@@ -1447,23 +1443,12 @@ void fdc_isr(fdc_info_t *fdc)
 	 */
 	if (!fdc->hide_interrupt) {
 		fdc->interrupt_seen ++;
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,0,16)
 		if (waitqueue_active(&fdc->wait_intr)) {
 			wake_up_interruptible(&fdc->wait_intr);
 		}
-#else
-		if ((fdc->wait_intr)) {
-			wake_up_interruptible(&fdc->wait_intr);
-		}
-#endif
 	} else {
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,0,16)
 		TRACE(ft_t_flow, "hiding interrupt while %s", 
 		      waitqueue_active(&fdc->wait_intr) ? "waiting":"active");
-#else
-		TRACE(ft_t_flow, "hiding interrupt while %s", 
-		      fdc->wait_intr ? "waiting" : "active");
-#endif
 		pause_tape(fdc); /* hide interrupt means pause_tape() */
 	}
 out:

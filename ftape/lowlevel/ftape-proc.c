@@ -51,9 +51,6 @@
 #include <linux/proc_fs.h>
 
 #include <linux/ftape.h>
-#if LINUX_VERSION_CODE <= KERNEL_VER(2,3,0) /* bail out */
-#error This file is for Linux version 2.3.0 or newer
-#endif
 #include <linux/qic117.h>
 
 #include "ftape-io.h"

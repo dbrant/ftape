@@ -298,11 +298,7 @@ typedef struct fdc_info {
 	volatile fdc_mode_enum mode;
 	volatile int resetting;
 	int in_reset;
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,3,0)
 	wait_queue_head_t wait_intr;
-#else
-	struct wait_queue *wait_intr;
-#endif
 	/*
 	 * from fdc-isr.c
 	 */

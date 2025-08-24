@@ -41,11 +41,7 @@
 
 #include <linux/zftape.h>
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,6)
 #include <asm/uaccess.h>
-#else
-#include <asm/segment.h>
-#endif
 
 #include "../zftape/zftape-init.h"
 #include "../zftape/zftape-eof.h"
@@ -495,17 +491,12 @@ static int zftc_read (void *handle,
 				TRACE_ABORT(-EIO, ft_t_warn,
 				      "Uncompressed blk (%d) != blk size (%d)",
 				      uncompressed_sz, volume->blk_sz);
-			}       
-#if LINUX_VERSION_CODE > KERNEL_VER(2,1,3)
+			}
 			if (copy_to_user(dst_buf + result, 
 					 zftc->scratch_buf, 
 					 uncompressed_sz) != 0 ) {
 				TRACE_EXIT -EFAULT;
 			}
-#else
-			memcpy_tofs(dst_buf + result, zftc->scratch_buf, 
-				    uncompressed_sz);
-#endif
 			remaining      -= uncompressed_sz;
 			result     += uncompressed_sz;
 			zftc->cseg.cmpr_pos  = 0;
@@ -1016,24 +1007,17 @@ KERN_INFO "Compiled for kernel version %s"
 
 
 #ifdef MODULE
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 MODULE_LICENSE("GPL");
 
 MODULE_AUTHOR(
 	"(c) 1996-1998 Claus-Justus Heine <heine@instmath.rwth-aachen.de>");
 MODULE_DESCRIPTION(
 "Compression routines for zftape. Uses the lzrw3 algorithm by Ross Williams");
-#endif
 
-#if LINUX_VERSION_CODE <= KERNEL_VER(1,2,13)
-char kernel_version[] = UTS_RELEASE;
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 static int can_unload(void)
 {
 	return keep_module_locked ? -EBUSY : 0;
 }
-#endif
 
 /* Called by modules package when installing the driver
  */
@@ -1041,16 +1025,10 @@ int init_module(void)
 {
 	int result;
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,1,85)
-# if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-	register_symtab(0); /* remove global ftape symbols */
-# else
 	if (!mod_member_present(&__this_module, can_unload))
 		return -EBUSY;
 	__this_module.can_unload = can_unload;
 	EXPORT_NO_SYMBOLS;
-# endif
-#endif
 	result = zft_compressor_init();
 	keep_module_locked = 0;
 	return result;

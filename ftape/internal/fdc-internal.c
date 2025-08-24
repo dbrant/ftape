@@ -480,7 +480,6 @@ static int fdc_int_grab(fdc_info_t *fdc)
 	/*  Get fast interrupt handler.
 	 */
 	printk(KERN_INFO "fdc_int_grab: Requesting IRQ %d\n", fdc->irq);
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	if (request_irq(fdc->irq, ftape_interrupt,
 			0, ftape_id, fdc)) {
 		printk(KERN_ERR "fdc_int_grab: Failed to request IRQ %d\n", fdc->irq);
@@ -490,24 +489,10 @@ static int fdc_int_grab(fdc_info_t *fdc)
 			    "Unable to grab IRQ%d for ftape driver",
 			    fdc->irq);
 	}
-#else
-	if (request_irq(fdc->irq, ftape_interrupt, SA_INTERRUPT,
-			ftape_id)) {
-		printk(KERN_ERR "fdc_int_grab: Failed to request IRQ %d\n", fdc->irq);
-		fdc_int_release_regions(fdc);
-		module_put(THIS_MODULE);
-		TRACE_ABORT(-EBUSY, ft_t_bug,
-			    "Unable to grab IRQ%d for ftape driver",
-			    fdc->irq);
-	}
-#endif
+
 	printk(KERN_INFO "fdc_int_grab: IRQ %d requested successfully\n", fdc->irq);
 	if (request_dma(fdc->dma, ftape_id)) {
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 		free_irq(fdc->irq, fdc);
-#else
-		free_irq(fdc->irq);
-#endif
 		fdc_int_release_regions(fdc);
 		module_put(THIS_MODULE);
 		TRACE_ABORT(-EBUSY, ft_t_bug,
@@ -533,11 +518,7 @@ static int fdc_int_release(fdc_info_t *fdc)
 
 	disable_dma(fdc->dma);	/* just in case... */
 	free_dma(fdc->dma);
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	free_irq(fdc->irq, fdc);
-#else
-	free_irq(fdc->irq);
-#endif
 	if (fdc->sra != 0x3f0 && (fdc->dma == 2 || fdc->irq == 6)) {
 		/* Using same dma channel as standard fdc, need to
 		 * disable the dma-gate on the std fdc. This couldn't
@@ -896,7 +877,6 @@ int __init fdc_internal_register(void)
 }
 
 #ifdef MODULE
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 #define FT_MOD_PARM(var,type,desc) \
 	module_param_array(var, int, NULL, 0644); MODULE_PARM_DESC(var,desc)
 
@@ -916,7 +896,6 @@ MODULE_AUTHOR(
 	"(c) 1997-2000 Claus-Justus Heine <heine@instmath.rwth-aachen.de>");
 MODULE_DESCRIPTION(
 	"Ftape interface to the internal fdc.");
-#endif
 
 
 /* Called by modules package when installing the driver
@@ -930,13 +909,8 @@ int init_module(void)
 	printk(KERN_INFO "ftape_internal: ft_fdc_irq[0] = %d\n", ft_fdc_irq[0]);
 	printk(KERN_INFO "ftape_internal: ft_fdc_dma[0] = %d\n", ft_fdc_dma[0]);
 	
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,1,85)
-# if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-	register_symtab(0); /* remove global ftape symbols */
-# else
 	/* EXPORT_NO_SYMBOLS is deprecated - no global exports by default */
-# endif
-#endif
+
 	result = fdc_internal_register();
 	printk(KERN_INFO "ftape_internal: fdc_internal_register() returned %d\n", result);
 	if (result < 0) {

@@ -183,10 +183,6 @@ MODULE_AUTHOR(
 MODULE_DESCRIPTION(
 	"QIC-117 driver for QIC-40/80/3010/3020/Ditto floppy tape drives.");
 
-#if LINUX_VERSION_CODE <= KERNEL_VER(1,2,13)
-char kernel_version[] = UTS_RELEASE;
-#endif
-
 /*  Called by modules package when installing the driver
  */
 static int __init ftape_module_init(void)

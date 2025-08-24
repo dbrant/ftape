@@ -77,9 +77,7 @@ void ftape_sleep(unsigned int time)
 		 * we get control again.
 		 */
 		long timeout = ticks + 1; /* + 1 is NECESSARY !!!! */
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,127)
-		current->timeout = jiffies + timeout;
-#endif
+
 		set_current_state(TASK_INTERRUPTIBLE);
 		do {
 			/*  Mmm. Isn't current->blocked == 0xffffffff ?
@@ -89,15 +87,8 @@ void ftape_sleep(unsigned int time)
 				break;	/* exit on signal */
 			}
 			while (get_current_state() != TASK_RUNNING) {
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,127)
-				schedule();
-#else
 				timeout = schedule_timeout(timeout);
-#endif
 			}
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,127)
-			timeout = current->timeout;
-#endif
 		} while (timeout > 0);
 	}
 }

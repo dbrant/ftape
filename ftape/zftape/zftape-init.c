@@ -36,7 +36,6 @@
 
 /* DevFS was removed from modern kernels - disabled for now */
 #if 0 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,3,46)
 # include <linux/devfs_fs_kernel.h>
 
 static devfs_handle_t ftape_devfs_handle;
@@ -54,7 +53,6 @@ static devfs_handle_t devfs_raw[4];
 static devfs_handle_t devfs_rawn[4];
 # endif
 
-#endif
 #endif /* DevFS disabled */
 
 #define SEL_TRACING
@@ -71,7 +69,6 @@ char zft_dat[] __initdata = "$Date: 2000/07/20 13:18:05 $";
 
 int ft_major_device_number = QIC117_TAPE_MAJOR;
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 #define FT_MOD_PARM(var,type,desc) \
 	module_param(var, int, 0644); MODULE_PARM_DESC(var,desc)
 MODULE_AUTHOR("(c) 1996-2000 Claus-Justus Heine "
@@ -82,7 +79,7 @@ MODULE_DESCRIPTION(ZFTAPE_VERSION " - "
 /* MODULE_SUPPORTED_DEVICE is deprecated - removed */
 FT_MOD_PARM(ft_major_device_number, "i",
 	    "Major device number to use. Use with caution ...");
-#endif
+
 /*      Global vars.
  */
 
@@ -105,38 +102,13 @@ static int busy_flag[4];
  */
 
 static int  zft_open (struct inode *ino, struct file *filep);
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,31)
 static int zft_close(struct inode *ino, struct file *filep);
-#else
-static void zft_close(struct inode *ino, struct file *filep);
-#endif
 static long zft_ioctl(struct file *filep, unsigned int command, unsigned long arg);
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
 static ssize_t zft_read (struct file *fp, char *buff,
 			 size_t req_len, loff_t *ppos);
 static ssize_t zft_write(struct file *fp, const char *buff,
 			 size_t req_len, loff_t *ppos);
-#elif LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
-static long zft_read (struct inode *ino, struct file *fp, char *buff,
-		      unsigned long req_len);
-static long zft_write(struct inode *ino, struct file *fp, const char *buff,
-		      unsigned long req_len);
-#else
-static int  zft_read (struct inode *ino, struct file *fp, char *buff,
-		      int req_len); 
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,0)
-static int  zft_write(struct inode *ino, struct file *fp, const char *buff,
-		      int req_len);
-#else
-static int  zft_write(struct inode *ino, struct file *fp, char *buff,
-		      int req_len);
-#endif
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
 static loff_t zft_seek(struct file * file, loff_t offset, int origin);
-#else
-static int zft_seek(struct inode *, struct file *, off_t, int);
-#endif
 
 static struct file_operations zft_cdev = {
 	.owner = THIS_MODULE,
@@ -186,26 +158,13 @@ static int zft_open(struct inode *ino, struct file *filep)
 	}
 	if (zft_dirty(zftapes[sel])) { /* was already locked */
 		module_put(THIS_MODULE);
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,50)
-#if 1 || ZFT_PARANOID
-		if (!MOD_IN_USE) {
-			TRACE(ft_t_err, "Geeh! Use count is 0!: 0x%08x",
-			      mod_use_count_);
-
-		}
-#endif
-#endif
 	}
 	TRACE_EXIT 0;
 }
 
 /*      Close floppy tape device
  */
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,31)
 static int zft_close(struct inode *ino, struct file *filep)
-#else
-static void zft_close(struct inode *ino, struct file *filep)
-#endif
 {
 	sigset_t old_sigset;
 	int result;
@@ -215,11 +174,7 @@ static void zft_close(struct inode *ino, struct file *filep)
 
 	if (!busy_flag[sel] || !zftape || MINOR(ino->i_rdev) != zftape->unit) {
 		TRACE(ft_t_err, "failed: not busy or wrong unit");
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,31)
 		TRACE_EXIT 0;
-#else
-		TRACE_EXIT; /* keep busy_flag !! */
-#endif
 	}
 	ft_sigblockall(&old_sigset);
 	result = _zft_close(zftape, ino->i_rdev);
@@ -227,17 +182,8 @@ static void zft_close(struct inode *ino, struct file *filep)
 	if (result < 0) {
 		TRACE(ft_t_err, "_zft_close failed: %d", result);
 	}
-#if defined(MODULE) && LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-	if (!zft_dirty(zftape)) {
-		module_put(THIS_MODULE); /* unlock module in memory */
-	}
-#endif
 	busy_flag[sel] = 0;
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,31)
 	TRACE_EXIT 0;
-#else
-	TRACE_EXIT;
-#endif
 }
 
 /*      Ioctl for floppy tape device
@@ -272,34 +218,22 @@ static long zft_ioctl(struct file *filep, unsigned int command, unsigned long ar
 
 /*      Read from floppy tape device
  */
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
 static ssize_t zft_read(struct file *fp, char *buff,
 			size_t req_len, loff_t *ppos)
-#elif LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
-static long zft_read(struct inode *ino, struct file *fp, char *buff,
-		     unsigned long req_len)
-#else
-static int  zft_read(struct inode *ino, struct file *fp, char *buff,
-		     int req_len)
-#endif
 {
 	int result = -EIO;
 	sigset_t old_sigmask;
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
 	struct inode *ino = file_inode(fp);
-#endif
 	int sel = FTAPE_SEL(MINOR(ino->i_rdev));
 	zftape_info_t *zftape = zftapes[sel];
 	TRACE_FUN(ft_t_flow);
 
 	TRACE(ft_t_data_flow, "called with count: %ld", (unsigned long)req_len);
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
 	if (ppos != &fp->f_pos) {
 		/* "A request was outside the capabilities of the device." */
 		TRACE_EXIT -ENXIO;
 	}
-#endif
 
 	if (!busy_flag[sel] ||
 	    !zftape || MINOR(ino->i_rdev) != zftape->unit ||
@@ -316,36 +250,21 @@ static int  zft_read(struct inode *ino, struct file *fp, char *buff,
 
 /*      Write to tape device
  */
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
 static ssize_t zft_write(struct file *fp, const char *buff,
 			 size_t req_len, loff_t *ppos)
-#elif LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
-static long zft_write(struct inode *ino, struct file *fp, const char *buff,
-		      unsigned long req_len)
-#elif LINUX_VERSION_CODE >= KERNEL_VER(1,3,0)
-static int  zft_write(struct inode *ino, struct file *fp, const char *buff,
-		      int req_len)
-#else
-static int  zft_write(struct inode *ino, struct file *fp, char *buff,
-		      int req_len)
-#endif
 {
 	int result = -EIO;
 	sigset_t old_sigmask;
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
 	struct inode *ino = file_inode(fp);
-#endif
 	int sel = FTAPE_SEL(MINOR(ino->i_rdev));
 	zftape_info_t *zftape = zftapes[sel];
 	TRACE_FUN(ft_t_flow);
 
 	TRACE(ft_t_data_flow, "called with count: %ld", (unsigned long)req_len);
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
 	if (ppos != &fp->f_pos) {
 		/* "A request was outside the capabilities of the device." */
 		TRACE_EXIT -ENXIO;
 	}
-#endif
 	if (!busy_flag[sel] ||
 	    !zftape || MINOR(ino->i_rdev) != zftape->unit ||
 	    !zftape->ftape || zftape->ftape->failure) {
@@ -359,11 +278,7 @@ static int  zft_write(struct inode *ino, struct file *fp, char *buff,
 	TRACE_EXIT result;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
 static loff_t zft_seek(struct file * file, loff_t offset, int origin)
-#else
-static int zft_seek(struct inode * inode, struct file * file, off_t offset, int origin)
-#endif
 {
         return -ESPIPE;
 }
@@ -442,12 +357,6 @@ extern int zft_compressor_init(void);
 #if 0 /* DevFS support disabled for modern kernels */
 static int __init zft_devfs_register(void)
 {
-#if LINUX_VERSION_CODE < KERNEL_VER(2,3,46)
-	TRACE_FUN(ft_t_flow);
-
-	TRACE_CATCH(register_chrdev(ft_major_device_number,
-				    "zft", &zft_cdev),);
-#else
 	int sel;
 	TRACE_FUN(ft_t_flow);
 	
@@ -509,7 +418,6 @@ static int __init zft_devfs_register(void)
 # endif
 		devfs_register_tape(devfs_q[sel]);
 	}
-#endif
 	TRACE_EXIT 0;
 }
 #endif /* DevFS disabled */
@@ -551,10 +459,7 @@ KERN_INFO
 #ifdef CONFIG_ZFT_COMPRESSOR
 	(void)zft_compressor_init();
 #elif defined(CONFIG_ZFT_COMPRESSOR_MODULE)
-# if LINUX_VERSION_CODE >= KERNEL_VER(1,2,0) &&\
-     LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-	register_symtab(&zft_symbol_table); /* add global zftape symbols */
-# endif
+
 #endif /* CONFIG_ZFT_COMPRESSOR */
 
 	TRACE_EXIT 0;
@@ -564,10 +469,7 @@ KERN_INFO
 #define FT_TRACE_ATTR /**/
 
 #ifdef MODULE
-# if LINUX_VERSION_CODE <= KERNEL_VER(1,2,13) && defined(MODULE)
-char kernel_version[] = "Modern Linux";
-# endif
-# if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
+
 /* Called by modules package before trying to unload the module
  */
 static int can_unload(void)
@@ -583,18 +485,13 @@ static int can_unload(void)
 	}
 	TRACE_EXIT 0;
 }
-# endif
+
 /* Called by modules package when installing the driver
  */
 int init_module(void)
 {
 # if !defined(CONFIG_ZFT_COMPRESSOR_MODULE)
-#  if LINUX_VERSION_CODE >= KERNEL_VER(1,1,85) && \
-     LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-	register_symtab(0); /* remove global ftape symbols */
-#  else
 	/* EXPORT_NO_SYMBOLS is deprecated - no global exports by default */
-#  endif
 # endif /* CONFIG_ZFT_COMPRESSOR_MODULE */
 /* Module unloading API modernized - old can_unload interface removed */
 	return zft_init();
@@ -607,13 +504,9 @@ void cleanup_module(void)
 	int sel;
 	TRACE_FUN(ft_t_flow);
 
-# if LINUX_VERSION_CODE >= KERNEL_VER(2,3,46)
 	unregister_chrdev(ft_major_device_number, "zft");
 	TRACE(ft_t_info, "unregistered character device");
-# else
-	unregister_chrdev(ft_major_device_number, "zft");
-	TRACE(ft_t_info, "unregistered character device");
-# endif
+
 	for (sel = 0; sel < 4; sel++) {
 		if (zftapes[sel]) {
 			/* release remaining memory, if any */
@@ -622,7 +515,6 @@ void cleanup_module(void)
 		}
 	}  /* Close for loop */
 #if 0 /* DevFS cleanup disabled */
-# if LINUX_VERSION_CODE >= KERNEL_VER(2,3,46)
 		devfs_unregister (devfs_q[sel]);
 		devfs_q[sel] = NULL;
 		devfs_unregister (devfs_qn[sel]);
@@ -641,12 +533,9 @@ void cleanup_module(void)
 #endif
 		devfs_unregister(devfs_handle[sel]);
 		devfs_handle[sel] = NULL;
-# endif
 	}
-# if LINUX_VERSION_CODE >= KERNEL_VER(2,3,46)
 	devfs_unregister(ftape_devfs_handle);
 	ftape_devfs_handle = NULL;
-# endif
 #endif /* DevFS cleanup disabled */
         printk(KERN_INFO "zftape successfully unloaded.\n");
 	TRACE_EXIT;

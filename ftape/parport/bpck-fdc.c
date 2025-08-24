@@ -1113,17 +1113,9 @@ static int bpck_fdc_memory_test(bpck_fdc_t *bpck)
 	TRACE_EXIT 0;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 static void bpck_fdc_interrupt(int irq, void *dev_id, struct pt_regs *regs)
-#else
-static void bpck_fdc_interrupt(int irq, struct pt_regs *regs)
-#endif
 {
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	fdc_info_t *fdc = (fdc_info_t *)dev_id;
-#else
-	fdc_info_t *fdc = ft_find_fdc_by_irq(irq);
-#endif
 	bpck_fdc_t *bpck;
 	static int moan = 0;
 	int i;
@@ -1138,13 +1130,11 @@ static void bpck_fdc_interrupt(int irq, struct pt_regs *regs)
 		      "prepare for Armageddon", FT_FDC_MAGIC, fdc->magic);
 		goto err_out;
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	if (fdc->irq != irq) {
 		TRACE(ft_t_bug,
 		      "BUG: Wrong IRQ number (%d/%d)", irq, fdc->irq);
 		goto err_out;
 	}
-#endif
 	if ((bpck = (bpck_fdc_t *)fdc->data) == NULL) {
 		TRACE(ft_t_bug,
 		      "BUG: no bpck data allocated for bpck driver");
@@ -2197,7 +2187,6 @@ int bpck_fdc_unregister(void)
 	return 0;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 
 FT_MOD_PARM(ecr_bits,        "i", "What to write to the econtrol ECR reg.");
 FT_MOD_PARM(parport_proto,   "i", "Parport protocol.");
@@ -2208,7 +2197,6 @@ MODULE_AUTHOR(
   "(c) 1998 Claus-Justus Heine");
 MODULE_DESCRIPTION("Ftape-interface for Bpck parallel port floppy tape");
 EXPORT_NO_SYMBOLS;
-#endif
 
 /* Called by modules package when installing the driver
  */
@@ -2216,13 +2204,8 @@ int init_module(void)
 {
 	int result;
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,1,85)
-# if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-	register_symtab(0); /* remove global ftape symbols */
-# else
 	EXPORT_NO_SYMBOLS;
-# endif
-#endif
+
 	result = bpck_fdc_register();
 	return result;
 }

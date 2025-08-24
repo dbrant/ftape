@@ -30,9 +30,7 @@
 
 #include <linux/ftape.h>
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 #include <linux/vmalloc.h>
-#endif
 
 #define SEL_TRACING
 #include "ftape-tracing.h"
@@ -102,12 +100,7 @@ void *ftape_kmalloc(int sel, size_t size, int retry)
 
 	while ((new = kmalloc(size, GFP_KERNEL)) == NULL && retry) {
 		set_current_state(TASK_INTERRUPTIBLE);
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,127)
-		current->timeout = HZ/10;
-		schedule();
-#else
 		(void)schedule_timeout(HZ/10);
-#endif
 	}
 	if (new == NULL) {
 		TRACE_EXIT NULL;

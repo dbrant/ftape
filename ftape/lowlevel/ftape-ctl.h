@@ -60,15 +60,6 @@ typedef struct {
 	unsigned int defects;	/* bad sectors due to media defects */
 } ft_history_t;
 
-/*  compatibility with old kernel versions
- */
-#if LINUX_VERSION_CODE <= KERNEL_VER(1,2,13)
-#define _IOC_SIZE(cmd) (((cmd) & IOCSIZE_MASK) >> IOCSIZE_SHIFT)
-#define _IOC_DIR(cmd)  (cmd)
-#define _IOC_WRITE IOC_IN
-#define _IOC_READ  IOC_OUT
-#endif
-
 typedef struct ftape_info {
 	vendor_struct drive_type;
 	fdc_info_t *fdc; /* fdc config info   */	
