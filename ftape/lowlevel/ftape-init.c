@@ -50,9 +50,9 @@
 
 /*      Global vars.
  */
-char ft_src[] __initdata = "$RCSfile: ftape-init.c,v $";
-char ft_rev[] __initdata = "$Revision: 1.28 $";
-char ft_dat[] __initdata = "$Date: 2000/06/30 12:02:37 $";
+char ft_src[] = "$RCSfile: ftape-init.c,v $";
+char ft_rev[] = "$Revision: 1.28 $";
+char ft_dat[] = "$Date: 2000/06/30 12:02:37 $";
 
 int ft_ignore_ecc_err = 0;
 int ft_soft_retries = FT_SOFT_RETRIES;
@@ -69,7 +69,7 @@ int ft_soft_retries = FT_SOFT_RETRIES;
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 static void __init ftape_build_driver_list(void)
 {
@@ -214,11 +214,11 @@ module_exit(ftape_module_exit);
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 int ftape_lowlevel_setup(char *str)
 {	
-	static __initlocaldata int ints[6] = { 0, };
+	static int ints[6] = { 0, };
 	size_t offset = strlen(str) - strlen("driver");
 	TRACE_FUN(ft_t_flow);
 

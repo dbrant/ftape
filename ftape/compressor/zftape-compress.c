@@ -976,7 +976,7 @@ static struct zft_cmpr_ops cmpr_ops = {
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 int __init zft_compressor_init(void)
 {

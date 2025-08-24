@@ -57,7 +57,7 @@ extern int ftape_internal_setup(char *str);
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 /* do some option parsing here. The kernel get_options() function
  * doesn't allow negative numbers, we use the keywords "a" and "n" for

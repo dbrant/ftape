@@ -58,9 +58,9 @@
 
 /*      Global vars.
  */
-char trakker_src[] __initdata = "$RCSfile: trakker.c,v $";
-char trakker_rev[] __initdata = "$Revision: 1.20 $";
-char trakker_dat[] __initdata = "$Date: 2000/07/06 14:58:17 $";
+char trakker_src[] = "$RCSfile: trakker.c,v $";
+char trakker_rev[] = "$Revision: 1.20 $";
+char trakker_dat[] = "$Date: 2000/07/06 14:58:17 $";
 
 /* If you have problems with this driver try to define some of these */
 #undef	FULL_HANDSHAKE
@@ -862,7 +862,7 @@ static void trakker_speedtest(fdc_info_t *fdc)
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 static int __init trakker_probe_irq(fdc_info_t *fdc)
 {
@@ -1195,7 +1195,7 @@ static fdc_operations trakker_ops = {
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 int __init trakker_register(void)
 {
@@ -1250,7 +1250,7 @@ void cleanup_module(void)
 
 #include "../setup/ftape-setup.h"
 
-static ftape_setup_t config_params[] __initdata = {
+static ftape_setup_t config_params[] = {
 #ifndef USE_PARPORT
 	{ "base",      ft_fdc_base,      0x0, 0xffff, 1 },
 	{ "irq" ,      ft_fdc_irq,        -1,     15, 1 },
@@ -1266,7 +1266,7 @@ static ftape_setup_t config_params[] __initdata = {
 
 int __init trakker_setup(char *str)
 {
-	static __initlocaldata int ints[6] = { 0, };
+	static int ints[6] = { 0, };
 
 	str = get_options(str, ARRAY_SIZE(ints), ints);
 

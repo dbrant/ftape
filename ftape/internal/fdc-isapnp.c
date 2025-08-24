@@ -40,19 +40,19 @@
 /* The data to pass to isapnp_find_device() and isapnp_find_card().
  * BTW, shouldn't this be an "__u16" instead of "unsigned short"?
  */
-static unsigned short known_vendors[] __initdata = {
+static unsigned short known_vendors[] = {
 	ISAPNP_VENDOR('I', 'O', 'M'),
 };
 
-static unsigned short known_devices[] __initdata = {
+static unsigned short known_devices[] = {
 	ISAPNP_DEVICE(0x0040),
 };
 
-static unsigned short known_functions[] __initdata = {
+static unsigned short known_functions[] = {
 	ISAPNP_FUNCTION(0x0040),
 };
 
-static unsigned short ft_fdc_pnp_ven[4] __initdata = {
+static unsigned short ft_fdc_pnp_ven[4] = {
 #if CONFIG_FT_PNP_FDC_0
 	-1,
 #else
@@ -75,11 +75,11 @@ static unsigned short ft_fdc_pnp_ven[4] __initdata = {
 #endif
 };
 
-static unsigned short ft_fdc_pnp_dev[4] __initdata = {
+static unsigned short ft_fdc_pnp_dev[4] = {
 	-2, -2, -2, -2
 };
 
-static unsigned short ft_fdc_pnp_fct[4] __initdata = {
+static unsigned short ft_fdc_pnp_fct[4] = {
 	-2, -2, -2, -2
 };
 

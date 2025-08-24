@@ -51,9 +51,9 @@
 
 /*      Global vars.
  */
-char fdc_int_internal_src[] __initdata = "$RCSfile: fdc-internal.c,v $";
-char fdc_int_internal_rev[] __initdata = "$Revision: 1.40 $";
-char fdc_int_internal_dat[] __initdata = "$Date: 2000/07/25 10:36:40 $";
+char fdc_int_internal_src[] = "$RCSfile: fdc-internal.c,v $";
+char fdc_int_internal_rev[] = "$Revision: 1.40 $";
+char fdc_int_internal_dat[] = "$Date: 2000/07/25 10:36:40 $";
 
 #ifdef fdc
 #error foo
@@ -73,47 +73,47 @@ char fdc_int_internal_dat[] __initdata = "$Date: 2000/07/25 10:36:40 $";
  * running.
  */
 
-static int ft_fdc_base[4] __initdata = {
+static int ft_fdc_base[4] = {
 	CONFIG_FT_FDC_BASE_0,
 	CONFIG_FT_FDC_BASE_1,
 	CONFIG_FT_FDC_BASE_2,
 	CONFIG_FT_FDC_BASE_3 };
 
-static int ft_fdc_irq[4] __initdata = {
+static int ft_fdc_irq[4] = {
 	CONFIG_FT_FDC_IRQ_0,
 	CONFIG_FT_FDC_IRQ_1,
 	CONFIG_FT_FDC_IRQ_2,
 	CONFIG_FT_FDC_IRQ_3 };
 
-static int ft_fdc_dma[4] __initdata = {
+static int ft_fdc_dma[4] = {
 	CONFIG_FT_FDC_DMA_0,
 	CONFIG_FT_FDC_DMA_1,
 	CONFIG_FT_FDC_DMA_2,
 	CONFIG_FT_FDC_DMA_3,
 };
 
-static int ft_fdc_fc10[4] __initdata = {
+static int ft_fdc_fc10[4] = {
 	CONFIG_FT_FC10_0,
 	CONFIG_FT_FC10_1,
 	CONFIG_FT_FC10_2,
 	CONFIG_FT_FC10_3
 };
 
-static int ft_fdc_mach2[4] __initdata = {
+static int ft_fdc_mach2[4] = {
 	CONFIG_FT_MACH2_0,
 	CONFIG_FT_MACH2_1,
 	CONFIG_FT_MACH2_2,
 	CONFIG_FT_MACH2_3
 };
 
-unsigned int ft_fdc_threshold[4] __initdata = {
+unsigned int ft_fdc_threshold[4] = {
 	CONFIG_FT_FDC_THRESHOLD_0,
 	CONFIG_FT_FDC_THRESHOLD_1,
 	CONFIG_FT_FDC_THRESHOLD_2,
 	CONFIG_FT_FDC_THRESHOLD_3
 };
 
-unsigned int ft_fdc_rate_limit[4] __initdata = {
+unsigned int ft_fdc_rate_limit[4] = {
 	CONFIG_FT_FDC_MAX_RATE_0,
 	CONFIG_FT_FDC_MAX_RATE_1,
 	CONFIG_FT_FDC_MAX_RATE_2,
@@ -412,7 +412,7 @@ static void fdc_int_grab_handler(fdc_info_t *fdc)
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 static void __init fdc_int_cause_reset(fdc_info_t *fdc)
 {
@@ -655,7 +655,7 @@ static int fdc_int_correct_and_copy(fdc_info_t *fdc,
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 static void __init fdc_int_config(fdc_info_t *fdc)
 {
@@ -849,7 +849,7 @@ struct fdc_operations fdc_internal_ops = {
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 int __init fdc_internal_register(void)
 {
@@ -937,7 +937,7 @@ void cleanup_module(void)
 
 #include "../setup/ftape-setup.h"
 
-static ftape_setup_t config_params[] __initdata = {
+static ftape_setup_t config_params[] = {
 #ifdef CONFIG_ISAPNP
 	{ "base",      ft_fdc_base,       -1, 0xffff, 1 },
 	{ "dma",       ft_fdc_dma,        -1,      3, 0 },
@@ -955,7 +955,7 @@ static ftape_setup_t config_params[] __initdata = {
 
 int __init ftape_internal_setup(char *str)
 {
-	static __initlocaldata int ints[6] = { 0, };
+	static int ints[6] = { 0, };
 #ifdef CONFIG_ISAPNP
 	int result;
 

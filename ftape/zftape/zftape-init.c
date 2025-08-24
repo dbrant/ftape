@@ -47,9 +47,9 @@ static struct class *ftape_class;
 #include "zftape-buffers.h"
 #include "zftape_syms.h"
 
-char zft_src[] __initdata = "$RCSfile: zftape-init.c,v $";
-char zft_rev[] __initdata = "$Revision: 1.38 $";
-char zft_dat[] __initdata = "$Date: 2000/07/20 13:18:05 $";
+char zft_src[] = "$RCSfile: zftape-init.c,v $";
+char zft_rev[] = "$Revision: 1.38 $";
+char zft_dat[] = "$Date: 2000/07/20 13:18:05 $";
 
 int ft_major_device_number = QIC117_TAPE_MAJOR;
 
@@ -336,7 +336,7 @@ extern int zft_compressor_init(void);
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 static int __init zft_device_register(void)
 {

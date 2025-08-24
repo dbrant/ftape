@@ -2161,7 +2161,7 @@ static fdc_operations bpck_fdc_ops = {
 #ifdef FT_TRACE_ATTR
 # undef FT_TRACE_ATTR
 #endif
-#define FT_TRACE_ATTR __initlocaldata
+#define FT_TRACE_ATTR
 
 int __init bpck_fdc_register(void)
 {
@@ -2226,7 +2226,7 @@ void cleanup_module(void)
 
 #include "../setup/ftape-setup.h"
 
-static ftape_setup_t config_params[] __initdata = {
+static ftape_setup_t config_params[] = {
 #ifndef USE_PARPORT
 	{ "base",      ft_fdc_base,      0x0, 0xffff, 1 },
 	{ "irq" ,      ft_fdc_irq,        -1,     15, 1 },
@@ -2239,7 +2239,7 @@ static ftape_setup_t config_params[] __initdata = {
 
 int __init bpck_fdc_setup(char *str)
 {
-	static __initlocaldata int ints[6] = { 0, };
+	static int ints[6] = { 0, };
 
 	str = get_options(str, ARRAY_SIZE(ints), ints);
 
