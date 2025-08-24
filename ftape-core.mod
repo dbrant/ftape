@@ -13,5 +13,4 @@
 /home/unknown/ftape/ftape/lowlevel/fdc-io.o
 /home/unknown/ftape/ftape/lowlevel/fdc-isr.o
 /home/unknown/ftape/ftape/lowlevel/ftape-proc.o
-/home/unknown/ftape/ftape/lowlevel/ftape_syms.o
 /home/unknown/ftape/ftape/setup/ftape-setup.o

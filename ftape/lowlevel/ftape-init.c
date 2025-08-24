@@ -54,8 +54,8 @@ char ft_src[] __initdata = "$RCSfile: ftape-init.c,v $";
 char ft_rev[] __initdata = "$Revision: 1.28 $";
 char ft_dat[] __initdata = "$Date: 2000/06/30 12:02:37 $";
 
-int ft_ignore_ecc_err = 0;
-int ft_soft_retries = FT_SOFT_RETRIES;
+static int ft_ignore_ecc_err = 0;
+static int ft_soft_retries = FT_SOFT_RETRIES;
 
 
 /* every ft_fdc_driver[sel] string may contain a colon separated list
@@ -220,7 +220,7 @@ module_exit(ftape_module_exit);
 #endif
 #define FT_TRACE_ATTR __initlocaldata
 
-int ftape_lowlevel_setup(char *str)
+int __init ftape_lowlevel_setup(char *str)
 {	
 	static __initlocaldata int ints[6] = { 0, };
 	size_t offset = strlen(str) - strlen("driver");

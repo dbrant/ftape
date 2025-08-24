@@ -333,7 +333,6 @@ deps_/home/unknown/ftape/ftape/internal/fc-10.o := \
     $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
   include/linux/instruction_pointer.h \
   include/linux/bitmap.h \
-  include/linux/cleanup.h \
   include/linux/find.h \
   include/linux/bitmap-str.h \
   include/linux/atomic.h \
@@ -386,6 +385,7 @@ deps_/home/unknown/ftape/ftape/internal/fc-10.o := \
     $(wildcard include/config/PREEMPT_NONE) \
     $(wildcard include/config/PREEMPT_VOLUNTARY) \
     $(wildcard include/config/PREEMPT) \
+  include/linux/cleanup.h \
   arch/x86/include/asm/preempt.h \
   include/linux/irqflags.h \
     $(wildcard include/config/TRACE_IRQFLAGS) \
@@ -754,7 +754,6 @@ deps_/home/unknown/ftape/ftape/internal/fc-10.o := \
   include/generated/bounds.h \
   include/linux/mm_types.h \
     $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/HUGETLB_PMD_PAGE_TABLE_SHARING) \
     $(wildcard include/config/USERFAULTFD) \
     $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
     $(wildcard include/config/MEMBARRIER) \
