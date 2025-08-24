@@ -47,7 +47,8 @@ extern int ftape_lowlevel_setup(char *str);
 extern int ftape_internal_setup(char *str);
 #endif
 #ifdef CONFIG_FT_PARPORT
-extern int ftape_parport_setup(char *str);
+/* ftape_parport_setup is in separate module - skip for now */
+/* extern int ftape_parport_setup(char *str); */
 #endif
 
 #define GLOBAL_TRACING
@@ -83,7 +84,8 @@ int __init ftape_setup(char *str)
 	}
 #endif
 #ifdef CONFIG_FT_PARPORT
-	ftape_parport_setup(str);
+	/* ftape_parport_setup is in separate module - skip for now */
+	/* ftape_parport_setup(str); */
 #endif
 	TRACE_EXIT 1;
 }

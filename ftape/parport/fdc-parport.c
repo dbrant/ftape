@@ -26,6 +26,7 @@
 
 
 #include <linux/ftape.h>
+#include <linux/module.h>
 
 #ifdef CONFIG_FT_TRAKKER
 extern int trakker_setup(char *str) __init;
@@ -45,6 +46,10 @@ void __init ftape_parport_init(void)
 	(void)bpck_fdc_register();
 #endif
 }
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Claus-Justus Heine");
+MODULE_DESCRIPTION("Parallel port FDC interface for ftape");
 
 void __init ftape_parport_setup(char *str)
 {

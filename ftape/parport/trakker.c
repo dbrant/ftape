@@ -513,13 +513,13 @@ int trakker_grab(fdc_info_t *fdc)
 	const char * seq = trakker_init_sequence;
 	TRACE_FUN(ft_t_any);
 
-	MOD_INC_USE_COUNT;
+	/* MOD_INC_USE_COUNT - automatic in modern kernels */
 	fdc->hook = NULL;
 	
 	/*  allocate I/O regions and irq first.
 	 */
 	TRACE_CATCH(ft_parport_claim(fdc, &trakker->parinfo),
-		    MOD_DEC_USE_COUNT);
+		    /* MOD_DEC_USE_COUNT - automatic in modern kernels */);
 
 	while (*seq) {
 		if (*seq & 1) {
@@ -578,7 +578,7 @@ int trakker_release(fdc_info_t *fdc)
 	/* Turn IRQs on again, disable_irq/enable_irq must match */
 	enable_irq(trakker->IRQ);
 
-	MOD_DEC_USE_COUNT;
+	/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 	TRACE_EXIT 0;
 }
 
@@ -672,7 +672,7 @@ static void *trakker_get_deblock_buffer(fdc_info_t *fdc)
 	struct trakker_struct *trakker = fdc->data;
 
 	if (!trakker->locked) {
-		MOD_INC_USE_COUNT;
+		/* MOD_INC_USE_COUNT - automatic in modern kernels */
 		trakker->locked = 1;
 	}
 	return (void *)trakker->buffer;
@@ -691,7 +691,7 @@ static int trakker_put_deblock_buffer(fdc_info_t *fdc, __u8 **buffer)
 	}
 	if (trakker->locked) {
 		trakker->locked = 0;
-		MOD_DEC_USE_COUNT;
+		/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 	}
 	*buffer = NULL;
 	TRACE_EXIT 0;
@@ -1201,7 +1201,7 @@ int __init trakker_register(void)
 {
 	TRACE_FUN(ft_t_flow);
 
-	printk(__FILE__ ": "__func__" @ 0x%p\n", trakker_register);
+	printk(__FILE__ ": %s @ 0x%p\n", __func__, trakker_register);
 
 	TRACE_CATCH (fdc_register(&trakker_ops),);
 
@@ -1219,7 +1219,7 @@ int trakker_unregister(void)
 	return 0;
 }
 
-EXPORT_NO_SYMBOLS;
+/* EXPORT_NO_SYMBOLS - deprecated, no longer needed */
 
 MODULE_LICENSE("GPL");
 

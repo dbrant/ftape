@@ -38,17 +38,31 @@
 
 #if defined(MODULE)
 # define FT_MOD_PARM(var,type,desc) \
-	MODULE_PARM(var,type); MODULE_PARM_DESC(var,desc)
+	module_param_array(var, int, NULL, 0644); MODULE_PARM_DESC(var,desc)
+# define FT_MOD_PARM_INT(var,desc) \
+	module_param(var, int, 0644); MODULE_PARM_DESC(var,desc)
 #else
 # define FT_MOD_PARM(var,type,desc) /**/
+# define FT_MOD_PARM_INT(var,desc) /**/
 #endif
 
 #ifdef USE_PARPORT
+#include <linux/parport.h>
 #  define PARPORT_MODE_PCPS2 PARPORT_MODE_TRISTATE
-#endif
 
-#ifdef USE_PARPORT
-# include <linux/parport.h>
+/* IRQ handler wrapper for modern parport API */
+struct ft_parport_wrapper {
+	void (*old_handler)(int, void *, struct pt_regs *);
+	void *fdc;
+};
+
+static void ft_parport_irq_wrapper(void *data)
+{
+	struct ft_parport_wrapper *wrapper = (struct ft_parport_wrapper *)data;
+	/* Call old-style handler with dummy parameters */
+	wrapper->old_handler(0, wrapper->fdc, NULL);
+}
+
 #else
 
 # define PARPORT_CONTROL_STROBE    0x1
@@ -87,6 +101,7 @@ typedef struct ft_parinfo {
 	void (*handler)(int, void *, struct pt_regs *);
 	int  (*probe)(fdc_info_t *fdc);
 	const char *id;
+	struct ft_parport_wrapper wrapper; /* IRQ handler wrapper for modern API */
 } ft_parinfo_t;
 
 /*  lowlevel input/ouput routines.
@@ -182,13 +197,13 @@ static int ft_fdc_parport[4] = {
 	CONFIG_FT_FDC_PARPORT_2,
 	CONFIG_FT_FDC_PARPORT_3
 };
-static unsigned int ft_fdc_threshold[4] = {
+unsigned int ft_fdc_threshold[4] = {
 	CONFIG_FT_FDC_THRESHOLD_0,
 	CONFIG_FT_FDC_THRESHOLD_1,
 	CONFIG_FT_FDC_THRESHOLD_2,
 	CONFIG_FT_FDC_THRESHOLD_3
 };
-static unsigned int ft_fdc_rate_limit[4] = {
+unsigned int ft_fdc_rate_limit[4] = {
 	CONFIG_FT_FDC_MAX_RATE_0,
 	CONFIG_FT_FDC_MAX_RATE_1,
 	CONFIG_FT_FDC_MAX_RATE_2,
@@ -311,6 +326,7 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 	struct parport *port;
 	int len = 0;
 	int result = -ENXIO;
+	int i;
 	TRACE_FUN(ft_t_any);
 			   
 	switch(ft_fdc_parport[fdc->unit]) {
@@ -325,16 +341,29 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 		break;
 	}
 	
-	for (port = parport_enumerate(); port; port = port->next) {
-		if (strncmp(buffer, port->name, len) != 0) {
+	/* Modern parport API: iterate through available ports */
+	for (i = 0; i < 4; i++) {  /* Try first 4 parallel ports */
+		port = parport_find_number(i);
+		if (!port) continue;
+		
+		if (len && strncmp(buffer, port->name, len) != 0) {
+			parport_put_port(port);
 			continue;
 		}
 
-		parinfo->dev = parport_register_device(port, parinfo->id, 
-						       NULL, NULL, 
-						       parinfo->handler,
-						       PARPORT_DEV_TRAN,
-						       (void *)fdc);
+		/* Modern parport device registration - setup IRQ handler wrapper */
+		parinfo->wrapper.old_handler = parinfo->handler;
+		parinfo->wrapper.fdc = (void *)fdc;
+		
+		{
+			struct pardev_cb par_cb = {
+				.irq_func = ft_parport_irq_wrapper,
+				.private = &parinfo->wrapper,
+				.flags = 0
+			};
+			parinfo->dev = parport_register_dev_model(port, parinfo->id, &par_cb, i);
+		}
+		parport_put_port(port); /* Release reference */
 		
 		TRACE(ft_t_info, "dev: %p", parinfo->dev);
 		if (parinfo->dev) {
@@ -360,8 +389,8 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 	fdc->irq = -1;			
 	TRACE(ft_t_err,
 	      "can't find parport interface for ftape id %d", fdc->unit);
-	MOD_INC_USE_COUNT; /* mark module as used */
-	MOD_DEC_USE_COUNT;
+	/* MOD_INC_USE_COUNT - automatic in modern kernels */
+	/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 	/* return -ENXIO when probing several devices, more useful
 	 * return values otherwise
 	 */
@@ -410,8 +439,8 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 
 	if (ft_fdc_parport[fdc->unit] == FT_FDC_PARPORT_NONE) {
 		fdc->irq = -1;
-		MOD_INC_USE_COUNT; /* mark module as used */
-		MOD_DEC_USE_COUNT;
+		/* MOD_INC_USE_COUNT - automatic in modern kernels */
+		/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 		TRACE_EXIT -ENXIO;
 	}
 
@@ -447,8 +476,8 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 			TRACE_EXIT 0;
 		}
 	}
-	MOD_INC_USE_COUNT; /* mark module as used */
-	MOD_DEC_USE_COUNT;
+	/* MOD_INC_USE_COUNT - automatic in modern kernels */
+	/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 	TRACE_EXIT result;
 #endif
 }

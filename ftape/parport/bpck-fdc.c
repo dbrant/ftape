@@ -60,9 +60,9 @@ char bpck_src[]  = "$RCSfile: bpck-fdc.c,v $";
 char bpck_rev[]  = "$Revision: 1.31 $";
 char bpck_dat[]  = "$Date: 2000/06/30 10:53:42 $";
 
-__u8 ecr_bits = 0x01; /* what to write to econtrol */
+int ecr_bits = 0x01; /* what to write to econtrol (changed to int for module_param) */
 
-ft_bpck_proto_t parport_proto = ft_bpck_none;
+int parport_proto = ft_bpck_none; /* parport protocol (changed to int for module_param) */
 
 /* backup register access macros. */
 
@@ -610,7 +610,7 @@ static int bpck_fdc_read_data(bpck_fdc_t *bpck, __u8 *data, int count)
 		bpck->ctr |= 0x20;
 		e2();
 		while (count) {
-			*((__u16 *)data)++ = r4w();
+			*(__u16 *)data = r4w(); data += 2;
 			count -= 2;
 		}
 		t2(PARPORT_CONTROL_DIRECTION);
@@ -619,7 +619,7 @@ static int bpck_fdc_read_data(bpck_fdc_t *bpck, __u8 *data, int count)
 		bpck->ctr |= 0x20;
 		e2();
 		while (count) {
-			*((__u32 *)data)++ = r4l();
+			*(__u32 *)data = r4l(); data += 4;
 			count -= 4;
 		}
 		t2(PARPORT_CONTROL_DIRECTION);
@@ -1465,12 +1465,13 @@ int bpck_fdc_grab(fdc_info_t *fdc)
 	if (bpck->failure) {
 		TRACE_EXIT -ENXIO;
 	}
-	MOD_INC_USE_COUNT;
+	/* MOD_INC_USE_COUNT - automatic in modern kernels */
 	fdc->hook = NULL;
 
 	/*  allocate I/O regions and irq first.
 	 */
-	TRACE_CATCH(ft_parport_claim(fdc, &bpck->parinfo), MOD_DEC_USE_COUNT);
+	TRACE_CATCH(ft_parport_claim(fdc, &bpck->parinfo), 
+		    /* MOD_DEC_USE_COUNT - automatic in modern kernels */);
 
 	if (bpck->initialized) {
 		/* normal fdc grab, after bpck had been detected
@@ -1483,7 +1484,7 @@ int bpck_fdc_grab(fdc_info_t *fdc)
 		TRACE_CATCH(bpck_fdc_connect(bpck),
 			    ft_parport_release(fdc, &bpck->parinfo);
 			    enable_irq(bpck->IRQ);
-			    MOD_DEC_USE_COUNT);
+			    /* MOD_DEC_USE_COUNT - automatic in modern kernels */);
 
 		WR (FT_BPCK_REG_CTRL, bpck->proto_bits); /* play safe */
 
@@ -1522,7 +1523,7 @@ static int bpck_fdc_release(fdc_info_t *fdc)
 
 	ft_parport_release(fdc, &bpck->parinfo);
 
-	MOD_DEC_USE_COUNT;
+	/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 	TRACE_EXIT 0;
 }
 
@@ -1867,7 +1868,7 @@ static void *bpck_fdc_get_deblock_buffer(fdc_info_t *fdc)
 	bpck_fdc_t *bpck = fdc->data;
 
 	if (!bpck->locked) {
-		MOD_INC_USE_COUNT;
+		/* MOD_INC_USE_COUNT - automatic in modern kernels */
 		bpck->locked = 1;
 	}
 	return (void *)bpck->buffer;
@@ -1886,7 +1887,7 @@ static int bpck_fdc_put_deblock_buffer(fdc_info_t *fdc, __u8 **buffer)
 	}
 	if (bpck->locked) {
 		bpck->locked = 0;
-		MOD_DEC_USE_COUNT;
+		/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 	}
 	*buffer = NULL;
 	TRACE_EXIT 0;
@@ -2166,7 +2167,7 @@ int __init bpck_fdc_register(void)
 {
 	TRACE_FUN(ft_t_flow);
 
-	printk(__FILE__ ": "__func__" @ 0x%p\n", bpck_fdc_register);
+	printk(__FILE__ ": %s @ 0x%p\n", __func__, bpck_fdc_register);
 
 	TRACE_CATCH(fdc_register(&bpck_fdc_ops),);
 
@@ -2187,15 +2188,15 @@ int bpck_fdc_unregister(void)
 }
 
 
-FT_MOD_PARM(ecr_bits,        "i", "What to write to the econtrol ECR reg.");
-FT_MOD_PARM(parport_proto,   "i", "Parport protocol.");
+FT_MOD_PARM_INT(ecr_bits, "What to write to the econtrol ECR reg.");
+FT_MOD_PARM_INT(parport_proto, "Parport protocol.");
 
 MODULE_LICENSE("GPL");
 
 MODULE_AUTHOR(
   "(c) 1998 Claus-Justus Heine");
 MODULE_DESCRIPTION("Ftape-interface for Bpck parallel port floppy tape");
-EXPORT_NO_SYMBOLS;
+/* EXPORT_NO_SYMBOLS - deprecated, no longer needed */
 
 /* Called by modules package when installing the driver
  */
@@ -2203,7 +2204,7 @@ int init_module(void)
 {
 	int result;
 
-	EXPORT_NO_SYMBOLS;
+	/* EXPORT_NO_SYMBOLS - deprecated, no longer needed */
 
 	result = bpck_fdc_register();
 	return result;

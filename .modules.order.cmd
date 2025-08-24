@@ -1,1 +1,1 @@
-savedcmd_/home/unknown/ftape/modules.order := {   echo /home/unknown/ftape/ftape-core.o;   echo /home/unknown/ftape/ftape-internal.o;   echo /home/unknown/ftape/zftape.o; :; } > /home/unknown/ftape/modules.order
+savedcmd_/home/unknown/ftape/modules.order := {   echo /home/unknown/ftape/ftape-core.o;   echo /home/unknown/ftape/ftape-internal.o;   echo /home/unknown/ftape/zftape.o;   echo /home/unknown/ftape/ftape-parport.o;   echo /home/unknown/ftape/ftape-trakker.o;   echo /home/unknown/ftape/ftape-bpck.o; :; } > /home/unknown/ftape/modules.order

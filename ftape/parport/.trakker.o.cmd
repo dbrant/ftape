@@ -1,10 +1,8 @@
-savedcmd_/home/unknown/ftape/ftape/zftape/zftape-init.o := gcc-13 -Wp,-MMD,/home/unknown/ftape/ftape/zftape/.zftape-init.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -I./ubuntu/include -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -std=gnu11 -fshort-wchar -funsigned-char -fno-common -fno-PIE -fno-strict-aliasing -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fpatchable-function-entry=16,16 -fno-delete-null-pointer-checks -O2 -fno-allow-store-data-races -fstack-protector-strong -fno-omit-frame-pointer -fno-optimize-sibling-calls -ftrivial-auto-var-init=zero -fno-stack-clash-protection -fzero-call-used-regs=used-gpr -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -falign-functions=16 -fstrict-flex-arrays=3 -fno-strict-overflow -fno-stack-check -fconserve-stack -Wall -Wundef -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Werror=strict-prototypes -Wno-format-security -Wno-trigraphs -Wno-frame-address -Wno-address-of-packed-member -Wmissing-declarations -Wmissing-prototypes -Wframe-larger-than=1024 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-dangling-pointer -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-overflow -Wno-array-bounds -Wno-alloc-size-larger-than -Wimplicit-fallthrough=5 -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wenum-conversion -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-restrict -Wno-packed-not-aligned -Wno-format-overflow -Wno-format-truncation -Wno-stringop-truncation -Wno-override-init -Wno-missing-field-initializers -Wno-type-limits -Wno-shift-negative-value -Wno-maybe-uninitialized -Wno-sign-compare -g -gdwarf-5 -I/home/unknown/ftape/include -DTHE_FTAPE_MAINTAINER=\"ftape-maintainer@kernel.org\" -DCONFIG_FTAPE_MODULE -DCONFIG_FT_INTERNAL_MODULE -DCONFIG_ZFTAPE_MODULE -DCONFIG_FT_PARPORT -DCONFIG_FT_TRAKKER -DCONFIG_FT_BPCK -DFT_SOFT_RETRIES=6 -DCONFIG_FT_NO_TRACE_AT_ALL  -fsanitize=bounds-strict -fsanitize=shift -fsanitize=bool -fsanitize=enum  -DMODULE  -DKBUILD_BASENAME='"zftape_init"' -DKBUILD_MODNAME='"zftape"' -D__KBUILD_MODNAME=kmod_zftape -c -o /home/unknown/ftape/ftape/zftape/zftape-init.o /home/unknown/ftape/ftape/zftape/zftape-init.c   ; ./tools/objtool/objtool --hacks=jump_label --hacks=noinstr --hacks=skylake --retpoline --rethunk --sls --stackval --static-call --uaccess --prefix=16   --module /home/unknown/ftape/ftape/zftape/zftape-init.o
+savedcmd_/home/unknown/ftape/ftape/parport/trakker.o := gcc-13 -Wp,-MMD,/home/unknown/ftape/ftape/parport/.trakker.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -I./ubuntu/include -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -std=gnu11 -fshort-wchar -funsigned-char -fno-common -fno-PIE -fno-strict-aliasing -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fpatchable-function-entry=16,16 -fno-delete-null-pointer-checks -O2 -fno-allow-store-data-races -fstack-protector-strong -fno-omit-frame-pointer -fno-optimize-sibling-calls -ftrivial-auto-var-init=zero -fno-stack-clash-protection -fzero-call-used-regs=used-gpr -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -falign-functions=16 -fstrict-flex-arrays=3 -fno-strict-overflow -fno-stack-check -fconserve-stack -Wall -Wundef -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Werror=strict-prototypes -Wno-format-security -Wno-trigraphs -Wno-frame-address -Wno-address-of-packed-member -Wmissing-declarations -Wmissing-prototypes -Wframe-larger-than=1024 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-dangling-pointer -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-overflow -Wno-array-bounds -Wno-alloc-size-larger-than -Wimplicit-fallthrough=5 -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wenum-conversion -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-restrict -Wno-packed-not-aligned -Wno-format-overflow -Wno-format-truncation -Wno-stringop-truncation -Wno-override-init -Wno-missing-field-initializers -Wno-type-limits -Wno-shift-negative-value -Wno-maybe-uninitialized -Wno-sign-compare -g -gdwarf-5 -I/home/unknown/ftape/include -DTHE_FTAPE_MAINTAINER=\"ftape-maintainer@kernel.org\" -DCONFIG_FTAPE_MODULE -DCONFIG_FT_INTERNAL_MODULE -DCONFIG_ZFTAPE_MODULE -DCONFIG_FT_PARPORT -DCONFIG_FT_TRAKKER -DCONFIG_FT_BPCK -DFT_SOFT_RETRIES=6 -DCONFIG_FT_NO_TRACE_AT_ALL  -fsanitize=bounds-strict -fsanitize=shift -fsanitize=bool -fsanitize=enum  -DMODULE  -DKBUILD_BASENAME='"trakker"' -DKBUILD_MODNAME='"ftape_trakker"' -D__KBUILD_MODNAME=kmod_ftape_trakker -c -o /home/unknown/ftape/ftape/parport/trakker.o /home/unknown/ftape/ftape/parport/trakker.c   ; ./tools/objtool/objtool --hacks=jump_label --hacks=noinstr --hacks=skylake --retpoline --rethunk --sls --stackval --static-call --uaccess --prefix=16   --module /home/unknown/ftape/ftape/parport/trakker.o
 
-source_/home/unknown/ftape/ftape/zftape/zftape-init.o := /home/unknown/ftape/ftape/zftape/zftape-init.c
+source_/home/unknown/ftape/ftape/parport/trakker.o := /home/unknown/ftape/ftape/parport/trakker.c
 
-deps_/home/unknown/ftape/ftape/zftape/zftape-init.o := \
-    $(wildcard include/config/ZFT_COMPRESSOR) \
-    $(wildcard include/config/ZFT_OBSOLETE) \
+deps_/home/unknown/ftape/ftape/parport/trakker.o := \
   include/linux/compiler-version.h \
     $(wildcard include/config/CC_VERSION_TEXT) \
   include/linux/kconfig.h \
@@ -1033,51 +1031,8 @@ deps_/home/unknown/ftape/ftape/zftape/zftape-init.o := \
     $(wildcard include/config/MODULES_USE_ELF_REL) \
     $(wildcard include/config/MODULES_USE_ELF_RELA) \
   include/generated/uapi/linux/version.h \
-  include/uapi/linux/major.h \
-  /home/unknown/ftape/include/linux/zftape.h \
-  /home/unknown/ftape/include/linux/ftape.h \
-    $(wildcard include/config/KMOD) \
-    $(wildcard include/config/FT_NONE_0) \
-    $(wildcard include/config/FT_FDC_DRIVER_0) \
-    $(wildcard include/config/FT_INT_0) \
-    $(wildcard include/config/FT_PAR_0) \
-    $(wildcard include/config/FT_TRAKKER_0) \
-    $(wildcard include/config/FT_BPCK_0) \
-    $(wildcard include/config/FT_TRAKKERBPCK_0) \
-    $(wildcard include/config/FT_NONE_1) \
-    $(wildcard include/config/FT_FDC_DRIVER_1) \
-    $(wildcard include/config/FT_INT_1) \
-    $(wildcard include/config/FT_PAR_1) \
-    $(wildcard include/config/FT_TRAKKER_1) \
-    $(wildcard include/config/FT_BPCK_1) \
-    $(wildcard include/config/FT_TRAKKERBPCK_1) \
-    $(wildcard include/config/FT_NONE_2) \
-    $(wildcard include/config/FT_FDC_DRIVER_2) \
-    $(wildcard include/config/FT_INT_2) \
-    $(wildcard include/config/FT_PAR_2) \
-    $(wildcard include/config/FT_TRAKKER_2) \
-    $(wildcard include/config/FT_BPCK_2) \
-    $(wildcard include/config/FT_TRAKKERBPCK_2) \
-    $(wildcard include/config/FT_NONE_3) \
-    $(wildcard include/config/FT_FDC_DRIVER_3) \
-    $(wildcard include/config/FT_INT_3) \
-    $(wildcard include/config/FT_PAR_3) \
-    $(wildcard include/config/FT_TRAKKER_3) \
-    $(wildcard include/config/FT_BPCK_3) \
-    $(wildcard include/config/FT_TRAKKERBPCK_3) \
-    $(wildcard include/config/FT_FDC_THRESHOLD_0) \
-    $(wildcard include/config/FT_FDC_THRESHOLD_1) \
-    $(wildcard include/config/FT_FDC_THRESHOLD_2) \
-    $(wildcard include/config/FT_FDC_THRESHOLD_3) \
-    $(wildcard include/config/FT_FDC_MAX_RATE_0) \
-    $(wildcard include/config/FT_FDC_MAX_RATE_1) \
-    $(wildcard include/config/FT_FDC_MAX_RATE_2) \
-    $(wildcard include/config/FT_FDC_MAX_RATE_3) \
-    $(wildcard include/config/FTAPE) \
-    $(wildcard include/config/FT_INTERNAL) \
-    $(wildcard include/config/FT_TRAKKER) \
-    $(wildcard include/config/FT_BPCK) \
-    $(wildcard include/config/ZFTAPE) \
+  include/linux/ioport.h \
+  include/linux/mman.h \
   include/linux/mm.h \
     $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
     $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
@@ -1122,7 +1077,6 @@ deps_/home/unknown/ftape/ftape/zftape/zftape-init.o := \
   include/linux/memremap.h \
     $(wildcard include/config/DEVICE_PRIVATE) \
     $(wildcard include/config/PCI_P2PDMA) \
-  include/linux/ioport.h \
   include/linux/huge_mm.h \
   include/linux/sched/coredump.h \
     $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
@@ -1133,8 +1087,157 @@ deps_/home/unknown/ftape/ftape/zftape/zftape-init.o := \
   include/linux/vm_event_item.h \
     $(wildcard include/config/MEMORY_BALLOON) \
     $(wildcard include/config/BALLOON_COMPACTION) \
+  include/uapi/linux/mman.h \
+  arch/x86/include/asm/mman.h \
+  arch/x86/include/uapi/asm/mman.h \
+  include/uapi/asm-generic/mman.h \
+  include/uapi/asm-generic/mman-common.h \
+  include/uapi/asm-generic/hugetlb_encode.h \
+  include/linux/interrupt.h \
+    $(wildcard include/config/IRQ_FORCED_THREADING) \
+    $(wildcard include/config/GENERIC_IRQ_PROBE) \
+    $(wildcard include/config/IRQ_TIMINGS) \
+  include/linux/irqreturn.h \
+  include/linux/hardirq.h \
+  include/linux/context_tracking_state.h \
+    $(wildcard include/config/CONTEXT_TRACKING_USER) \
+    $(wildcard include/config/CONTEXT_TRACKING) \
+  include/linux/ftrace_irq.h \
+    $(wildcard include/config/HWLAT_TRACER) \
+    $(wildcard include/config/OSNOISE_TRACER) \
+  include/linux/vtime.h \
+    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
+    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
+  arch/x86/include/asm/hardirq.h \
+    $(wildcard include/config/KVM_INTEL) \
+    $(wildcard include/config/HAVE_KVM) \
+    $(wildcard include/config/X86_THERMAL_VECTOR) \
+    $(wildcard include/config/X86_MCE_THRESHOLD) \
+    $(wildcard include/config/X86_MCE_AMD) \
+    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
+    $(wildcard include/config/HYPERV) \
+  arch/x86/include/asm/irq.h \
+  arch/x86/include/asm/irq_vectors.h \
+    $(wildcard include/config/PCI_MSI) \
+  arch/x86/include/asm/sections.h \
+  include/asm-generic/sections.h \
+    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
+  arch/x86/include/asm/io.h \
+    $(wildcard include/config/MTRR) \
+    $(wildcard include/config/X86_PAT) \
+  arch/x86/include/generated/asm/early_ioremap.h \
+  include/asm-generic/early_ioremap.h \
+    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
+  arch/x86/include/asm/shared/io.h \
+  include/asm-generic/io.h \
+    $(wildcard include/config/GENERIC_IOMAP) \
+    $(wildcard include/config/TRACE_MMIO_ACCESS) \
+    $(wildcard include/config/GENERIC_IOREMAP) \
+    $(wildcard include/config/HAS_IOPORT_MAP) \
+  include/asm-generic/iomap.h \
+  include/asm-generic/pci_iomap.h \
+    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
+    $(wildcard include/config/GENERIC_PCI_IOMAP) \
+  include/linux/logic_pio.h \
+    $(wildcard include/config/INDIRECT_PIO) \
+  include/linux/fwnode.h \
+  include/linux/vmalloc.h \
+    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
+  arch/x86/include/asm/vmalloc.h \
+  arch/x86/include/asm/pgtable_areas.h \
+  /home/unknown/ftape/include/linux/ftape.h \
+    $(wildcard include/config/KMOD) \
+    $(wildcard include/config/FT_NONE_0) \
+    $(wildcard include/config/FT_FDC_DRIVER_0) \
+    $(wildcard include/config/FT_INT_0) \
+    $(wildcard include/config/FT_PAR_0) \
+    $(wildcard include/config/FT_TRAKKER_0) \
+    $(wildcard include/config/FT_BPCK_0) \
+    $(wildcard include/config/FT_TRAKKERBPCK_0) \
+    $(wildcard include/config/FT_NONE_1) \
+    $(wildcard include/config/FT_FDC_DRIVER_1) \
+    $(wildcard include/config/FT_INT_1) \
+    $(wildcard include/config/FT_PAR_1) \
+    $(wildcard include/config/FT_TRAKKER_1) \
+    $(wildcard include/config/FT_BPCK_1) \
+    $(wildcard include/config/FT_TRAKKERBPCK_1) \
+    $(wildcard include/config/FT_NONE_2) \
+    $(wildcard include/config/FT_FDC_DRIVER_2) \
+    $(wildcard include/config/FT_INT_2) \
+    $(wildcard include/config/FT_PAR_2) \
+    $(wildcard include/config/FT_TRAKKER_2) \
+    $(wildcard include/config/FT_BPCK_2) \
+    $(wildcard include/config/FT_TRAKKERBPCK_2) \
+    $(wildcard include/config/FT_NONE_3) \
+    $(wildcard include/config/FT_FDC_DRIVER_3) \
+    $(wildcard include/config/FT_INT_3) \
+    $(wildcard include/config/FT_PAR_3) \
+    $(wildcard include/config/FT_TRAKKER_3) \
+    $(wildcard include/config/FT_BPCK_3) \
+    $(wildcard include/config/FT_TRAKKERBPCK_3) \
+    $(wildcard include/config/FT_FDC_THRESHOLD_0) \
+    $(wildcard include/config/FT_FDC_THRESHOLD_1) \
+    $(wildcard include/config/FT_FDC_THRESHOLD_2) \
+    $(wildcard include/config/FT_FDC_THRESHOLD_3) \
+    $(wildcard include/config/FT_FDC_MAX_RATE_0) \
+    $(wildcard include/config/FT_FDC_MAX_RATE_1) \
+    $(wildcard include/config/FT_FDC_MAX_RATE_2) \
+    $(wildcard include/config/FT_FDC_MAX_RATE_3) \
+    $(wildcard include/config/FTAPE) \
+    $(wildcard include/config/FT_INTERNAL) \
+    $(wildcard include/config/FT_TRAKKER) \
+    $(wildcard include/config/FT_BPCK) \
+    $(wildcard include/config/ZFTAPE) \
+    $(wildcard include/config/ZFT_COMPRESSOR) \
   include/linux/mtio.h \
   include/uapi/linux/mtio.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/ftape-tracing.h \
+    $(wildcard include/config/FT_NO_TRACE_AT_ALL) \
+  /home/unknown/ftape/ftape/parport/../lowlevel/../lowlevel/ftape-init.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/../lowlevel/ftape-fake-tracing.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/fdc-io.h \
+  include/uapi/linux/fdreg.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/../lowlevel/ftape-bsm.h \
+  /home/unknown/ftape/include/linux/ftape-header-segment.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/../lowlevel/ftape-tracing.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/fdc-isr.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/../lowlevel/fdc-io.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/ftape-init.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/ftape-ecc.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/ftape-rw.h \
+  arch/x86/include/generated/asm/unaligned.h \
+  include/asm-generic/unaligned.h \
+  include/linux/unaligned/packed_struct.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/ftape-read.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/ftape-buffer.h \
+  /home/unknown/ftape/ftape/parport/trakker.h \
+  arch/x86/include/asm/dma.h \
+    $(wildcard include/config/ISA_DMA_API) \
+    $(wildcard include/config/GENERIC_ISA_DMA) \
+  /home/unknown/ftape/ftape/parport/fdc-parport.h \
+    $(wildcard include/config/PNP_PARPORT) \
+    $(wildcard include/config/PARPORT) \
+    $(wildcard include/config/FT_FDC_PARPORT_0) \
+    $(wildcard include/config/FT_FDC_PARPORT_1) \
+    $(wildcard include/config/FT_FDC_PARPORT_2) \
+    $(wildcard include/config/FT_FDC_PARPORT_3) \
+    $(wildcard include/config/FT_FDC_BASE_0) \
+    $(wildcard include/config/FT_FDC_BASE_1) \
+    $(wildcard include/config/FT_FDC_BASE_2) \
+    $(wildcard include/config/FT_FDC_BASE_3) \
+    $(wildcard include/config/FT_FDC_IRQ_0) \
+    $(wildcard include/config/FT_FDC_IRQ_1) \
+    $(wildcard include/config/FT_FDC_IRQ_2) \
+    $(wildcard include/config/FT_FDC_IRQ_3) \
+    $(wildcard include/config/FT_FDC_DMA_0) \
+  include/linux/delay.h \
+  arch/x86/include/asm/delay.h \
+  include/asm-generic/delay.h \
+  include/linux/parport.h \
+    $(wildcard include/config/PARPORT_NOT_PC) \
+    $(wildcard include/config/PARPORT_PC) \
+  include/linux/proc_fs.h \
+    $(wildcard include/config/PROC_PID_ARCH_STATUS) \
   include/linux/device.h \
     $(wildcard include/config/HAS_IOMEM) \
     $(wildcard include/config/GENERIC_MSI_IRQ) \
@@ -1176,50 +1279,13 @@ deps_/home/unknown/ftape/ftape/zftape/zftape-init.o := \
   include/linux/device/driver.h \
   arch/x86/include/asm/device.h \
   include/linux/pm_wakeup.h \
-  /home/unknown/ftape/ftape/zftape/zftape-init.h \
-  /home/unknown/ftape/include/linux/ftape-header-segment.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-tracing.h \
-    $(wildcard include/config/FT_NO_TRACE_AT_ALL) \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/ftape-init.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/ftape-fake-tracing.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-ctl.h \
-  /home/unknown/ftape/include/linux/ftape-vendors.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/ftape-rw.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/../lowlevel/fdc-io.h \
-  include/uapi/linux/fdreg.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/../lowlevel/../lowlevel/ftape-bsm.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/../lowlevel/../lowlevel/ftape-tracing.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/../lowlevel/ftape-init.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/../lowlevel/ftape-bsm.h \
-  arch/x86/include/generated/asm/unaligned.h \
-  include/asm-generic/unaligned.h \
-  include/linux/unaligned/packed_struct.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/ftape-io.h \
-  /home/unknown/ftape/include/linux/qic117.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-read.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/../lowlevel/fdc-io.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-write.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-bsm.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-io.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-buffer.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-format.h \
-  /home/unknown/ftape/ftape/zftape/zftape-read.h \
-  /home/unknown/ftape/ftape/zftape/zftape-write.h \
-  /home/unknown/ftape/ftape/zftape/zftape-ctl.h \
-  /home/unknown/ftape/ftape/zftape/../zftape/zftape-rw.h \
-    $(wildcard include/config/ZFT_DFLT_BLK_SZ) \
-  /home/unknown/ftape/ftape/zftape/../zftape/../zftape/zftape-buffers.h \
-  /home/unknown/ftape/ftape/zftape/../zftape/zftape-vtbl.h \
-  /home/unknown/ftape/ftape/zftape/../zftape/../zftape/zftape-eof.h \
-  /home/unknown/ftape/ftape/zftape/../zftape/../zftape/../zftape/zftape-buffers.h \
-  /home/unknown/ftape/ftape/zftape/zftape-buffers.h \
-  /home/unknown/ftape/ftape/zftape/zftape_syms.h \
-  /home/unknown/ftape/ftape/zftape/../lowlevel/ftape-real-tracing.h \
+  include/uapi/linux/parport.h \
+  /home/unknown/ftape/ftape/parport/../lowlevel/ftape-real-tracing.h \
     $(wildcard include/config/FT_NO_TRACE) \
     $(wildcard include/config/FT_FULL_DEBUG) \
 
-/home/unknown/ftape/ftape/zftape/zftape-init.o: $(deps_/home/unknown/ftape/ftape/zftape/zftape-init.o)
+/home/unknown/ftape/ftape/parport/trakker.o: $(deps_/home/unknown/ftape/ftape/parport/trakker.o)
 
-$(deps_/home/unknown/ftape/ftape/zftape/zftape-init.o):
+$(deps_/home/unknown/ftape/ftape/parport/trakker.o):
 
-/home/unknown/ftape/ftape/zftape/zftape-init.o: $(wildcard ./tools/objtool/objtool)
+/home/unknown/ftape/ftape/parport/trakker.o: $(wildcard ./tools/objtool/objtool)
