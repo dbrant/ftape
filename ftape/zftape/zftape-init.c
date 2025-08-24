@@ -73,13 +73,13 @@ int ft_major_device_number = QIC117_TAPE_MAJOR;
 
 #if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 #define FT_MOD_PARM(var,type,desc) \
-	MODULE_PARM(var,type); MODULE_PARM_DESC(var,desc)
+	module_param(var, int, 0644); MODULE_PARM_DESC(var,desc)
 MODULE_AUTHOR("(c) 1996-2000 Claus-Justus Heine "
 	      "<heine@instmath.rwth-aachen.de)");
 MODULE_DESCRIPTION(ZFTAPE_VERSION " - "
 		   "VFS interface for the Linux floppy tape driver. "
 		   "Support for QIC-113 compatible volume table ");
-MODULE_SUPPORTED_DEVICE("char-major-27");
+/* MODULE_SUPPORTED_DEVICE is deprecated - removed */
 FT_MOD_PARM(ft_major_device_number, "i",
 	    "Major device number to use. Use with caution ...");
 #endif
@@ -110,8 +110,7 @@ static int zft_close(struct inode *ino, struct file *filep);
 #else
 static void zft_close(struct inode *ino, struct file *filep);
 #endif
-static int  zft_ioctl(struct inode *ino, struct file *filep,
-		      unsigned int command, unsigned long arg);
+static long zft_ioctl(struct file *filep, unsigned int command, unsigned long arg);
 #if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
 static ssize_t zft_read (struct file *fp, char *buff,
 			 size_t req_len, loff_t *ppos);
@@ -139,21 +138,14 @@ static loff_t zft_seek(struct file * file, loff_t offset, int origin);
 static int zft_seek(struct inode *, struct file *, off_t, int);
 #endif
 
-static struct file_operations zft_cdev =
-{
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,4,0)
-	owner:		THIS_MODULE,
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
-	llseek:		zft_seek,
-#else
-	lseek:		zft_seek,
-#endif
-	read:		zft_read,
-	write:		zft_write,
-	ioctl:		zft_ioctl,
-	open:		zft_open,
-	release:	zft_close,
+static struct file_operations zft_cdev = {
+	.owner = THIS_MODULE,
+	.llseek = zft_seek,
+	.read = zft_read,
+	.write = zft_write,
+	.unlocked_ioctl = zft_ioctl,
+	.open = zft_open,
+	.release = zft_close,
 };
 
 /*      Open floppy tape device
@@ -165,12 +157,12 @@ static int zft_open(struct inode *ino, struct file *filep)
 	int sel = FTAPE_SEL(MINOR(ino->i_rdev));
 	TRACE_FUN(ft_t_flow);
 
-	MOD_INC_USE_COUNT; /*  sets MOD_VISITED and MOD_USED_ONCE,
+	if (!try_module_get(THIS_MODULE)) return -ENODEV; /*  sets MOD_VISITED and MOD_USED_ONCE,
 			    *  locking is done with can_unload()
 			    */
 	TRACE(ft_t_flow, "called for minor %d", MINOR(ino->i_rdev));
 	if (busy_flag[sel]) {
-		MOD_DEC_USE_COUNT;
+		module_put(THIS_MODULE);
 		TRACE(ft_t_warn, "failed: already busy");
 		TRACE_EXIT -EBUSY;
 	}
@@ -179,7 +171,7 @@ static int zft_open(struct inode *ino, struct file *filep)
 	     > 
 	    FTAPE_SEL_D) {
 		busy_flag[sel] = 0;
-		MOD_DEC_USE_COUNT; /* unlock module in memory */
+		module_put(THIS_MODULE); /* unlock module in memory */
 		TRACE(ft_t_err, "failed: illegal unit nr");
 		TRACE_EXIT -ENXIO;
 	}
@@ -188,12 +180,12 @@ static int zft_open(struct inode *ino, struct file *filep)
 	ft_sigrestore(&orig_sigmask); /* restore mask */
 	if (result < 0) {
 		busy_flag[sel] = 0;
-		MOD_DEC_USE_COUNT; /* unlock module in memory */
+		module_put(THIS_MODULE); /* unlock module in memory */
 		TRACE(ft_t_err, "_zft_open failed");
 		TRACE_EXIT result;
 	}
 	if (zft_dirty(zftapes[sel])) { /* was already locked */
-		MOD_DEC_USE_COUNT;
+		module_put(THIS_MODULE);
 #if LINUX_VERSION_CODE < KERNEL_VER(2,1,50)
 #if 1 || ZFT_PARANOID
 		if (!MOD_IN_USE) {
@@ -237,7 +229,7 @@ static void zft_close(struct inode *ino, struct file *filep)
 	}
 #if defined(MODULE) && LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
 	if (!zft_dirty(zftape)) {
-		MOD_DEC_USE_COUNT; /* unlock module in memory */
+		module_put(THIS_MODULE); /* unlock module in memory */
 	}
 #endif
 	busy_flag[sel] = 0;
@@ -250,7 +242,7 @@ static void zft_close(struct inode *ino, struct file *filep)
 
 /*      Ioctl for floppy tape device
  */
-static int zft_ioctl(struct inode *ino, struct file *filep,
+static int _zft_ioctl_old(struct inode *ino, struct file *filep,
 		     unsigned int command, unsigned long arg)
 {
 	int result = -EIO;
@@ -272,6 +264,12 @@ static int zft_ioctl(struct inode *ino, struct file *filep,
 	TRACE_EXIT result;
 }
 
+/* Modern unlocked_ioctl wrapper */
+static long zft_ioctl(struct file *filep, unsigned int command, unsigned long arg)
+{
+	return _zft_ioctl_old(file_inode(filep), filep, command, arg);
+}
+
 /*      Read from floppy tape device
  */
 #if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
@@ -288,7 +286,7 @@ static int  zft_read(struct inode *ino, struct file *fp, char *buff,
 	int result = -EIO;
 	sigset_t old_sigmask;
 #if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
-	struct inode *ino = fp->f_dentry->d_inode;
+	struct inode *ino = file_inode(fp);
 #endif
 	int sel = FTAPE_SEL(MINOR(ino->i_rdev));
 	zftape_info_t *zftape = zftapes[sel];
@@ -335,7 +333,7 @@ static int  zft_write(struct inode *ino, struct file *fp, char *buff,
 	int result = -EIO;
 	sigset_t old_sigmask;
 #if LINUX_VERSION_CODE >= KERNEL_VER(2,1,60)
-	struct inode *ino = fp->f_dentry->d_inode;
+	struct inode *ino = file_inode(fp);
 #endif
 	int sel = FTAPE_SEL(MINOR(ino->i_rdev));
 	zftape_info_t *zftape = zftapes[sel];
@@ -538,11 +536,11 @@ KERN_INFO
 #ifdef MODVERSIONS
 		       " with versioned symbols"
 #endif
-		       "\n", UTS_RELEASE);
+		       "\n", "Modern Linux");
         }
 #else /* !MODULE */
 	/* print a short no-nonsense boot message */
-	printk(KERN_INFO ZFTAPE_VERSION " for Linux " UTS_RELEASE "\n");
+	printk(KERN_INFO ZFTAPE_VERSION " for Linux " "Modern Linux" "\n");
 #endif /* MODULE */
 	TRACE(ft_t_info, "zft_init @ 0x%p", zft_init);
 	TRACE(ft_t_info,
@@ -567,7 +565,7 @@ KERN_INFO
 
 #ifdef MODULE
 # if LINUX_VERSION_CODE <= KERNEL_VER(1,2,13) && defined(MODULE)
-char kernel_version[] = UTS_RELEASE;
+char kernel_version[] = "Modern Linux";
 # endif
 # if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 /* Called by modules package before trying to unload the module
@@ -595,15 +593,10 @@ int init_module(void)
      LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
 	register_symtab(0); /* remove global ftape symbols */
 #  else
-	EXPORT_NO_SYMBOLS;
+	/* EXPORT_NO_SYMBOLS is deprecated - no global exports by default */
 #  endif
 # endif /* CONFIG_ZFT_COMPRESSOR_MODULE */
-# if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
-	if (!mod_member_present(&__this_module, can_unload)) {
-		return -EBUSY;
-	}
-	__this_module.can_unload = can_unload;
-# endif
+/* Module unloading API modernized - old can_unload interface removed */
 	return zft_init();
 }
 
@@ -615,17 +608,11 @@ void cleanup_module(void)
 	TRACE_FUN(ft_t_flow);
 
 # if LINUX_VERSION_CODE >= KERNEL_VER(2,3,46)
-	if (devfs_unregister_chrdev(ft_major_device_number, "zft") != 0) {
-		TRACE(ft_t_warn, "failed");
-	} else {
-		TRACE(ft_t_info, "successful");
-	}
+	unregister_chrdev(ft_major_device_number, "zft");
+	TRACE(ft_t_info, "unregistered character device");
 # else
-	if (unregister_chrdev(ft_major_device_number, "zft") != 0) {
-		TRACE(ft_t_warn, "failed");
-	} else {
-		TRACE(ft_t_info, "successful");
-	}
+	unregister_chrdev(ft_major_device_number, "zft");
+	TRACE(ft_t_info, "unregistered character device");
 # endif
 	for (sel = 0; sel < 4; sel++) {
 		if (zftapes[sel]) {
@@ -633,6 +620,7 @@ void cleanup_module(void)
 			zft_uninit_mem(zftapes[sel]);
 			ftape_kfree(FTAPE_SEL(sel), &zftapes[sel], sizeof(*zftapes[sel]));
 		}
+	}  /* Close for loop */
 #if 0 /* DevFS cleanup disabled */
 # if LINUX_VERSION_CODE >= KERNEL_VER(2,3,46)
 		devfs_unregister (devfs_q[sel]);
@@ -664,6 +652,6 @@ void cleanup_module(void)
 	TRACE_EXIT;
 }
 
-MODULE_LICENSE("GPL");
-
 #endif /* MODULE */
+
+MODULE_LICENSE("GPL");
