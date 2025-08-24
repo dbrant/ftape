@@ -1378,10 +1378,13 @@ int fdc_register(fdc_operations *info)
 	int success = 0;
 	TRACE_FUN(ft_t_flow);
 
+	printk(KERN_INFO "fdc_register: Registering driver \"%s\"\n", info->driver ? info->driver : "NULL");
+
 	if (find_driver(info->driver) != NULL) {
 		TRACE(ft_t_err,
 		      "driver for \"%s\" like fdc already registered",
 		      info->driver);
+		printk(KERN_ERR "fdc_register: Driver \"%s\" already registered\n", info->driver);
 		TRACE_EXIT -EBUSY;
 	}
 
@@ -1408,6 +1411,7 @@ int fdc_register(fdc_operations *info)
 
 			if ((fdc = get_new_fdc(sel)) == NULL) {
 				/* no memory or FDC table full */
+				printk(KERN_WARNING "fdc_register: Failed to get new fdc for slot %d\n", sel);
 				continue;
 			}
 
@@ -1415,13 +1419,25 @@ int fdc_register(fdc_operations *info)
 			TRACE(ft_t_info,
 			      "Probing for %s tape drive slot %d",
 			      info->driver, fdc->unit);
+			printk(KERN_INFO "fdc_register: Probing for %s tape drive slot %d\n", 
+			       info->driver, fdc->unit);
 
-			if (!info->detect || info->detect(fdc) < 0) {
+			if (!info->detect) {
+				printk(KERN_WARNING "fdc_register: No detect function for driver %s\n", info->driver);
 				fdc_destroy(sel);
 				continue;
 			}
+			
+			printk(KERN_INFO "fdc_register: Calling detect function for slot %d\n", sel);
+			if (info->detect(fdc) < 0) {
+				printk(KERN_INFO "fdc_register: Detect function failed for slot %d\n", sel);
+				fdc_destroy(sel);
+				continue;
+			}
+			printk(KERN_INFO "fdc_register: Detect function successful for slot %d\n", sel);
 			success ++;
 		} else {
+			printk(KERN_INFO "fdc_register: Skipping slot %d (already in use or not forced)\n", sel);
 			continue;
 		}
 		fdc->initialized = 1; /* got all resources */
@@ -1439,8 +1455,10 @@ int fdc_register(fdc_operations *info)
 		/* Ok, it's new. Simply insert it into the driver chain
 		 */
 		list_add(&info->node, &fdc_drivers);
+		printk(KERN_INFO "fdc_register: Successfully registered driver \"%s\" with %d successful probes\n", info->driver, success);
 		TRACE_EXIT 0;
 	} else {
+		printk(KERN_ERR "fdc_register: Failed to register driver \"%s\" - no successful probes\n", info->driver);
 		TRACE_EXIT -ENXIO;
 	}
 }
