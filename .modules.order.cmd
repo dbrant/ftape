@@ -1,1 +1,0 @@
-savedcmd_/home/unknown/ftape/modules.order := {   echo /home/unknown/ftape/ftape-core.o;   echo /home/unknown/ftape/ftape-internal.o;   echo /home/unknown/ftape/zftape.o; :; } > /home/unknown/ftape/modules.order
