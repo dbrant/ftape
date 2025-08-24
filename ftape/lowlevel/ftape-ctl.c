@@ -38,7 +38,6 @@
 #include <linux/qic117.h>
 #include <asm/uaccess.h>
 #include <asm/segment.h>
-#endif
 #include <asm/io.h>
 
 #include "ftape-tracing.h"
