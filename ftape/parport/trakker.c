@@ -32,11 +32,10 @@
 #include <linux/mman.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>
-#include <asm/system.h>
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/pgtable.h>
-#include <asm/segment.h>
+#include <linux/uaccess.h>
 
 #include <linux/ftape.h>
 #include <linux/init.h>

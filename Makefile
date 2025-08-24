@@ -8,6 +8,8 @@ PWD := $(shell pwd)
 
 # Module objects
 obj-m := ftape-core.o ftape-internal.o zftape.o
+# Parallel port modules temporarily disabled - require extensive modernization
+# obj-m += ftape-parport.o ftape-trakker.o ftape-bpck.o
 
 # Core ftape objects
 ftape-core-objs := ftape/lowlevel/ftape-init.o \
@@ -43,6 +45,15 @@ zftape-objs := ftape/zftape/zftape-init.o \
 	       ftape/zftape/zftape-eof.o \
 	       ftape/zftape/zftape_syms.o
 
+# Parallel port interface
+ftape-parport-objs := ftape/parport/fdc-parport.o
+
+# Trakker parallel port support  
+ftape-trakker-objs := ftape/parport/trakker.o
+
+# BackPack parallel port support
+ftape-bpck-objs := ftape/parport/bpck-fdc.o
+
 # Include our local headers
 ccflags-y := -I$(src)/include
 ccflags-y += -DTHE_FTAPE_MAINTAINER=\"ftape-maintainer@kernel.org\"
@@ -50,6 +61,10 @@ ccflags-y += -DTHE_FTAPE_MAINTAINER=\"ftape-maintainer@kernel.org\"
 ccflags-y += -DCONFIG_FTAPE_MODULE
 ccflags-y += -DCONFIG_FT_INTERNAL_MODULE  
 ccflags-y += -DCONFIG_ZFTAPE_MODULE
+# Parallel port support temporarily disabled
+# ccflags-y += -DCONFIG_FT_PARPORT
+# ccflags-y += -DCONFIG_FT_TRAKKER
+# ccflags-y += -DCONFIG_FT_BPCK
 ccflags-y += -DFT_SOFT_RETRIES=6
 
 # Disable some problematic features for now

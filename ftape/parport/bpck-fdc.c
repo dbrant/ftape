@@ -32,10 +32,9 @@
 #include <linux/ioport.h>
 #include <linux/mman.h>
 #include <linux/interrupt.h>
-#include <asm/system.h>
 #include <asm/io.h>
 #include <asm/irq.h>
-#include <asm/segment.h>
+#include <linux/uaccess.h>
 #include <asm/dma.h>
 
 #include <linux/ftape.h>
