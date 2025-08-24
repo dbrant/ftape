@@ -52,7 +52,7 @@
  *      This file contains code for the CMS FC-10/FC-20 card.
  */
 
-#include <linux/config.h>
+
 #include <linux/version.h>
 
 #include <linux/ioport.h>

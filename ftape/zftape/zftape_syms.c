@@ -24,7 +24,7 @@
  *      the ftape floppy tape driver exports 
  */		 
 
-#include <linux/config.h>
+
 #include <linux/module.h>
 #define __NO_VERSION__
 

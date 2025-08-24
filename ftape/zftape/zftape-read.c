@@ -24,7 +24,7 @@
  *      for the QIC-117 floppy-tape driver for Linux.
  */
 
-#include <linux/config.h>
+
 #include <linux/errno.h>
 #include <linux/mm.h>
 

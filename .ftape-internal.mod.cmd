@@ -1,0 +1,1 @@
+savedcmd_/home/unknown/ftape/ftape-internal.mod := printf '%s\n'   ftape/internal/fdc-internal.o ftape/internal/fc-10.o | awk '!x[$$0]++ { print("/home/unknown/ftape/"$$0) }' > /home/unknown/ftape/ftape-internal.mod

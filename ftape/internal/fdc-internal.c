@@ -23,14 +23,12 @@
  *
  */
 
-#include <linux/config.h>
 #include <linux/module.h>
 #include <linux/version.h>
 
 #include <linux/errno.h>
 #include <linux/ioport.h>
 #include <linux/mm.h>
-#include <linux/wrapper.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <asm/io.h>
@@ -108,14 +106,14 @@ static int ft_fdc_mach2[4] __initdata = {
 	CONFIG_FT_MACH2_3
 };
 
-static unsigned int ft_fdc_threshold[4] __initdata = {
+unsigned int ft_fdc_threshold[4] __initdata = {
 	CONFIG_FT_FDC_THRESHOLD_0,
 	CONFIG_FT_FDC_THRESHOLD_1,
 	CONFIG_FT_FDC_THRESHOLD_2,
 	CONFIG_FT_FDC_THRESHOLD_3
 };
 
-static unsigned int ft_fdc_rate_limit[4] __initdata = {
+unsigned int ft_fdc_rate_limit[4] __initdata = {
 	CONFIG_FT_FDC_MAX_RATE_0,
 	CONFIG_FT_FDC_MAX_RATE_1,
 	CONFIG_FT_FDC_MAX_RATE_2,
@@ -208,7 +206,7 @@ static int fdc_int_alloc(fdc_info_t *fdc, buffer_struct *buffer)
 	}
 	if (buffer) {
 		buffer->virtual     = addr;
-		buffer->dma_address = virt_to_bus(addr);
+		buffer->dma_address = virt_to_phys(addr);
 	} else {
 		fdc_int->deblock_buffer = addr;
 	}
@@ -228,7 +226,7 @@ static void fdc_int_free(fdc_info_t *fdc, buffer_struct *buffer)
 		addr = fdc_int->deblock_buffer;
 		fdc_int->deblock_buffer = NULL;
 		if (fdc_int->locked) {
-			MOD_DEC_USE_COUNT;
+			module_put(THIS_MODULE);
 		}
 	}
 	if (addr != NULL) {
@@ -244,7 +242,9 @@ static void *fdc_int_get_deblock_buffer(fdc_info_t *fdc)
 	TRACE_FUN(ft_t_any);
 
 	if (!fdc_int->locked) {
-		MOD_INC_USE_COUNT;
+		if (!try_module_get(THIS_MODULE)) {
+			TRACE_EXIT NULL;
+		}
 		fdc_int->locked = 1;
 	}
 	TRACE_EXIT fdc_int->deblock_buffer;
@@ -263,7 +263,7 @@ static int fdc_int_put_deblock_buffer(fdc_info_t *fdc, __u8 **buffer)
 	}
 	if (fdc_int->locked) {
 		fdc_int->locked = 0;
-		MOD_DEC_USE_COUNT;
+		module_put(THIS_MODULE);
 	}
 	*buffer = NULL;
 	TRACE_EXIT 0;
@@ -283,32 +283,58 @@ static int fdc_int_request_regions(fdc_info_t *fdc)
 {
 	TRACE_FUN(ft_t_flow);
 
+	printk(KERN_INFO "fdc_int_request_regions: Requesting I/O regions for base 0x%04x\n", fdc->sra);
+
 	if (fdc->dor2 != 0xffff) {
-		if (check_region(fdc->sra, 8) < 0) {
+		printk(KERN_INFO "fdc_int_request_regions: Requesting region 0x%04x-0x%04x (8 bytes)\n", 
+		       fdc->sra, fdc->sra + 7);
+		if (!request_region(fdc->sra, 8, "fdc (ft)")) {
 #ifndef BROKEN_FLOPPY_DRIVER
+			printk(KERN_ERR "fdc_int_request_regions: Failed to request region 0x%04x-0x%04x\n", 
+			       fdc->sra, fdc->sra + 7);
 			TRACE_EXIT -EBUSY;
 #else
 			TRACE(ft_t_warn,
 			      "address 0x%03x occupied (by floppy driver?), "
 			      "using it anyway", fdc->sra);
+			printk(KERN_WARNING "fdc_int_request_regions: Region occupied but using anyway\n");
 #endif
+		} else {
+			printk(KERN_INFO "fdc_int_request_regions: Successfully requested 8-byte region\n");
 		}
 	} else {
-		if (check_region(fdc->sra, 6) < 0 || 
-		    check_region(fdc->dir, 1) < 0) {
+		printk(KERN_INFO "fdc_int_request_regions: Requesting regions 0x%04x-0x%04x (6 bytes) and 0x%04x (1 byte)\n", 
+		       fdc->sra, fdc->sra + 5, fdc->dir);
+		if (!request_region(fdc->sra, 6, "fdc (ft)") || 
+		    !request_region(fdc->dir, 1, "fdc DIR (ft)")) {
 #ifndef BROKEN_FLOPPY_DRIVER
+			if (request_region(fdc->sra, 6, "fdc (ft)"))
+				release_region(fdc->sra, 6);
+			printk(KERN_ERR "fdc_int_request_regions: Failed to request regions\n");
 			TRACE_EXIT -EBUSY;
 #else
 			TRACE(ft_t_warn,
 			      "address 0x%03x occupied (by floppy driver?), "
 			      "using it anyway", fdc->sra);
+			printk(KERN_WARNING "fdc_int_request_regions: Regions occupied but using anyway\n");
 #endif
+		} else {
+			printk(KERN_INFO "fdc_int_request_regions: Successfully requested split regions\n");
 		}
 	}
 	if (fdc->sra != 0x3f0 && (fdc->dma == 2 || fdc->irq == 6)) {
-		if (check_region(0x3f0, 6) < 0 ||
-		    check_region(0x3f0 + 7, 1) < 0) {
+		if (!request_region(0x3f0, 6, "standard fdc (ft)") ||
+		    !request_region(0x3f0 + 7, 1, "standard fdc DIR (ft)")) {
 #ifndef BROKEN_FLOPPY_DRIVER
+			if (request_region(0x3f0, 6, "standard fdc (ft)"))
+				release_region(0x3f0, 6);
+			/* Also cleanup previous regions */
+			if (fdc->dor2 != 0xffff) {
+				release_region(fdc->sra, 8);
+			} else {
+				release_region(fdc->sra, 6);
+				release_region(fdc->dir, 1);
+			}
 			TRACE_EXIT -EBUSY;
 #else
 			TRACE(ft_t_warn,
@@ -316,16 +342,6 @@ static int fdc_int_request_regions(fdc_info_t *fdc)
 			      "using it anyway", 0x3f0);
 #endif
 		}
-	}
-	if (fdc->dor2 != 0xffff) {
-		request_region(fdc->sra, 8, "fdc (ft)");
-	} else {
-		request_region(fdc->sra, 6, "fdc (ft)");
-		request_region(fdc->sra + 7, 1, "fdc DIR (ft)");
-	}
-	if (fdc->sra != 0x3f0 && (fdc->dma == 2 || fdc->irq == 6)) {
-		request_region(0x3f0, 6,"standard fdc (ft)");
-		request_region(0x3f0 + 7, 1,"standard fdc DIR (ft)");
 	}
 	TRACE_EXIT 0;
 }
@@ -350,44 +366,34 @@ static void fdc_int_release_regions(fdc_info_t *fdc)
 #define GLOBAL_TRACING
 #include "../lowlevel/ftape-real-tracing.h"
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
-static void ftape_interrupt(int irq, void *dev_id, struct pt_regs *regs)
-#else
-static void ftape_interrupt(int irq, struct pt_regs *regs)
-#endif
+static irqreturn_t ftape_interrupt(int irq, void *dev_id)
 {
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	fdc_info_t *fdc = (fdc_info_t *)dev_id;
-#else
-	fdc_info_t *fdc = ft_find_fdc_by_irq(irq);
-#endif
 	TRACE_FUN(ft_t_fdc_dma);
 
 	if (!fdc) {
 		TRACE(ft_t_bug, "BUG: Spurious interrupt (no fdc data)");
-		goto err_out;
+		return IRQ_NONE;
 	}
 	if (fdc->magic != FT_FDC_MAGIC) {
 		TRACE(ft_t_bug, "BUG: Magic number mismatch (0x%08x/0x%08x), "
 		      "prepare for Armageddon", FT_FDC_MAGIC, fdc->magic);
-		goto err_out;
+		return IRQ_NONE;
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	if (fdc->irq != irq) {
 		TRACE(ft_t_bug, "BUG: Wrong IRQ number (%d/%d)", irq, fdc->irq);
-		goto err_out;
+		return IRQ_NONE;
 	}
-#endif
 
 	if (fdc->hook) {
 		void (*handler) (fdc_info_t *fdc) = fdc->hook;
 		fdc->hook = NULL;
 		handler(fdc);
+		return IRQ_HANDLED;
 	} else {
 		TRACE(ft_t_bug, "Unexpected ftape interrupt");
+		return IRQ_NONE;
 	}
- err_out:
-	TRACE_EXIT;
 }
 
 #define FDC_TRACING
@@ -458,17 +464,28 @@ static int fdc_int_grab(fdc_info_t *fdc)
 {
 	TRACE_FUN(ft_t_flow);
 
-	MOD_INC_USE_COUNT;
+	printk(KERN_INFO "fdc_int_grab: Attempting to grab resources for unit %d\n", fdc->unit);
+	printk(KERN_INFO "fdc_int_grab: Base=0x%04x, IRQ=%d, DMA=%d\n", fdc->sra, fdc->irq, fdc->dma);
+
+	if (!try_module_get(THIS_MODULE)) {
+		printk(KERN_ERR "fdc_int_grab: Failed to get module reference\n");
+		return -ENODEV;
+	}
 	fdc->hook = fdc_int_grab_handler;
+	
+	printk(KERN_INFO "fdc_int_grab: Requesting I/O regions\n");
 	TRACE_CATCH(fdc_int_request_regions(fdc),
-		    MOD_DEC_USE_COUNT);
+		    printk(KERN_ERR "fdc_int_grab: fdc_int_request_regions failed\n");
+		    module_put(THIS_MODULE));
 	/*  Get fast interrupt handler.
 	 */
+	printk(KERN_INFO "fdc_int_grab: Requesting IRQ %d\n", fdc->irq);
 #if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	if (request_irq(fdc->irq, ftape_interrupt,
-			SA_INTERRUPT, ftape_id, fdc)) {
+			0, ftape_id, fdc)) {
+		printk(KERN_ERR "fdc_int_grab: Failed to request IRQ %d\n", fdc->irq);
 		fdc_int_release_regions(fdc);
-		MOD_DEC_USE_COUNT; 
+		module_put(THIS_MODULE); 
 		TRACE_ABORT(-EBUSY, ft_t_bug,
 			    "Unable to grab IRQ%d for ftape driver",
 			    fdc->irq);
@@ -476,13 +493,15 @@ static int fdc_int_grab(fdc_info_t *fdc)
 #else
 	if (request_irq(fdc->irq, ftape_interrupt, SA_INTERRUPT,
 			ftape_id)) {
+		printk(KERN_ERR "fdc_int_grab: Failed to request IRQ %d\n", fdc->irq);
 		fdc_int_release_regions(fdc);
-		MOD_DEC_USE_COUNT;
+		module_put(THIS_MODULE);
 		TRACE_ABORT(-EBUSY, ft_t_bug,
 			    "Unable to grab IRQ%d for ftape driver",
 			    fdc->irq);
 	}
 #endif
+	printk(KERN_INFO "fdc_int_grab: IRQ %d requested successfully\n", fdc->irq);
 	if (request_dma(fdc->dma, ftape_id)) {
 #if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 		free_irq(fdc->irq, fdc);
@@ -490,7 +509,7 @@ static int fdc_int_grab(fdc_info_t *fdc)
 		free_irq(fdc->irq);
 #endif
 		fdc_int_release_regions(fdc);
-		MOD_DEC_USE_COUNT;
+		module_put(THIS_MODULE);
 		TRACE_ABORT(-EBUSY, ft_t_bug,
 			    "Unable to grab DMA%d for ftape driver",
 			    fdc->dma);		
@@ -530,7 +549,7 @@ static int fdc_int_release(fdc_info_t *fdc)
 		TRACE(ft_t_noise, "DMA-gate on standard fdc enabled again");
 	}
 	fdc_int_release_regions(fdc);
-	MOD_DEC_USE_COUNT;
+	module_put(THIS_MODULE);
 	TRACE_EXIT 0;
 }
 
@@ -583,7 +602,7 @@ static int fdc_int_write_buffer(fdc_info_t *fdc,
 	 */
 	fdc_int->deblock_buffer = buffer->virtual;
 	buffer->virtual         = tmp;
-	buffer->dma_address     = virt_to_bus(buffer->virtual);
+	buffer->dma_address     = virt_to_phys(buffer->virtual);
 	TRACE_EXIT 0;
 }
 
@@ -616,7 +635,7 @@ static int fdc_int_copy_and_gen_ecc(fdc_info_t *fdc,
 			    *source = buffer->virtual;
 			    buffer->virtual = fdc_int->deblock_buffer;
 			    fdc_int->deblock_buffer = *source;
-			    buffer->dma_address = virt_to_bus(buffer->virtual);
+			    buffer->dma_address = virt_to_phys(buffer->virtual);
 			    (void)fdc_int_get_deblock_buffer(fdc));
 		buffer->bytes = mseg.blocks * FT_SECTOR_SIZE;
 		TRACE_EXIT (mseg.blocks - 3) * FT_SECTOR_SIZE;
@@ -633,7 +652,7 @@ static int fdc_int_read_buffer(fdc_info_t *fdc,
 	buff->virtual           = fdc_int->deblock_buffer;
 	fdc_int->deblock_buffer = tmp;
 	*destination            = fdc_int_get_deblock_buffer(fdc);
-	buff->dma_address       = virt_to_bus(buff->virtual);
+	buff->dma_address       = virt_to_phys(buff->virtual);
 	return 0;
 }
 
@@ -662,12 +681,17 @@ static void __init fdc_int_config(fdc_info_t *fdc)
 	int sel = fdc->unit;
 	TRACE_FUN(ft_t_flow);
 
+	printk(KERN_INFO "fdc_int_config: Configuring unit %d\n", sel);
+	
 	/* fill in configuration parameters */
 	fdc->sra        = (__u16)ft_fdc_base[sel];
 	fdc->irq        = (unsigned int)ft_fdc_irq[sel];
 	fdc->dma        = (unsigned int)ft_fdc_dma[sel];
 	fdc->threshold  = ft_fdc_threshold[sel];
-	fdc->rate_limit = ft_fdc_rate_limit[sel];	
+	fdc->rate_limit = ft_fdc_rate_limit[sel];
+	
+	printk(KERN_INFO "fdc_int_config: Raw parameters - base=0x%04x, irq=%d, dma=%d\n", 
+	       fdc->sra, fdc->irq, fdc->dma);	
 	switch (fdc->rate_limit) {
 	case 250:
 	case 500:
@@ -685,14 +709,19 @@ static void __init fdc_int_config(fdc_info_t *fdc)
 		break;
 	}
 	if (ft_fdc_fc10[sel]) {
+		printk(KERN_INFO "fdc_int_config: FC-10 mode selected\n");
 		if (fdc->sra == 0xffff) fdc->sra = 0x180;
 		if (fdc->irq == -1) fdc->irq = 9;
 		if (fdc->dma == -1) fdc->dma  = 3;
 	} else if (ft_fdc_mach2[sel]) {
+		printk(KERN_INFO "fdc_int_config: Mach-2 mode selected\n");
 		if (fdc->sra == 0xffff) fdc->sra = 0x1e0;
 		if (fdc->irq == -1) fdc->irq = 6;
 		if (fdc->dma == -1) fdc->dma = 2;
+	} else {
+		printk(KERN_INFO "fdc_int_config: Standard FDC mode\n");
 	}
+	
 	fdc->srb  = fdc->sra + 1;
 	fdc->dor  = fdc->sra + 2;
 	fdc->tdr  = fdc->sra + 3;
@@ -700,6 +729,11 @@ static void __init fdc_int_config(fdc_info_t *fdc)
 	fdc->fifo = fdc->sra + 5;
 	fdc->dir  = fdc->ccr = fdc->sra + 7;
 	fdc->dor2 = (ft_fdc_mach2[sel]) ? fdc->sra + 6 : 0xffff;
+	
+	printk(KERN_INFO "fdc_int_config: Final parameters - base=0x%04x, irq=%d, dma=%d\n", 
+	       fdc->sra, fdc->irq, fdc->dma);
+	printk(KERN_INFO "fdc_int_config: Port layout - SRA=0x%04x, MSR=0x%04x, FIFO=0x%04x\n", 
+	       fdc->sra, fdc->msr, fdc->fifo);
 	
 	/* three buffers are enough. We don't make this a module
 	 * parameter
@@ -714,10 +748,16 @@ static int __init fdc_int_detect(fdc_info_t *fdc)
 	int sel = fdc->unit;
 	TRACE_FUN(ft_t_flow);
 
+	printk(KERN_INFO "fdc_int_detect: Starting detection for unit %d\n", sel);
 	TRACE(ft_t_info, "called with count %d", sel);
+	
+	printk(KERN_INFO "fdc_int_detect: Calling fdc_int_config\n");
 	fdc_int_config(fdc);
 	memset(&fdc_int[sel], 0, sizeof(fdc_int[sel]));
 	fdc->data           = &fdc_int[sel];
+	
+	printk(KERN_INFO "fdc_int_detect: Base address: 0x%04x, IRQ: %d, DMA: %d\n", 
+	       fdc->sra, fdc->irq, fdc->dma);
 	if (ft_fdc_fc10[sel]) {
 		int fc_type;
 
@@ -742,17 +782,23 @@ static int __init fdc_int_detect(fdc_info_t *fdc)
 	 */
 	if (fdc->sra == 0xffff) {
 		TRACE(ft_t_err, "Need the I/O port base address of the FDC");
+		printk(KERN_ERR "fdc_int_detect: Invalid I/O port base address (0xffff)\n");
 		TRACE_EXIT -ENXIO;
 	}
 	if (fdc->irq == -1) {
+		printk(KERN_INFO "fdc_int_detect: Probing for IRQ\n");
 		fdc->irq = fdc_int_probe_irq(fdc);
 		if (fdc->irq == -1) {
+			printk(KERN_ERR "fdc_int_detect: IRQ probe failed\n");
 			TRACE_EXIT -ENXIO;
 		}
+		printk(KERN_INFO "fdc_int_detect: IRQ probe successful, IRQ = %d\n", fdc->irq);
 		/* the grab/release pair tests whether we can get all resources
 		 */
-		TRACE_CATCH(fdc_int_grab(fdc),);
-		TRACE_CATCH(fdc_int_release(fdc),);
+		printk(KERN_INFO "fdc_int_detect: Testing resource grab/release\n");
+		TRACE_CATCH(fdc_int_grab(fdc), printk(KERN_ERR "fdc_int_detect: fdc_int_grab failed\n"));
+		TRACE_CATCH(fdc_int_release(fdc), printk(KERN_ERR "fdc_int_detect: fdc_int_release failed\n"));
+		printk(KERN_INFO "fdc_int_detect: Resource grab/release test successful\n");
 	}
 	/* back to not probing for the hardware. We gained nothing if
 	 * we would really probe for the FDC here, e.g. by resetting
@@ -763,12 +809,18 @@ static int __init fdc_int_detect(fdc_info_t *fdc)
 	 * .init section.
 	 */
 	else {
-		TRACE_CATCH(fdc_int_grab(fdc),);
-		TRACE_CATCH(fdc_int_release(fdc),);
+		printk(KERN_INFO "fdc_int_detect: Testing resource grab/release (direct path)\n");
+		TRACE_CATCH(fdc_int_grab(fdc), printk(KERN_ERR "fdc_int_detect: fdc_int_grab failed (direct path)\n"));
+		TRACE_CATCH(fdc_int_release(fdc), printk(KERN_ERR "fdc_int_detect: fdc_int_release failed (direct path)\n"));
+		printk(KERN_INFO "fdc_int_detect: Resource grab/release test successful (direct path)\n");
 	}
 
 	TRACE(ft_t_warn, "fdc[%d] base: 0x%04x, irq: %d, dma: %d",
 	      sel, fdc->sra, fdc->irq, fdc->dma);
+	      
+	printk(KERN_INFO "fdc_int_detect: Detection completed successfully for unit %d\n", sel);
+	printk(KERN_INFO "fdc_int_detect: Final config - base=0x%04x, irq=%d, dma=%d\n", 
+	       fdc->sra, fdc->irq, fdc->dma);
 
 	TRACE_EXIT 0;
 }
@@ -776,6 +828,7 @@ static int __init fdc_int_detect(fdc_info_t *fdc)
 #ifdef CONFIG_FT_INTERNAL
 static int fdc_int_dummy_detect(fdc_info_t *fdc)
 {
+	printk(KERN_INFO "fdc_int_dummy_detect: Called for unit %d - always returns -ENXIO\n", fdc->unit);
 	return -ENXIO;
 }
 #endif
@@ -821,25 +874,31 @@ int __init fdc_internal_register(void)
 {
 	int result;
 
-	printk(__FILE__": "__FUNCTION__" @ 0x%p.\n", fdc_internal_register);
+	printk(KERN_INFO "ftape_internal: %s @ 0x%p\n", __func__, fdc_internal_register);
+	printk(KERN_INFO "ftape_internal: Attempting to register fdc_internal_ops\n");
 
 	/* try to register ...
 	 */
 	if ((result = fdc_register(&fdc_internal_ops)) < 0) {
+		printk(KERN_ERR "ftape_internal: fdc_register failed with error %d\n", result);
 		return result;
 	}
+	printk(KERN_INFO "ftape_internal: fdc_register successful\n");
+	
 #ifdef CONFIG_FT_INTERNAL
 	/* No need to probe again.
 	 */
+	printk(KERN_INFO "ftape_internal: Setting dummy detect function (CONFIG_FT_INTERNAL enabled)\n");
 	fdc_internal_ops.detect = fdc_int_dummy_detect;
 #endif
+	printk(KERN_INFO "ftape_internal: fdc_internal_register completed successfully\n");
 	return 0;
 }
 
 #ifdef MODULE
 #if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 #define FT_MOD_PARM(var,type,desc) \
-	MODULE_PARM(var,type); MODULE_PARM_DESC(var,desc)
+	module_param_array(var, int, NULL, 0644); MODULE_PARM_DESC(var,desc)
 
 FT_MOD_PARM(ft_fdc_base,       "1-4i", "I/O port base addresses");
 FT_MOD_PARM(ft_fdc_irq,        "1-4i", "IRQ lines");
@@ -864,14 +923,28 @@ MODULE_DESCRIPTION(
  */
 int init_module(void)
 {
+	int result;
+	
+	printk(KERN_INFO "ftape_internal: Module initialization starting\n");
+	printk(KERN_INFO "ftape_internal: ft_fdc_base[0] = 0x%03x\n", ft_fdc_base[0]);
+	printk(KERN_INFO "ftape_internal: ft_fdc_irq[0] = %d\n", ft_fdc_irq[0]);
+	printk(KERN_INFO "ftape_internal: ft_fdc_dma[0] = %d\n", ft_fdc_dma[0]);
+	
 #if LINUX_VERSION_CODE >= KERNEL_VER(1,1,85)
 # if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
 	register_symtab(0); /* remove global ftape symbols */
 # else
-	EXPORT_NO_SYMBOLS;
+	/* EXPORT_NO_SYMBOLS is deprecated - no global exports by default */
 # endif
 #endif
-	return fdc_internal_register();
+	result = fdc_internal_register();
+	printk(KERN_INFO "ftape_internal: fdc_internal_register() returned %d\n", result);
+	if (result < 0) {
+		printk(KERN_ERR "ftape_internal: Module initialization failed with error %d\n", result);
+	} else {
+		printk(KERN_INFO "ftape_internal: Module initialization successful\n");
+	}
+	return result;
 }
 
 /* Called by modules package when removing the driver 
