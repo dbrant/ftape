@@ -174,7 +174,6 @@ deps_/home/unknown/ftape/ftape/lowlevel/ftape-rw.o := \
   include/linux/dynamic_debug.h \
   /home/unknown/ftape/include/linux/ftape.h \
     $(wildcard include/config/KMOD) \
-    $(wildcard include/config/KERNELD) \
     $(wildcard include/config/FT_NONE_0) \
     $(wildcard include/config/FT_FDC_DRIVER_0) \
     $(wildcard include/config/FT_INT_0) \

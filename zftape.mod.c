@@ -57,6 +57,8 @@ __used __section("__versions") =
 	"_copy_from_user\0"
 	"\x10\x00\x00\x00\xeb\x02\xe6\xb0"
 	"memmove\0"
+	"\x18\x00\x00\x00\xeb\xda\x5c\xfa"
+	"class_destroy\0\0\0"
 	"\x1c\x00\x00\x00\x67\xab\xd1\xaa"
 	"ftape_reset_drive\0\0\0"
 	"\x10\x00\x00\x00\x38\xdf\xac\x69"
@@ -97,8 +99,12 @@ __used __section("__versions") =
 	"__ubsan_handle_out_of_bounds\0\0\0\0"
 	"\x24\x00\x00\x00\x44\x0b\xf3\x08"
 	"ftape_get_bad_sector_entry\0\0"
+	"\x18\x00\x00\x00\x86\xa6\x41\xf6"
+	"device_create\0\0\0"
 	"\x10\x00\x00\x00\xa8\x26\x6d\x1e"
 	"strstr\0\0"
+	"\x18\x00\x00\x00\x0e\x7e\xc4\x33"
+	"class_create\0\0\0\0"
 	"\x20\x00\x00\x00\xda\xcd\x4d\xe3"
 	"fdc_put_deblock_buffer\0\0"
 	"\x10\x00\x00\x00\x11\x13\x92\x5a"
@@ -131,6 +137,8 @@ __used __section("__versions") =
 	"ftape_get_drive_status\0\0"
 	"\x1c\x00\x00\x00\xea\x0a\x92\x2f"
 	"__register_chrdev\0\0\0"
+	"\x18\x00\x00\x00\xf9\xbd\x21\x0c"
+	"device_destroy\0\0"
 	"\x20\x00\x00\x00\x2a\xfc\x57\x20"
 	"fdc_get_deblock_buffer\0\0"
 	"\x18\x00\x00\x00\xa8\x15\x70\x5a"
@@ -148,4 +156,4 @@ __used __section("__versions") =
 MODULE_INFO(depends, "ftape-core");
 
 
-MODULE_INFO(srcversion, "6533284E91ABC02C8746280");
+MODULE_INFO(srcversion, "B1E3EDCB4CBA5EFBD276B72");

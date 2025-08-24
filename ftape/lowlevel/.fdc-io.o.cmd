@@ -859,7 +859,6 @@ deps_/home/unknown/ftape/ftape/lowlevel/fdc-io.o := \
     $(wildcard include/config/ISA_DMA_API) \
     $(wildcard include/config/GENERIC_ISA_DMA) \
   /home/unknown/ftape/include/linux/ftape.h \
-    $(wildcard include/config/KERNELD) \
     $(wildcard include/config/FT_NONE_0) \
     $(wildcard include/config/FT_INT_0) \
     $(wildcard include/config/FT_PAR_0) \

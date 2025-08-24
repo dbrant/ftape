@@ -34,26 +34,10 @@
 
 #include <linux/zftape.h>
 
-/* DevFS was removed from modern kernels - disabled for now */
-#if 0 
-# include <linux/devfs_fs_kernel.h>
+/* Modern device node creation using device class */
+#include <linux/device.h>
 
-static devfs_handle_t ftape_devfs_handle;
-static devfs_handle_t devfs_handle[4];
-
-static devfs_handle_t devfs_q[4];
-static devfs_handle_t devfs_qn[4];
-
-# if defined(CONFIG_ZFT_COMPRESSOR) || defined(CONFIG_ZFT_COMPRESSOR_MODULE)
-static devfs_handle_t devfs_zq[4];
-static devfs_handle_t devfs_zqn[4];
-# endif	
-# if CONFIG_ZFT_OBSOLETE
-static devfs_handle_t devfs_raw[4];
-static devfs_handle_t devfs_rawn[4];
-# endif
-
-#endif /* DevFS disabled */
+static struct class *ftape_class;
 
 #define SEL_TRACING
 #include "zftape-init.h"
@@ -354,73 +338,47 @@ extern int zft_compressor_init(void);
 #endif
 #define FT_TRACE_ATTR __initlocaldata
 
-#if 0 /* DevFS support disabled for modern kernels */
-static int __init zft_devfs_register(void)
+static int __init zft_device_register(void)
 {
 	int sel;
 	TRACE_FUN(ft_t_flow);
 	
-	TRACE_CATCH(register_chrdev(ft_major_device_number,
-					  "zft", &zft_cdev),);
-	ftape_devfs_handle = devfs_mk_dir(NULL, "ftape", NULL);
+	TRACE_CATCH(register_chrdev(ft_major_device_number, "zft", &zft_cdev),);
+	
+	ftape_class = class_create("ftape");
+	if (IS_ERR(ftape_class)) {
+		unregister_chrdev(ft_major_device_number, "zft");
+		TRACE_ABORT(PTR_ERR(ftape_class), ft_t_err, "class_create failed");
+	}
 
 	for (sel = 0; sel < 4; sel++) {
-		char tmpname[40];
-
-		sprintf(tmpname, "%d", sel);
-		devfs_handle[sel] = devfs_mk_dir(ftape_devfs_handle,
-						 tmpname, NULL);
+		/* Standard tape devices (rewind) */
+		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel),
+			     NULL, "ftape%d", sel);
 		
-		devfs_q[sel] = devfs_register(devfs_handle[sel], "mt",
-					      DEVFS_FL_DEFAULT,
-					      ft_major_device_number,
-					      sel,
-					      S_IFCHR | S_IRUSR | S_IWUSR,
-					      &zft_cdev, NULL);
-		devfs_qn[sel] = devfs_register(devfs_handle[sel], "mtn",
-					       DEVFS_FL_DEFAULT,
-					       ft_major_device_number,
-					       sel|FTAPE_NO_REWIND ,
-					       S_IFCHR | S_IRUSR | S_IWUSR,
-					       &zft_cdev, NULL);
+		/* No-rewind tape device */
+		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|FTAPE_NO_REWIND),
+			     NULL, "nftape%d", sel);
 
 # if defined(CONFIG_ZFT_COMPRESSOR) || defined(CONFIG_ZFT_COMPRESSOR_MODULE)
-		devfs_zq[sel] =
-			devfs_register(devfs_handle[sel], "mtz",
-				       DEVFS_FL_DEFAULT,
-				       ft_major_device_number,
-				       sel|ZFT_ZIP_MODE,
-				       S_IFCHR | S_IRUSR | S_IWUSR,
-				       &zft_cdev, NULL);
-		devfs_zqn[sel] =
-			devfs_register(devfs_handle[sel], "mtzn",
-				       DEVFS_FL_DEFAULT,
-				       ft_major_device_number,
-				       sel|ZFT_ZIP_MODE|FTAPE_NO_REWIND,
-				       S_IFCHR | S_IRUSR | S_IWUSR,
-				       &zft_cdev, NULL);
+		/* Compressed tape devices */
+		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_ZIP_MODE),
+			     NULL, "zftape%d", sel);
+		
+		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_ZIP_MODE|FTAPE_NO_REWIND),
+			     NULL, "nzftape%d", sel);
 # endif
 # if CONFIG_ZFT_OBSOLETE
-		devfs_raw[sel] =
-			devfs_register(devfs_handle[sel], "mtr",
-				       DEVFS_FL_DEFAULT,
-				       ft_major_device_number,
-				       sel|ZFT_RAW_MODE,
-				       S_IFCHR | S_IRUSR | S_IWUSR,
-				       &zft_cdev, NULL);
-		devfs_rawn[sel] =
-			devfs_register(devfs_handle[sel], "mtrn",
-				       DEVFS_FL_DEFAULT,
-				       ft_major_device_number,
-				       sel|ZFT_RAW_MODE|FTAPE_NO_REWIND,
-				       S_IFCHR | S_IRUSR | S_IWUSR,
-				       &zft_cdev, NULL);
+		/* Raw mode devices */
+		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE),
+			     NULL, "rawft%d", sel);
+		
+		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE|FTAPE_NO_REWIND),
+			     NULL, "nrawft%d", sel);
 # endif
-		devfs_register_tape(devfs_q[sel]);
 	}
 	TRACE_EXIT 0;
 }
-#endif /* DevFS disabled */
 
 /*  Called by modules package when installing the driver or by kernel
  *  during the initialization phase
@@ -453,8 +411,8 @@ KERN_INFO
 	TRACE(ft_t_info, "zft_init @ 0x%p", zft_init);
 	TRACE(ft_t_info,
 	      "installing zftape VFS interface for ftape driver ...");
-	/* DevFS disabled - register character device directly */
-	TRACE_CATCH(register_chrdev(ft_major_device_number, "zft", &zft_cdev),);
+	/* Register character device and create device nodes */
+	TRACE_CATCH(zft_device_register(),);
 
 #ifdef CONFIG_ZFT_COMPRESSOR
 	(void)zft_compressor_init();
@@ -463,6 +421,31 @@ KERN_INFO
 #endif /* CONFIG_ZFT_COMPRESSOR */
 
 	TRACE_EXIT 0;
+}
+
+static void zft_device_unregister(void)
+{
+	int sel;
+	TRACE_FUN(ft_t_flow);
+	
+	if (ftape_class) {
+		for (sel = 0; sel < 4; sel++) {
+			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel));
+			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|FTAPE_NO_REWIND));
+# if defined(CONFIG_ZFT_COMPRESSOR) || defined(CONFIG_ZFT_COMPRESSOR_MODULE)
+			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_ZIP_MODE));
+			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_ZIP_MODE|FTAPE_NO_REWIND));
+# endif
+# if CONFIG_ZFT_OBSOLETE
+			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE));
+			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE|FTAPE_NO_REWIND));
+# endif
+		}
+		class_destroy(ftape_class);
+		ftape_class = NULL;
+	}
+	unregister_chrdev(ft_major_device_number, "zft");
+	TRACE_EXIT;
 }
 
 #undef FT_TRACE_ATTR
@@ -504,8 +487,8 @@ void cleanup_module(void)
 	int sel;
 	TRACE_FUN(ft_t_flow);
 
-	unregister_chrdev(ft_major_device_number, "zft");
-	TRACE(ft_t_info, "unregistered character device");
+	zft_device_unregister();
+	TRACE(ft_t_info, "unregistered character device and device nodes");
 
 	for (sel = 0; sel < 4; sel++) {
 		if (zftapes[sel]) {
@@ -513,30 +496,7 @@ void cleanup_module(void)
 			zft_uninit_mem(zftapes[sel]);
 			ftape_kfree(FTAPE_SEL(sel), &zftapes[sel], sizeof(*zftapes[sel]));
 		}
-	}  /* Close for loop */
-#if 0 /* DevFS cleanup disabled */
-		devfs_unregister (devfs_q[sel]);
-		devfs_q[sel] = NULL;
-		devfs_unregister (devfs_qn[sel]);
-		devfs_qn[sel] = NULL;
-#  if defined(CONFIG_ZFT_COMPRESSOR) || defined(CONFIG_ZFT_COMPRESSOR_MODULE)
-		devfs_unregister(devfs_zq[sel]);
-		devfs_zq[sel] = NULL;
-		devfs_unregister(devfs_zqn[sel]);
-		devfs_zqn[sel] = NULL;
-#  endif
-#  ifdef CONFIG_ZFT_OBSOLETE
-		devfs_unregister(devfs_raw[sel]);
-		devfs_raw[sel] = NULL;
-		devfs_unregister(devfs_rawn[sel]);
-		devfs_rawn[sel] = NULL;
-#endif
-		devfs_unregister(devfs_handle[sel]);
-		devfs_handle[sel] = NULL;
 	}
-	devfs_unregister(ftape_devfs_handle);
-	ftape_devfs_handle = NULL;
-#endif /* DevFS cleanup disabled */
         printk(KERN_INFO "zftape successfully unloaded.\n");
 	TRACE_EXIT;
 }
