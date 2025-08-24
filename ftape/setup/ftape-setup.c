@@ -67,7 +67,7 @@ extern int ftape_internal_setup(char *str);
  * already did the right thing
  */
 
-int __init ftape_setup(char *str)
+int ftape_setup(char *str)
 {
 	TRACE_FUN(ft_t_flow);
 
@@ -90,9 +90,7 @@ int __init ftape_setup(char *str)
 	TRACE_EXIT 1;
 }
 
-
-
-int __init ftape_setup_parse(char *str, int *ints,
+int ftape_setup_parse(char *str, int *ints,
 			     ftape_setup_t *config_params)
 {
 	int i, j;

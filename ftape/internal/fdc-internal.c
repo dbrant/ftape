@@ -414,7 +414,7 @@ static void fdc_int_grab_handler(fdc_info_t *fdc)
 #endif
 #define FT_TRACE_ATTR
 
-static void __init fdc_int_cause_reset(fdc_info_t *fdc)
+static void fdc_int_cause_reset(fdc_info_t *fdc)
 {
 	const __u8 fdc_ctl = fdc->unit | FDC_DMA_MODE;
 
@@ -435,7 +435,7 @@ static void __init fdc_int_cause_reset(fdc_info_t *fdc)
 	udelay(10);
 }
 
-static int __init fdc_int_probe_irq(fdc_info_t *fdc)
+static int fdc_int_probe_irq(fdc_info_t *fdc)
 {
 	int irq;
 	TRACE_FUN(ft_t_flow);
@@ -657,7 +657,7 @@ static int fdc_int_correct_and_copy(fdc_info_t *fdc,
 #endif
 #define FT_TRACE_ATTR
 
-static void __init fdc_int_config(fdc_info_t *fdc)
+static void fdc_int_config(fdc_info_t *fdc)
 {
 	int sel = fdc->unit;
 	TRACE_FUN(ft_t_flow);
@@ -724,7 +724,7 @@ static void __init fdc_int_config(fdc_info_t *fdc)
 	TRACE_EXIT;
 }
 
-static int __init fdc_int_detect(fdc_info_t *fdc)
+static int fdc_int_detect(fdc_info_t *fdc)
 {
 	int sel = fdc->unit;
 	TRACE_FUN(ft_t_flow);
@@ -851,7 +851,7 @@ struct fdc_operations fdc_internal_ops = {
 #endif
 #define FT_TRACE_ATTR
 
-int __init fdc_internal_register(void)
+int fdc_internal_register(void)
 {
 	int result;
 
@@ -953,7 +953,7 @@ static ftape_setup_t config_params[] = {
 	{ NULL, }
 };
 
-int __init ftape_internal_setup(char *str)
+int ftape_internal_setup(char *str)
 {
 	static int ints[6] = { 0, };
 #ifdef CONFIG_ISAPNP

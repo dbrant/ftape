@@ -94,7 +94,7 @@ FT_MOD_PARM(ft_fdc_pnp_dev, "1-4h", "PnP device number");
 FT_MOD_PARM(ft_fdc_pnp_fct, "1-4h", "PnP function number");
 #endif
 
-static int __init find_isapnp_fdc(fdc_info_t *fdc,
+static int find_isapnp_fdc(fdc_info_t *fdc,
 				  unsigned short ven,
 				  unsigned short dev,
 				  unsigned short fct)
@@ -193,7 +193,7 @@ static int __init find_isapnp_fdc(fdc_info_t *fdc,
  * irqs, dma and I/O base as command line argument, then we try to tell
  * the isapnp layer to configure the device accordingly.
  */
-int __init fdc_int_isapnp_init(fdc_info_t *fdc)
+int fdc_int_isapnp_init(fdc_info_t *fdc)
 {
 	int i;
 	int sel = fdc->unit;
@@ -278,7 +278,7 @@ void fdc_int_isapnp_disable(void)
  * Retzurn
  *
  */
-int __init fdc_int_isapnp_setup(char *str)
+int fdc_int_isapnp_setup(char *str)
 {
 	size_t offset = strlen(str) - strlen("pnpdev");
 	TRACE_FUN(ft_t_flow);

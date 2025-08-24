@@ -978,7 +978,7 @@ static struct zft_cmpr_ops cmpr_ops = {
 #endif
 #define FT_TRACE_ATTR
 
-int __init zft_compressor_init(void)
+int zft_compressor_init(void)
 {
 	TRACE_FUN(ft_t_flow);
 	

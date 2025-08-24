@@ -29,15 +29,15 @@
 #include <linux/module.h>
 
 #ifdef CONFIG_FT_TRAKKER
-extern int trakker_setup(char *str) __init;
-extern int trakker_register(void) __init;
+extern int trakker_setup(char *str);
+extern int trakker_register(void);
 #endif
 #ifdef CONFIG_FT_BPCK
-extern int bpck_fdc_setup(char *str) __init;
-extern int bpck_fdc_register(void) __init;
+extern int bpck_fdc_setup(char *str);
+extern int bpck_fdc_register(void);
 #endif
 
-void __init ftape_parport_init(void)
+void ftape_parport_init(void)
 {
 #ifdef CONFIG_FT_TRAKKER
 	(void)trakker_register();
@@ -51,7 +51,7 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Claus-Justus Heine");
 MODULE_DESCRIPTION("Parallel port FDC interface for ftape");
 
-void __init ftape_parport_setup(char *str)
+void ftape_parport_setup(char *str)
 {
 #ifdef CONFIG_FT_TRAKKER
 	if (trakker_setup(str) <= 0) { /* error or no need to proceed */

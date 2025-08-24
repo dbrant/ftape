@@ -338,7 +338,7 @@ extern int zft_compressor_init(void);
 #endif
 #define FT_TRACE_ATTR
 
-static int __init zft_device_register(void)
+static int zft_device_register(void)
 {
 	int sel;
 	TRACE_FUN(ft_t_flow);
@@ -383,7 +383,7 @@ static int __init zft_device_register(void)
 /*  Called by modules package when installing the driver or by kernel
  *  during the initialization phase
  */
-int __init zft_init(void)
+int zft_init(void)
 {
 	TRACE_FUN(ft_t_flow);
 

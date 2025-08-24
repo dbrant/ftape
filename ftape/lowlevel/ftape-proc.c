@@ -415,7 +415,7 @@ static struct proc_dir_entry *proc_ft_driver;
 static struct proc_dir_entry *proc_ft_sel[4];
 static const char *sel_names[4] = { "0", "1", "2", "3" };
 
-int __init ftape_proc_init(void)
+int ftape_proc_init(void)
 {
 	int i;
 

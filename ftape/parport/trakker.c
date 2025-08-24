@@ -864,7 +864,7 @@ static void trakker_speedtest(fdc_info_t *fdc)
 #endif
 #define FT_TRACE_ATTR
 
-static int __init trakker_probe_irq(fdc_info_t *fdc)
+static int trakker_probe_irq(fdc_info_t *fdc)
 {
 	struct trakker_struct *trakker = fdc->data;
 	int irqs;
@@ -1197,7 +1197,7 @@ static fdc_operations trakker_ops = {
 #endif
 #define FT_TRACE_ATTR
 
-int __init trakker_register(void)
+int trakker_register(void)
 {
 	TRACE_FUN(ft_t_flow);
 
@@ -1264,7 +1264,7 @@ static ftape_setup_t config_params[] = {
 	{ NULL, }
 };
 
-int __init trakker_setup(char *str)
+int trakker_setup(char *str)
 {
 	static int ints[6] = { 0, };
 

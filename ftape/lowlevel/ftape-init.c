@@ -71,7 +71,7 @@ int ft_soft_retries = FT_SOFT_RETRIES;
 #endif
 #define FT_TRACE_ATTR
 
-static void __init ftape_build_driver_list(void)
+static void ftape_build_driver_list(void)
 {
 	char *ptr, *newptr;
 	int sel;
@@ -105,13 +105,13 @@ static void __init ftape_build_driver_list(void)
 	TRACE_EXIT;
 }
 
-extern int fdc_internal_register(void) __init;
-extern void ftape_parport_init(void) __init;
+extern int fdc_internal_register(void);
+extern void ftape_parport_init(void);
 
 /*  Called by modules package when installing the driver
  *  or by kernel during the initialization phase
  */
-int __init ftape_init(void)
+int ftape_init(void)
 {
 
 #ifdef MODULE
@@ -185,7 +185,7 @@ MODULE_DESCRIPTION(
 
 /*  Called by modules package when installing the driver
  */
-static int __init ftape_module_init(void)
+static int ftape_module_init(void)
 {
 #ifndef CONFIG_FT_NO_TRACE_AT_ALL
 	memcpy(ftape_tracings, ft_tracings, sizeof(ft_tracings));

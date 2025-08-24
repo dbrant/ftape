@@ -251,7 +251,7 @@ typedef struct fdc_int {
 	unsigned int locked:1;
 } fdc_int_t;
 
-int ftape_internal_setup(char *str) __init;
-int fdc_internal_register(void) __init;
+int ftape_internal_setup(char *str);
+int fdc_internal_register(void);
 
 #endif

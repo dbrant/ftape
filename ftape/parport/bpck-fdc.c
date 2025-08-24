@@ -2163,7 +2163,7 @@ static fdc_operations bpck_fdc_ops = {
 #endif
 #define FT_TRACE_ATTR
 
-int __init bpck_fdc_register(void)
+int bpck_fdc_register(void)
 {
 	TRACE_FUN(ft_t_flow);
 
@@ -2237,7 +2237,7 @@ static ftape_setup_t config_params[] = {
 	{ NULL, }
 };
 
-int __init bpck_fdc_setup(char *str)
+int bpck_fdc_setup(char *str)
 {
 	static int ints[6] = { 0, };
 

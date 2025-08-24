@@ -85,7 +85,7 @@ const __u16 fc10_ports[] = {
 #endif
 #define FT_TRACE_ATTR
 
-int __init fc10_enable(fdc_info_t *fdc)
+int fc10_enable(fdc_info_t *fdc)
 {
 	int i;
 	__u8 cardConfig = 0x00;
