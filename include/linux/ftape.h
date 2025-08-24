@@ -39,11 +39,11 @@
 #include <linux/types.h>
 #include <linux/version.h>
 #ifdef KERNEL_VERSION
-# define KERNEL_VER(major,minor,sublvl) KERNEL_VERSION(major,minor,sublvl)
+# define KERNEL_VER(major,minor,sublvl) KERNEL_VERSION(major,minor,sublevel)
 #else
 # define KERNEL_VER(major,minor,sublvl) (((major)<<16)+((minor)<<8)+(sublvl))
 #endif
-/* autoconf.h not needed in modern kernels */
+#include <linux/config.h>
 #if LINUX_VERSION_CODE <= KERNEL_VER(1,2,13) 
 typedef daddr_t __kernel_daddr_t; /* needed for mtio.h */
 #endif

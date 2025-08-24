@@ -27,7 +27,7 @@
  *      for the QIC-40/80 floppy-tape driver for Linux.
  */
 
-/* #include <linux/config.h> - not needed in modern kernels */
+#include <linux/config.h>
 #include <linux/ioctl.h>
 #include <linux/mtio.h>
 #include <linux/list.h>

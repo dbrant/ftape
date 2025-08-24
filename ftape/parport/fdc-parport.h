@@ -28,7 +28,7 @@
  *
  */
 
-/* #include <linux/config.h> - not needed in modern kernels */
+#include <linux/config.h>
 #include <linux/delay.h>
 
 #if (defined(CONFIG_PNP_PARPORT) || defined(CONFIG_PNP_PARPORT_MODULE) || \

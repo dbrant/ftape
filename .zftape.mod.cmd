@@ -1,1 +1,0 @@
-savedcmd_/home/unknown/ftape/zftape.mod := printf '%s\n'   ftape/zftape/zftape-init.o ftape/zftape/zftape-read.o ftape/zftape/zftape-write.o ftape/zftape/zftape-ctl.o ftape/zftape/zftape-buffers.o ftape/zftape/zftape-rw.o ftape/zftape/zftape-vtbl.o ftape/zftape/zftape-eof.o | awk '!x[$$0]++ { print("/home/unknown/ftape/"$$0) }' > /home/unknown/ftape/zftape.mod

@@ -1,75 +1,71 @@
 #
-# Standalone out-of-tree Makefile for ftape driver
+#       Copyright (C) 1996-1998 Claus-Justus Heine.
 #
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; see the file COPYING.  If not, write to
+# the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# $RCSfile: Makefile,v $
+# $Revision: 1.36 $
+# $Date: 2000/07/03 09:08:04 $
+#
+#      Makefile for the QIC-40/80/3010/3020 floppy-tape driver for
+#      Linux.
+#
+#
+# The configuration section is now in the MCONFIG file.
+#
+TOPDIR=.
+#
+# all other configuration is in $(TOPDIR)/MCONFIG:
+#
+include $(TOPDIR)/MCONFIG
 
-# Kernel build directory
-KDIR := /lib/modules/$(shell uname -r)/build
-PWD := $(shell pwd)
+SUBDIRS = ftape
 
-# Module objects
-obj-m := ftape-core.o ftape-internal.o zftape.o
+default: all
 
-# Core ftape objects
-ftape-core-objs := ftape/lowlevel/ftape-init.o \
-		   ftape/lowlevel/ftape-calibr.o \
-		   ftape/lowlevel/ftape-ctl.o \
-		   ftape/lowlevel/ftape-io.o \
-		   ftape/lowlevel/ftape-read.o \
-		   ftape/lowlevel/ftape-rw.o \
-		   ftape/lowlevel/ftape-write.o \
-		   ftape/lowlevel/ftape-buffer.o \
-		   ftape/lowlevel/ftape-ecc.o \
-		   ftape/lowlevel/ftape-bsm.o \
-		   ftape/lowlevel/ftape-format.o \
-		   ftape/lowlevel/ftape-tracing.o \
-		   ftape/lowlevel/fdc-io.o \
-		   ftape/lowlevel/fdc-isr.o \
-		   ftape/lowlevel/ftape-proc.o \
-		   ftape/setup/ftape-setup.o
+$(SUBDIRS):
+	make -C $@ all
 
-# Internal FDC objects
-ftape-internal-objs := ftape/internal/fdc-internal.o \
-		       ftape/internal/fc-10.o
+all::
+	+for i in $(SUBDIRS) ; do make -C $$i $@ ; done
 
-# Zftape VFS interface
-zftape-objs := ftape/zftape/zftape-init.o \
-	       ftape/zftape/zftape-read.o \
-	       ftape/zftape/zftape-write.o \
-	       ftape/zftape/zftape-ctl.o \
-	       ftape/zftape/zftape-buffers.o \
-	       ftape/zftape/zftape-rw.o \
-	       ftape/zftape/zftape-vtbl.o \
-	       ftape/zftape/zftape-eof.o
+install uninstall tags::
+	+for i in $(SUBDIRS) ; do make -C $$i NODEP=true $@ ; done
 
-# Include our local headers
-ccflags-y := -I$(src)/include
-ccflags-y += -DTHE_FTAPE_MAINTAINER=\"ftape-maintainer@kernel.org\"
-# ccflags-y += -DCONFIG_FT_PROC_FS  # Disabled proc support for now
-ccflags-y += -DCONFIG_FTAPE_MODULE
-ccflags-y += -DCONFIG_FT_INTERNAL_MODULE  
-ccflags-y += -DCONFIG_ZFTAPE_MODULE
-ccflags-y += -DFT_SOFT_RETRIES=6
+install::
+	/sbin/depmod -a
+	$(SHELL) ./scripts/MAKEDEV.ftape
 
-# Disable some problematic features for now
-ccflags-y += -DCONFIG_FT_NO_TRACE_AT_ALL
+uninstall::
+	-rmdir $(DOCDIR)
+	/sbin/depmod -a
 
-all:
-	$(MAKE) -C $(KDIR) M=$(PWD) modules
+clean realclean:
+	+for i in $(SUBDIRS) ; do make -C $$i NODEP=true $@ ; done
 
-clean:
-	$(MAKE) -C $(KDIR) M=$(PWD) clean
-	rm -f *.o *.ko *.mod.c .*.cmd *.markers *.order *.symvers
-	find . -name "*.o" -delete
-	find . -name ".*.cmd" -delete
+distclean: realclean
+	find . -name \*~ -exec rm -f \{\} \;
+	-rm -f ftape/parport/ftape-makecrc
+	-rm -f ftape/parport/bpck-fdc-crctab.h
+	find . -name TAGS -exec rm -f \{\} \;
+	-rm -f include/linux/autoconf.h*
 
-install: all
-	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
+tags:: TAGS
 
-help:
-	@echo "Available targets:"
-	@echo "  all      - Build all modules"
-	@echo "  clean    - Clean build files"
-	@echo "  install  - Install modules"
-	@echo "  help     - Show this help"
+TAGS:
+	here=`pwd` ; etags -i $$here/ftape/TAGS
 
-.PHONY: all clean install help
+.PHONY: all doc $(SUBDIRS) install uninstall \
+	clean realclean distclean tags

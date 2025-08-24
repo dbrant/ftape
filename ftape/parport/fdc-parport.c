@@ -24,7 +24,7 @@
  *
  */
 
-
+#include <linux/config.h>
 #include <linux/ftape.h>
 
 #ifdef CONFIG_FT_TRAKKER

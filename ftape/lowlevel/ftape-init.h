@@ -29,7 +29,7 @@
  *
  */
 
-/* #include <linux/config.h> - not needed in modern kernels */
+#include <linux/config.h>
 #include <linux/linkage.h>
 #include <linux/signal.h>
 
@@ -50,25 +50,29 @@
 #define _NEVER_BLOCK    (sigmask(SIGKILL) | sigmask(SIGSTOP))
 #define _DONT_BLOCK     (_NEVER_BLOCK | sigmask(SIGINT))
 
-static inline void ft_sigblockall(sigset_t * oldmask)
+extern inline void ft_sigblockall(sigset_t * oldmask)
 {
-       sigset_t newmask;
-       sigfillset(&newmask);
-       sigdelset(&newmask, SIGKILL);
-       sigdelset(&newmask, SIGSTOP);
-       sigdelset(&newmask, SIGINT);
+       spin_lock_irq(&current->sighand->siglock);
        *oldmask = current->blocked;
-       set_current_blocked(&newmask);
+       sigfillset(&current->blocked);
+       sigdelset(&current->blocked, SIGKILL);
+       sigdelset(&current->blocked, SIGSTOP);
+       sigdelset(&current->blocked, SIGINT);
+       recalc_sigpending();
+       spin_unlock_irq(&current->sighand->siglock);
 }
-static inline void ft_sigrestore(sigset_t* oldmask)
+extern inline void ft_sigrestore(sigset_t* oldmask)
 {
-       set_current_blocked(oldmask);
+       spin_lock_irq(&current->sighand->siglock);
+       current->blocked = *oldmask;
+       recalc_sigpending();
+       spin_unlock_irq(&current->sighand->siglock);
 }
-static inline int ft_sigtest(unsigned long mask)
+extern inline int ft_sigtest(unsigned long mask)
 {
-	return signal_pending(current) ? 1 : 0;
+	return (current->sigpending & mask);
 }
-static inline int ft_killed(void)
+extern inline int ft_killed(void)
 {
 	return signal_pending(current);
 }
@@ -122,7 +126,7 @@ FTAPE_VERSION"\n\n"							     \
 "(c) 1995-1996 Kai Harrekilde-Petersen\n"				     \
 "(c) 1996-2000 Claus-Justus Heine <heine@instmath.rwth-aachen.de)\n\n"	     \
 "QIC-117 driver for QIC-40/80/3010/3020/Ditto 2GB/MAX floppy tape drives.\n" \
-"Compiled for modern Linux kernel ("FT_SMP_STRING").\n"
+"Compiled for Linux version "UTS_RELEASE" ("FT_SMP_STRING").\n"
 
 /*      ftape-init.c defined global functions not defined in ftape.h
  */

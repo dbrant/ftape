@@ -33,7 +33,7 @@
 
 #define ZFTC_TRACING
 
-
+#include <linux/config.h>
 #include <linux/errno.h>
 #include <linux/mm.h>
 #include <linux/module.h>

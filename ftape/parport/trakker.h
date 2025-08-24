@@ -28,7 +28,7 @@
 #ifndef _TRAKKER_H_
 #define _TRAKKER_H_
 
-/* #include <linux/config.h> - not needed in modern kernels */
+#include <linux/config.h>
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/dma.h>

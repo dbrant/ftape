@@ -22,7 +22,7 @@
  *
  */
 
-
+#include <linux/config.h>
 #include <linux/module.h>
 #include <linux/version.h>
 
@@ -2177,7 +2177,7 @@ int __init bpck_fdc_register(void)
 {
 	TRACE_FUN(ft_t_flow);
 
-	printk(__FILE__ ": "__func__" @ 0x%p\n", bpck_fdc_register);
+	printk(__FILE__ ": "__FUNCTION__" @ 0x%p\n", bpck_fdc_register);
 
 	TRACE_CATCH(fdc_register(&bpck_fdc_ops),);
 

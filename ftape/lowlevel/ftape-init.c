@@ -21,6 +21,7 @@
  *      for the QIC-40/80/3010/3020 floppy-tape driver for Linux.
  */
 
+#include <linux/config.h>
 #include <linux/module.h>
 #include <linux/version.h>
 #include <linux/errno.h>
@@ -29,6 +30,10 @@
 #include <linux/signal.h>
 #include <linux/major.h>
 
+#if defined(CONFIG_MODVERSIONS) && ! defined(MODVERSIONS)
+  #include <linux/modversions.h>
+  #define MODVERSIONS
+#endif
 
 #include <linux/ftape.h>
 #include <linux/qic117.h>
@@ -125,6 +130,10 @@ int __init ftape_init(void)
 	printk("ftape_init @ 0x%p.\n", ftape_init);
 #endif
 
+#if (LINUX_VERSION_CODE >= KERNEL_VER(1,2,0) && \
+     LINUX_VERSION_CODE < KERNEL_VER(2,1,18))
+	register_symtab(&ftape_symbol_table); /* add global ftape symbols */
+#endif
 
 	ftape_build_driver_list(); /* parse ft_fdc_driver[] parameters */
 
@@ -153,26 +162,30 @@ int __init ftape_init(void)
 #undef FT_TRACE_ATTR
 #define FT_TRACE_ATTR /**/
 
+#ifdef MODULE
+
 #ifndef CONFIG_FT_NO_TRACE_AT_ALL
 static ft_trace_t ft_tracings[5] = {
 	ft_t_info, ft_t_info, ft_t_info, ft_t_info, ft_t_info
 };
 #endif
 
-module_param_array(ft_fdc_driver, charp, NULL, 0644);
-MODULE_PARM_DESC(ft_fdc_driver, "Colon separated list of FDC low level drivers");
+#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
+#define FT_MOD_PARM(var,type,desc) \
+	MODULE_PARM(var,type); MODULE_PARM_DESC(var,desc)
 
+FT_MOD_PARM(ft_fdc_driver,     "1-4s",
+	    "Colon separated list of FDC low level drivers");
 #ifndef CONFIG_FT_NO_TRACE_AT_ALL
-module_param_array(ft_tracings, int, NULL, 0644);
-MODULE_PARM_DESC(ft_tracings, "Amount of debugging output, 0 <= tracing <= 8, default 3.");
+FT_MOD_PARM(ft_tracings,        "1-5i", 
+	    "Amount of debugging output, 0 <= tracing <= 8, default 3.");
 #endif
 
-/* [DB 2023] Added the following parameters:  */
-module_param(ft_ignore_ecc_err, int, 0644);
-MODULE_PARM_DESC(ft_ignore_ecc_err, "Whether to ignore ECC errors and proceed to the next segment (0 or 1).");
 
-module_param(ft_soft_retries, int, 0644);
-MODULE_PARM_DESC(ft_soft_retries, "Number of low-level soft retries (Default=6, set to 1 to skip over bad segments faster.).");
+/* [DB 2023] Added the following parameters:  */
+FT_MOD_PARM(ft_ignore_ecc_err, "i", "Whether to ignore ECC errors and proceed to the next segment (0 or 1).");
+FT_MOD_PARM(ft_soft_retries, "i", "Number of low-level soft retries (Default=6, set to 1 to skip over bad segments faster.).");
+
 
 MODULE_LICENSE("GPL");
 
@@ -182,6 +195,7 @@ MODULE_AUTHOR(
 	"(c) 1996-2000 Claus-Justus Heine <heine@instmath.rwth-aachen.de>");
 MODULE_DESCRIPTION(
 	"QIC-117 driver for QIC-40/80/3010/3020/Ditto floppy tape drives.");
+#endif
 
 #if LINUX_VERSION_CODE <= KERNEL_VER(1,2,13)
 char kernel_version[] = UTS_RELEASE;
@@ -189,18 +203,17 @@ char kernel_version[] = UTS_RELEASE;
 
 /*  Called by modules package when installing the driver
  */
-static int __init ftape_module_init(void)
+int init_module(void)
 {
 #ifndef CONFIG_FT_NO_TRACE_AT_ALL
 	memcpy(ftape_tracings, ft_tracings, sizeof(ft_tracings));
 #endif
 	return ftape_init();
 }
-module_init(ftape_module_init);
 
 /*  Called by modules package when removing the driver
  */
-static void __exit ftape_module_exit(void)
+void cleanup_module(void)
 {
 	int sel;
 #if defined(CONFIG_PROC_FS) && defined(CONFIG_FT_PROC_FS)
@@ -211,7 +224,7 @@ static void __exit ftape_module_exit(void)
 	}
         printk(KERN_INFO "ftape: unloaded.\n");
 }
-module_exit(ftape_module_exit);
+#endif /* MODULE */
 
 #ifndef MODULE
 

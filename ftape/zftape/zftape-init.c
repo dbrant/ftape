@@ -20,7 +20,7 @@
  *      to the ftape floppy tape driver for Linux
  */
 
-
+#include <linux/config.h>
 #include <linux/module.h>
 #include <linux/errno.h>
 #include <linux/version.h>
@@ -30,12 +30,10 @@
 #include <linux/signal.h>
 #include <linux/major.h>
 #include <linux/fcntl.h>
-
+#include <linux/wrapper.h>
 
 #include <linux/zftape.h>
 
-/* DevFS was removed from modern kernels - disabled for now */
-#if 0 
 #if LINUX_VERSION_CODE >= KERNEL_VER(2,3,46)
 # include <linux/devfs_fs_kernel.h>
 
@@ -44,7 +42,6 @@ static devfs_handle_t devfs_handle[4];
 
 static devfs_handle_t devfs_q[4];
 static devfs_handle_t devfs_qn[4];
-
 # if defined(CONFIG_ZFT_COMPRESSOR) || defined(CONFIG_ZFT_COMPRESSOR_MODULE)
 static devfs_handle_t devfs_zq[4];
 static devfs_handle_t devfs_zqn[4];
@@ -55,7 +52,6 @@ static devfs_handle_t devfs_rawn[4];
 # endif
 
 #endif
-#endif /* DevFS disabled */
 
 #define SEL_TRACING
 #include "zftape-init.h"
@@ -441,7 +437,6 @@ extern int zft_compressor_init(void);
 #endif
 #define FT_TRACE_ATTR __initlocaldata
 
-#if 0 /* DevFS support disabled for modern kernels */
 static int __init zft_devfs_register(void)
 {
 #if LINUX_VERSION_CODE < KERNEL_VER(2,3,46)
@@ -453,7 +448,7 @@ static int __init zft_devfs_register(void)
 	int sel;
 	TRACE_FUN(ft_t_flow);
 	
-	TRACE_CATCH(register_chrdev(ft_major_device_number,
+	TRACE_CATCH(devfs_register_chrdev(ft_major_device_number,
 					  "zft", &zft_cdev),);
 	ftape_devfs_handle = devfs_mk_dir(NULL, "ftape", NULL);
 
@@ -514,7 +509,6 @@ static int __init zft_devfs_register(void)
 #endif
 	TRACE_EXIT 0;
 }
-#endif /* DevFS disabled */
 
 /*  Called by modules package when installing the driver or by kernel
  *  during the initialization phase
@@ -547,8 +541,7 @@ KERN_INFO
 	TRACE(ft_t_info, "zft_init @ 0x%p", zft_init);
 	TRACE(ft_t_info,
 	      "installing zftape VFS interface for ftape driver ...");
-	/* DevFS disabled - register character device directly */
-	TRACE_CATCH(register_chrdev(ft_major_device_number, "zft", &zft_cdev),);
+	TRACE_CATCH(zft_devfs_register(),);
 
 #ifdef CONFIG_ZFT_COMPRESSOR
 	(void)zft_compressor_init();
@@ -633,7 +626,6 @@ void cleanup_module(void)
 			zft_uninit_mem(zftapes[sel]);
 			ftape_kfree(FTAPE_SEL(sel), &zftapes[sel], sizeof(*zftapes[sel]));
 		}
-#if 0 /* DevFS cleanup disabled */
 # if LINUX_VERSION_CODE >= KERNEL_VER(2,3,46)
 		devfs_unregister (devfs_q[sel]);
 		devfs_q[sel] = NULL;
@@ -659,7 +651,6 @@ void cleanup_module(void)
 	devfs_unregister(ftape_devfs_handle);
 	ftape_devfs_handle = NULL;
 # endif
-#endif /* DevFS cleanup disabled */
         printk(KERN_INFO "zftape successfully unloaded.\n");
 	TRACE_EXIT;
 }

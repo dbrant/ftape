@@ -28,6 +28,7 @@
  *
  */
 
+#include <linux/config.h>
 #include <linux/errno.h>
 #include <linux/sched.h>
 #include <linux/ioport.h>
@@ -36,7 +37,7 @@
 #include <linux/list.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
-/* #include <asm/system.h> - removed in modern kernels */
+#include <asm/system.h>
 #include <asm/io.h>
 #include <asm/dma.h>
 #include <asm/irq.h>
@@ -113,7 +114,7 @@ inline void fdc_enable_irq(fdc_info_t *fdc)
 #endif
 #if 1
 	if (fdc->irq_level <= 0) {
-		printk("%s : negativ irq_level: %d\n", __func__,
+		printk(__FUNCTION__ " : negativ irq_level: %d\n",
 		       fdc->irq_level);
 		fdc->irq_level = 1;
 	}
@@ -413,12 +414,12 @@ int fdc_interrupt_wait(fdc_info_t *fdc, unsigned int time)
 
 	if (fdc->irq_level > 1) {
 		TRACE(ft_t_warn,
-		      "Geeh! Calling %s() with irq's off %d", __func__,
+		      "Geeh! Calling "__FUNCTION__"() with irq's off %d",
 		      fdc->irq_level);
 	}
 	if (fdc->irq_level < 1) {
 		TRACE(ft_t_warn,
-		      "Geeh! Calling %s() with irq's on %d", __func__,
+		      "Geeh! Calling "__FUNCTION__"() with irq's on %d",
 		      fdc->irq_level);
 	}
 
@@ -441,7 +442,7 @@ int fdc_interrupt_wait(fdc_info_t *fdc, unsigned int time)
 	set_current_state(TASK_INTERRUPTIBLE);
 	add_wait_queue(&fdc->wait_intr, &wait);	
 	fdc_enable_irq(fdc);
-	while (!fdc->interrupt_seen && get_current_state() != TASK_RUNNING) {
+	while (!fdc->interrupt_seen && current->state != TASK_RUNNING) {
 #if LINUX_VERSION_CODE < KERNEL_VER(2,1,127)
 		schedule();	/* sets TASK_RUNNING on timeout */
 #else

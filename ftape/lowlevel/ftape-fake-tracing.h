@@ -41,8 +41,8 @@
 #define TRACE(l, m, i...)						\
 {									\
 	if ((ft_trace_t)(l) <= FT_TRACE_TOP_LEVEL) {			\
-		printk(KERN_INFO"ftape"__FILE__":(%s):\n"		\
-		       KERN_INFO m".\n", __func__ ,##i);		\
+		printk(KERN_INFO"ftape"__FILE__"("__FUNCTION__"):\n"	\
+		       KERN_INFO m".\n" ,##i);				\
 	}								\
 }
 #define SET_TRACE_LEVEL(l)      if ((l) == (l)) do {} while(0)
