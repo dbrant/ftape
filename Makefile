@@ -54,7 +54,7 @@ ftape-bpck-objs := ftape/parport/bpck-fdc.o
 
 # Include our local headers
 ccflags-y := -I$(src)/include
-ccflags-y += -DTHE_FTAPE_MAINTAINER=\"ftape-maintainer@kernel.org\"
+ccflags-y += -DTHE_FTAPE_MAINTAINER=\"me@dmitrybrant.com\"
 # ccflags-y += -DCONFIG_FT_PROC_FS  # Disabled proc support for now
 ccflags-y += -DCONFIG_FTAPE_MODULE
 ccflags-y += -DCONFIG_FT_INTERNAL_MODULE  
