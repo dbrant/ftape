@@ -54,17 +54,21 @@ ftape-bpck-objs := ftape/parport/bpck-fdc.o
 
 # Include our local headers
 ccflags-y := -I$(src)/include
+
+ccflags-y += -DMODULE
+
 ccflags-y += -DTHE_FTAPE_MAINTAINER=\"me@dmitrybrant.com\"
 
 ccflags-y += -DCONFIG_MODULES
 ccflags-y += -DCONFIG_PROC_FS
 #ccflags-y += -DCONFIG_FT_PROC_FS
 ccflags-y += -DCONFIG_SMP
-
+ccflags-y += -DCONFIG_ZFT_OBSOLETE
 
 ccflags-y += -DCONFIG_FTAPE_MODULE
 ccflags-y += -DCONFIG_FT_INTERNAL_MODULE  
 ccflags-y += -DCONFIG_ZFTAPE_MODULE
+
 # Parallel port support enabled
 ccflags-y += -DCONFIG_FT_PARPORT
 ccflags-y += -DCONFIG_FT_TRAKKER

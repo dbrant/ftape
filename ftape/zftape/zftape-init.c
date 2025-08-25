@@ -354,11 +354,18 @@ static int zft_device_register(void)
 	for (sel = 0; sel < 4; sel++) {
 		/* Standard tape devices (rewind) */
 		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel),
-			     NULL, "ftape%d", sel);
+			     NULL, "qft%d", sel);
 		
 		/* No-rewind tape device */
 		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|FTAPE_NO_REWIND),
-			     NULL, "nftape%d", sel);
+			     NULL, "nqft%d", sel);
+
+		/* Raw mode devices */
+		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE),
+			     NULL, "rawqft%d", sel);
+
+		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE|FTAPE_NO_REWIND),
+			     NULL, "nrawqft%d", sel);
 
 # if defined(CONFIG_ZFT_COMPRESSOR) || defined(CONFIG_ZFT_COMPRESSOR_MODULE)
 		/* Compressed tape devices */
@@ -367,14 +374,6 @@ static int zft_device_register(void)
 		
 		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_ZIP_MODE|FTAPE_NO_REWIND),
 			     NULL, "nzftape%d", sel);
-# endif
-# if CONFIG_ZFT_OBSOLETE
-		/* Raw mode devices */
-		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE),
-			     NULL, "rawft%d", sel);
-		
-		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE|FTAPE_NO_REWIND),
-			     NULL, "nrawft%d", sel);
 # endif
 	}
 	TRACE_EXIT 0;
@@ -432,13 +431,11 @@ static void zft_device_unregister(void)
 		for (sel = 0; sel < 4; sel++) {
 			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel));
 			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|FTAPE_NO_REWIND));
+			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE));
+			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE|FTAPE_NO_REWIND));
 # if defined(CONFIG_ZFT_COMPRESSOR) || defined(CONFIG_ZFT_COMPRESSOR_MODULE)
 			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_ZIP_MODE));
 			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_ZIP_MODE|FTAPE_NO_REWIND));
-# endif
-# if CONFIG_ZFT_OBSOLETE
-			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE));
-			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE|FTAPE_NO_REWIND));
 # endif
 		}
 		class_destroy(ftape_class);
