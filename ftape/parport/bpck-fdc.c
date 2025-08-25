@@ -1470,13 +1470,11 @@ int bpck_fdc_grab(fdc_info_t *fdc)
 	if (bpck->failure) {
 		TRACE_EXIT -ENXIO;
 	}
-	/* MOD_INC_USE_COUNT - automatic in modern kernels */
 	fdc->hook = NULL;
 
 	/*  allocate I/O regions and irq first.
 	 */
-	TRACE_CATCH(ft_parport_claim(fdc, &bpck->parinfo), 
-		    /* MOD_DEC_USE_COUNT - automatic in modern kernels */);
+	TRACE_CATCH(ft_parport_claim(fdc, &bpck->parinfo), );
 
 	if (bpck->initialized) {
 		/* normal fdc grab, after bpck had been detected
@@ -1488,8 +1486,7 @@ int bpck_fdc_grab(fdc_info_t *fdc)
 		disable_irq(bpck->IRQ);
 		TRACE_CATCH(bpck_fdc_connect(bpck),
 			    ft_parport_release(fdc, &bpck->parinfo);
-			    enable_irq(bpck->IRQ);
-			    /* MOD_DEC_USE_COUNT - automatic in modern kernels */);
+			    enable_irq(bpck->IRQ););
 
 		WR (FT_BPCK_REG_CTRL, bpck->proto_bits); /* play safe */
 
@@ -1527,8 +1524,6 @@ static int bpck_fdc_release(fdc_info_t *fdc)
 	}
 
 	ft_parport_release(fdc, &bpck->parinfo);
-
-	/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 	TRACE_EXIT 0;
 }
 
@@ -1873,7 +1868,6 @@ static void *bpck_fdc_get_deblock_buffer(fdc_info_t *fdc)
 	bpck_fdc_t *bpck = fdc->data;
 
 	if (!bpck->locked) {
-		/* MOD_INC_USE_COUNT - automatic in modern kernels */
 		bpck->locked = 1;
 	}
 	return (void *)bpck->buffer;
@@ -1892,7 +1886,6 @@ static int bpck_fdc_put_deblock_buffer(fdc_info_t *fdc, __u8 **buffer)
 	}
 	if (bpck->locked) {
 		bpck->locked = 0;
-		/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 	}
 	*buffer = NULL;
 	TRACE_EXIT 0;

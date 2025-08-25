@@ -113,9 +113,9 @@ static int zft_open(struct inode *ino, struct file *filep)
 	int sel = FTAPE_SEL(MINOR(ino->i_rdev));
 	TRACE_FUN(ft_t_flow);
 
-	if (!try_module_get(THIS_MODULE)) return -ENODEV; /*  sets MOD_VISITED and MOD_USED_ONCE,
-			    *  locking is done with can_unload()
-			    */
+	if (!try_module_get(THIS_MODULE))
+		return -ENODEV;
+
 	TRACE(ft_t_flow, "called for minor %d", MINOR(ino->i_rdev));
 	if (busy_flag[sel]) {
 		module_put(THIS_MODULE);

@@ -389,8 +389,6 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 	fdc->irq = -1;			
 	TRACE(ft_t_err,
 	      "can't find parport interface for ftape id %d", fdc->unit);
-	/* MOD_INC_USE_COUNT - automatic in modern kernels */
-	/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 	/* return -ENXIO when probing several devices, more useful
 	 * return values otherwise
 	 */
@@ -439,8 +437,6 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 
 	if (ft_fdc_parport[fdc->unit] == FT_FDC_PARPORT_NONE) {
 		fdc->irq = -1;
-		/* MOD_INC_USE_COUNT - automatic in modern kernels */
-		/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 		TRACE_EXIT -ENXIO;
 	}
 
@@ -476,8 +472,6 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 			TRACE_EXIT 0;
 		}
 	}
-	/* MOD_INC_USE_COUNT - automatic in modern kernels */
-	/* MOD_DEC_USE_COUNT - automatic in modern kernels */
 	TRACE_EXIT result;
 #endif
 }

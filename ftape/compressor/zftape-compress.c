@@ -287,9 +287,6 @@ static void *zftc_open(zftape_info_t *zftape)
 		TRACE_EXIT (void *)zftc;
 	}
 
-	MOD_INC_USE_COUNT; /*  sets MOD_VISITED and MOD_USED_ONCE,
-			    *  locking is done with can_unload()
-			    */
 	keep_module_locked ++;
 
 	if (zftc == NULL) {
@@ -297,7 +294,6 @@ static void *zftc_open(zftape_info_t *zftape)
 				     sizeof(struct zftc_struct), 1);
 	}
 	if (zftc == NULL) {
-		MOD_DEC_USE_COUNT;
 		keep_module_locked --;
 		return NULL;
 	}
@@ -325,7 +321,6 @@ static void zftc_close(void *handle)
 	zftc->locked = 0;
 	zftc_stats(zftc);
 	memset((void *)&zftc->cseg, 0, sizeof(zftc->cseg));
-	MOD_DEC_USE_COUNT;
 	keep_module_locked --;
 	TRACE_EXIT;
 }
