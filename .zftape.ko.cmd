@@ -1,1 +1,0 @@
-savedcmd_/home/unknown/ftape/zftape.ko := ld -r -m elf_x86_64 -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T scripts/module.lds -o /home/unknown/ftape/zftape.ko /home/unknown/ftape/zftape.o /home/unknown/ftape/zftape.mod.o
