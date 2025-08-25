@@ -70,7 +70,7 @@ int ftape_vmalloc(int sel, void *new, size_t size)
 		ft_v_peak_memory[sel] = ft_v_used_memory[sel];
 	}
 	TRACE_ABORT(0, ft_t_noise,
-		    "allocated buffer @ %p, %d bytes", *(void **)new, size);
+		    "allocated buffer @ %p, %ld bytes", *(void **)new, size);
 }
 void ftape_vfree(int sel, void *old, size_t size)
 {
@@ -79,7 +79,7 @@ void ftape_vfree(int sel, void *old, size_t size)
 	if (*(void **)old) {
 		vfree(*(void **)old);
 		ft_v_used_memory[sel] -= size;
-		TRACE(ft_t_noise, "released buffer @ %p, %d bytes",
+		TRACE(ft_t_noise, "released buffer @ %p, %ld bytes",
 		      *(void **)old, size);
 		*(void **)old = NULL;
 	}
@@ -111,7 +111,7 @@ void *ftape_kmalloc(int sel, size_t size, int retry)
 		ft_k_peak_memory[sel] = ft_k_used_memory[sel];
 	}
 	TRACE_ABORT(new, ft_t_noise,
-		    "allocated buffer @ %p, %d bytes", new, size);
+		    "allocated buffer @ %p, %ld bytes", new, size);
 }
 void ftape_kfree(int sel, void *old, size_t size)
 {
@@ -120,7 +120,7 @@ void ftape_kfree(int sel, void *old, size_t size)
 	if (*(void **)old) {
 		kfree(*(void **)old);
 		ft_k_used_memory[sel] -= size;
-		TRACE(ft_t_noise, "released buffer @ %p, %d bytes",
+		TRACE(ft_t_noise, "released buffer @ %p, %ld bytes",
 		      *(void **)old, size);
 		*(void **)old = NULL;
 	}
