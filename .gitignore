@@ -1,5 +1,6 @@
 *.o
 *.ko
+*.o.d
 *.mod.c
 .*.cmd
 *.markers
