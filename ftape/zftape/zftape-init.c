@@ -166,6 +166,7 @@ static int zft_close(struct inode *ino, struct file *filep)
 		TRACE(ft_t_err, "_zft_close failed: %d", result);
 	}
 	busy_flag[sel] = 0;
+	module_put(THIS_MODULE);
 	TRACE_EXIT 0;
 }
 
