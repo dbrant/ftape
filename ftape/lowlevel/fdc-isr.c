@@ -960,8 +960,10 @@ static void handle_fdc_busy(fdc_info_t *fdc)
 			break;
 		case no_data_error:
 			fdc->no_data_error_count ++;
+			// fall through
 		case overrun_error:
 			retry ++;
+			// fall through
 		case id_am_error:
 		case id_crc_error:
 		case data_am_error:

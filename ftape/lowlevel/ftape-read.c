@@ -288,8 +288,8 @@ int ftape_read_segment(ftape_info_t *ftape,
 
 			switch(ftape->HEAD->status) {
 			case error:
-				ftape->history.defects += 
-					count_ones(ftape->HEAD->hard_error_map);
+				ftape->history.defects += count_ones(ftape->HEAD->hard_error_map);
+				// fall through
 			case reading:
 				ftape->HEAD->status = waiting;
 				break;

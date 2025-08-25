@@ -961,6 +961,7 @@ int fdc_setup_read_write(fdc_info_t *fdc, buffer_struct * buff, __u8 operation)
 		if (fdc->type < i82077 || fdc->type == DITTOEZ) {
 			operation = FDC_READ;
 		}
+		// fall through
 	case FDC_READ:
 	case FDC_READ_DELETED:
 		dma_mode = DMA_MODE_READ;
@@ -974,6 +975,7 @@ int fdc_setup_read_write(fdc_info_t *fdc, buffer_struct * buff, __u8 operation)
 		break;
 	case FDC_WRITE_DELETED:
 		TRACE(ft_t_noise, "deleting segment %d", buff->segment_id);
+		// fall through
 	case FDC_WRITE:
 		dma_mode = DMA_MODE_WRITE;
 		TRACE(ft_t_fdc_dma, "xfer %d sectors from 0x%lx",

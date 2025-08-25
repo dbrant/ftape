@@ -83,13 +83,15 @@ ccflags-y += -DCONFIG_FT_AUTO_0=1
 # ccflags-y += -DCONFIG_ZFT_DFLT_BLK_SZ=10240
 
 
-
-
 ccflags-y += -DFT_SOFT_RETRIES=6
 
 
 # Disable some problematic features for now
 #ccflags-y += -DCONFIG_FT_NO_TRACE_AT_ALL
+
+
+ccflags-y += -Wimplicit-fallthrough=1
+
 
 all:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
