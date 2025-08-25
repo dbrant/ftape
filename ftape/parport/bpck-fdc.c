@@ -1344,7 +1344,7 @@ static int bpck_fdc_detect_bpck(bpck_fdc_t *bpck)
 	WR (FT_BPCK_REG_0x05, 0x24);
 	WRM(FT_BPCK_REG_PROTO, 0x00, 0x24, 0x00);
 	b = RR(FT_BPCK_REG_CLEAR);
-#if TESTING
+#ifdef TESTING
 	TRACE(ft_t_warn,
 	      "Please notify "THE_FTAPE_MAINTAINER": reg 0x0b = 0x%02x. "
 	      "Thank you for using ftape", b);

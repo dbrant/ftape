@@ -114,4 +114,4 @@ __used __section("__versions") =
 MODULE_INFO(depends, "ftape-core,parport");
 
 
-MODULE_INFO(srcversion, "15DFDAEEC94FE0CECE95A20");
+MODULE_INFO(srcversion, "0CDA0329F73CF386F6C63B9");

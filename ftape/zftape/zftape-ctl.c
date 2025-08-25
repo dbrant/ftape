@@ -177,7 +177,7 @@ static void zft_init_driver(zftape_info_t *zftape)
 		zftape->written_segments     = 0;
 	zft_reset_position(zftape, &zftape->pos); /* does most of the stuff */
 	if (zftape->ftape) {
-		ftape_set_state(zftape->ftape, idle);
+		ftape_set_state(zftape->ftape, waiting);
 		if (zftape->ftape->fdc) {
 			ftape_zap_read_buffers(zftape->ftape);
 		}

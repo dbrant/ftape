@@ -193,7 +193,7 @@ int ftape_loop_until_writes_done(ftape_info_t *ftape)
 		 */
 		FT_SIGNAL_EXIT(_DONT_BLOCK);
 	}
-	ftape_set_state(ftape, idle);
+	ftape_set_state(ftape, waiting);
 	TRACE_EXIT 0;
 }
 

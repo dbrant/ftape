@@ -822,7 +822,7 @@ static int determine_fmt_progress(fdc_info_t *fdc,
 		switch(cause) {
 		case no_error:
 			ftape->runner_status = aborting;
-			buff->status = idle;
+			buff->status = waiting;
 			break;
 		case overrun_error:
 			/*  got an overrun error on the first byte, must be a
