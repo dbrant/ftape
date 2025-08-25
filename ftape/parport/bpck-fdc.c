@@ -344,8 +344,7 @@ static void bpck_fdc_read_reg_vals(bpck_fdc_t *bpck,
 		break;
 	case 4:
 		TRACE(ft_t_data_flow, "[%02x] -> 0x%02x 0x%02x 0x%02x 0x%02x",
-		      r,
-		      *ov++ & 0xff, ov[1] & 0xff, ov[2] & 0xff, ov[3] & 0xff);
+		      r, *ov & 0xff, ov[1] & 0xff, ov[2] & 0xff, ov[3] & 0xff);
 		break;
 	default:
 		break;
