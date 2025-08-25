@@ -409,11 +409,6 @@ static void fdc_int_grab_handler(fdc_info_t *fdc)
 	fdc_int_got_irq ++;
 }
 
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
-
 static void fdc_int_cause_reset(fdc_info_t *fdc)
 {
 	const __u8 fdc_ctl = fdc->unit | FDC_DMA_MODE;
@@ -456,9 +451,6 @@ static int fdc_int_probe_irq(fdc_info_t *fdc)
 	fdc_int_release_regions(fdc);
 	TRACE_EXIT irq;
 }
-
-#undef FT_TRACE_ATTR
-#define FT_TRACE_ATTR /**/
 
 static int fdc_int_grab(fdc_info_t *fdc)
 {
@@ -652,11 +644,6 @@ static int fdc_int_correct_and_copy(fdc_info_t *fdc,
 	return result;
 }
 
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
-
 static void fdc_int_config(fdc_info_t *fdc)
 {
 	int sel = fdc->unit;
@@ -845,11 +832,6 @@ struct fdc_operations fdc_internal_ops = {
 	fdc_int_write_buffer,
 	fdc_int_read_buffer,
 };
-
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
 
 int fdc_internal_register(void)
 {

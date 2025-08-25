@@ -66,11 +66,6 @@ int ft_soft_retries = FT_SOFT_RETRIES;
 #define GLOBAL_TRACING
 #include "ftape-real-tracing.h"
 
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
-
 static void ftape_build_driver_list(void)
 {
 	char *ptr, *newptr;
@@ -150,9 +145,6 @@ int ftape_init(void)
 	return 0;
 }
 
-#undef FT_TRACE_ATTR
-#define FT_TRACE_ATTR /**/
-
 #ifndef CONFIG_FT_NO_TRACE_AT_ALL
 static ft_trace_t ft_tracings[5] = {
 	ft_t_info, ft_t_info, ft_t_info, ft_t_info, ft_t_info
@@ -210,11 +202,6 @@ static void __exit ftape_module_exit(void)
 module_exit(ftape_module_exit);
 
 #ifndef MODULE
-
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
 
 int ftape_lowlevel_setup(char *str)
 {	

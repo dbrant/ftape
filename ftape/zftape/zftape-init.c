@@ -333,11 +333,6 @@ extern int zft_compressor_init(void);
 # endif
 #endif /* CONFIG_ZFT_COMPRESSOR || CONFIG_ZFT_COMPRESSOR_MODULE */
 
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
-
 static int zft_device_register(void)
 {
 	int sel;
@@ -444,9 +439,6 @@ static void zft_device_unregister(void)
 	unregister_chrdev(ft_major_device_number, "zft");
 	TRACE_EXIT;
 }
-
-#undef FT_TRACE_ATTR
-#define FT_TRACE_ATTR /**/
 
 #ifdef MODULE
 

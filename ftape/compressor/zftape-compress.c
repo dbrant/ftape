@@ -968,11 +968,6 @@ static struct zft_cmpr_ops cmpr_ops = {
 #define GLOBAL_TRACING
 #include "../lowlevel/ftape-real-tracing.h"
 
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
-
 int zft_compressor_init(void)
 {
 	TRACE_FUN(ft_t_flow);

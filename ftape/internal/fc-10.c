@@ -80,11 +80,6 @@ const __u16 fc10_ports[] = {
 	0x180, 0x210, 0x2A0, 0x300, 0x330, 0x340, 0x370
 };
 
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
-
 int fc10_enable(fdc_info_t *fdc)
 {
 	int i;

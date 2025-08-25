@@ -863,10 +863,6 @@ static void trakker_speedtest(fdc_info_t *fdc)
 }
 
 #if 0
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
 
 static int trakker_probe_irq(fdc_info_t *fdc)
 {
@@ -889,9 +885,6 @@ static int trakker_probe_irq(fdc_info_t *fdc)
 
 	TRACE_EXIT irqs;
 }
-
-#undef FT_TRACE_ATTR
-#define FT_TRACE_ATTR /**/
 
 #endif
 
@@ -1196,11 +1189,6 @@ static fdc_operations trakker_ops = {
 #define GLOBAL_TRACING
 #include "../lowlevel/ftape-real-tracing.h"
 
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
-
 int trakker_register(void)
 {
 	TRACE_FUN(ft_t_flow);
@@ -1211,9 +1199,6 @@ int trakker_register(void)
 
 	TRACE_EXIT 0;
 }
-
-#undef FT_TRACE_ATTR
-#define FT_TRACE_ATTR /**/
 
 #ifdef MODULE
 

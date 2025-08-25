@@ -65,10 +65,6 @@
 # define TRACE_SEL ftape->drive_sel
 #endif
 
-#ifndef FT_TRACE_ATTR
-# define FT_TRACE_ATTR
-#endif
-
 #define ftape_function_nest_level ftape_function_nest_levels[TRACE_SEL]
 #define ftape_tracing             ftape_tracings[TRACE_SEL]
 

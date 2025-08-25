@@ -2154,11 +2154,6 @@ static fdc_operations bpck_fdc_ops = {
 #define GLOBAL_TRACING
 #include "../lowlevel/ftape-real-tracing.h"
 
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR
-
 int bpck_fdc_register(void)
 {
 	TRACE_FUN(ft_t_flow);
@@ -2169,9 +2164,6 @@ int bpck_fdc_register(void)
 
 	TRACE_EXIT 0;
 }
-
-#undef FT_TRACE_ATTR
-#define FT_TRACE_ATTR /**/
 
 #ifdef MODULE
 
