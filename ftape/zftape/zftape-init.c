@@ -39,7 +39,6 @@
 
 static struct class *ftape_class;
 
-#define SEL_TRACING
 #include "zftape-init.h"
 #include "zftape-read.h"
 #include "zftape-write.h"

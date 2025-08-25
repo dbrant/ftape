@@ -31,8 +31,6 @@
  char zftc_rev[] = "$Revision: 1.10 $";
  char zftc_dat[] = "$Date: 2000/06/23 12:07:22 $";
 
-#define ZFTC_TRACING
-
 
 #include <linux/errno.h>
 #include <linux/mm.h>

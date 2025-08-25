@@ -28,8 +28,6 @@
 #include <linux/mm.h>
 #include <asm/segment.h>
 
-#define ZFTAPE_TRACING
-
 #include <linux/zftape.h>
 #include "zftape-init.h"
 #include "zftape-eof.h"

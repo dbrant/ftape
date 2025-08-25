@@ -37,7 +37,6 @@
 
 #include <linux/ftape.h>
 
-#define FDC_TRACING
 #include "../lowlevel/ftape-tracing.h"
 
 #include "../lowlevel/ftape-rw.h"

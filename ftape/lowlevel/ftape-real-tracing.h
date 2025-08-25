@@ -42,6 +42,10 @@
 #undef ftape_function_nest_level
 #undef ftape_tracing
 
+/*
+Legacy tracing definitions, for determining which drive unit the trace refers to.
+TODO: handle this better in a modern way.
+
 #ifdef FDC_TRACING
 # define TRACE_SEL fdc->unit
 # undef FDC_TRACING
@@ -64,6 +68,9 @@
 #else
 # define TRACE_SEL ftape->drive_sel
 #endif
+*/
+# define TRACE_SEL 4
+
 
 #define ftape_function_nest_level ftape_function_nest_levels[TRACE_SEL]
 #define ftape_tracing             ftape_tracings[TRACE_SEL]

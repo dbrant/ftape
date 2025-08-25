@@ -35,7 +35,6 @@
 
 #include <asm/uaccess.h>
 
-#define ZFTAPE_TRACING
 #include "zftape-init.h"
 #include "zftape-eof.h"
 #include "zftape-ctl.h"

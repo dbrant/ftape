@@ -32,8 +32,6 @@
 #include <linux/string.h>
 #include <linux/errno.h>
 
-#define ZFTAPE_TRACING
-
 #include <linux/zftape.h>
 
 #include "zftape-init.h"

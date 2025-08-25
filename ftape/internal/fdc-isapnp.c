@@ -30,7 +30,6 @@
 #include <linux/isapnp.h>
 #include <linux/ftape.h>
 
-#define FDC_TRACING
 #include "../lowlevel/ftape-tracing.h"
 
 #include "../lowlevel/fdc-io.h"

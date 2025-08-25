@@ -40,7 +40,6 @@
 #include <linux/ftape.h>
 #include <linux/init.h>
 
-#define FDC_TRACING
 #include "../lowlevel/ftape-tracing.h"
 
 #include "../lowlevel/fdc-io.h"

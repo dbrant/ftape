@@ -32,7 +32,6 @@
 
 #include <linux/vmalloc.h>
 
-#define SEL_TRACING
 #include "ftape-tracing.h"
 
 #include "fdc-io.h"

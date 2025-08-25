@@ -45,11 +45,6 @@
 #include <linux/ftape.h>
 #include <linux/qic117.h>
 
-/* 
- * We need this definition for the sole purpose of keeping the trace
- * stuff working
- */
-#define FDC_TRACING
 #include "ftape-tracing.h"
 
 #include "fdc-io.h"

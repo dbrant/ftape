@@ -34,7 +34,6 @@
 #include <linux/ftape.h>
 #include <linux/qic117.h>
 
-#define FDC_TRACING
 #include "ftape-tracing.h"
 
 #include "fdc-isr.h"
