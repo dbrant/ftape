@@ -156,7 +156,7 @@ int ftape_abort_operation(ftape_info_t *ftape)
 			   NULL, NULL, NULL);
 #endif
 	ftape_zap_read_buffers(ftape);
-	ftape_set_state(ftape, idle);
+	ftape_set_state(ftape, waiting);
 	TRACE_EXIT result;
 }
 
@@ -749,7 +749,7 @@ void ftape_disable(int drive_selection)
 	ftape_info_t *ftape = ftapes[sel];
 	TRACE_FUN(ft_t_flow);
 
-	ftape_set_state(ftape, idle);
+	ftape_set_state(ftape, waiting);
 	ftape_detach_drive(ftape);
 	ftape_print_history(ftape);
 	ftape->active = 0;
@@ -790,7 +790,7 @@ void ftape_init_driver(ftape_info_t *ftape, int sel)
 	ftape->write_protected = 1;
 	ftape->new_tape        = 1;
 
-	ftape->driver_state = idle;
+	ftape->driver_state = waiting;
 
 	ftape->data_rate = 500;
 	ftape->drive_max_rate = 0; /* triggers set_rate_test() */
