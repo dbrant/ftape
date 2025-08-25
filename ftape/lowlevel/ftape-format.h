@@ -30,11 +30,11 @@
 
 typedef struct {
 	__u8 cyl; __u8 head; __u8 sect; __u8 size;
-} ft_format_sector __attribute__ ((packed));
+} __attribute__((packed)) ft_format_sector;
 
 typedef struct {
 	ft_format_sector sectors[FT_SECTORS_PER_SEGMENT];
-} ft_format_segment __attribute__ ((packed));
+} __attribute__((packed)) ft_format_segment;
 
 #define FT_MFS 128 /* max floppy sector */
 

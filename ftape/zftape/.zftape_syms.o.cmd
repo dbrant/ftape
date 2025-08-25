@@ -1178,6 +1178,6 @@ deps_/home/unknown/ftape/ftape/zftape/zftape_syms.o := \
 $(deps_/home/unknown/ftape/ftape/zftape/zftape_syms.o):
 
 /home/unknown/ftape/ftape/zftape/zftape_syms.o: $(wildcard ./tools/objtool/objtool)
-#SYMVER zft_fetch_segment 0xce50b6c4
-#SYMVER zft_vmalloc_once 0xfdace19f
-#SYMVER zft_vmalloc_always 0xf41bdcdf
+#SYMVER zft_fetch_segment 0x6e11957b
+#SYMVER zft_vmalloc_once 0x7b325f5b
+#SYMVER zft_vmalloc_always 0x36e49244
