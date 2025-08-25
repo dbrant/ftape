@@ -390,6 +390,7 @@ static irqreturn_t ftape_interrupt(int irq, void *dev_id)
 		TRACE(ft_t_bug, "Unexpected ftape interrupt");
 		return IRQ_NONE;
 	}
+	TRACE_EXIT IRQ_NONE;
 }
 
 static volatile int fdc_int_got_irq = 0;
