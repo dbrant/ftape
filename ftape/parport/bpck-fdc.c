@@ -98,8 +98,6 @@ int parport_proto = ft_bpck_none; /* parport protocol (changed to int for module
 #define GLOBAL_TRACING
 #include "../lowlevel/ftape-real-tracing.h"
 
-#define inline /**/
-
 
 int bpck_fdc_grab(fdc_info_t *fdc);
 int bpck_fdc_register(void);
