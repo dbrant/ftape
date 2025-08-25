@@ -100,6 +100,12 @@ int parport_proto = ft_bpck_none; /* parport protocol (changed to int for module
 
 #define inline /**/
 
+
+int bpck_fdc_grab(fdc_info_t *fdc);
+int bpck_fdc_register(void);
+int bpck_fdc_unregister(void);
+
+
 /* read a byte on an uni-directional (4 bit) port. "toggle" is the value
  * that distinguishes the two nibbles.
  */

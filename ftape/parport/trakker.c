@@ -69,6 +69,15 @@ char trakker_dat[] = "$Date: 2000/07/06 14:58:17 $";
 #define MAX_DELAY 3
 #define MIN_DELAY 0
 
+
+void trakker_read(fdc_info_t *fdc, buffer_struct *buff);
+static void trakker_write(fdc_info_t *fdc, buffer_struct *buff);
+int trakker_release(fdc_info_t *fdc);
+int trakker_register(void);
+int trakker_unregister(void);
+int trakker_grab(fdc_info_t *fdc);
+
+
 static __inline__ int min_(int x, int y)
 {
         return (x<y)?x:y;

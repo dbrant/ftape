@@ -28,6 +28,10 @@
 #include <linux/ftape.h>
 #include <linux/module.h>
 
+void ftape_parport_init(void);
+void ftape_parport_setup(char *str);
+
+
 #ifdef CONFIG_FT_TRAKKER
 extern int trakker_setup(char *str);
 extern int trakker_register(void);

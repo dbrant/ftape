@@ -36,6 +36,10 @@
 
 #include "ftape-setup.h"
 
+
+int ftape_setup(char *str);
+
+
 /* the setup function are required to return 0 if they have handled an
  * option which doesn't need further processing, 1 if they didn't
  * handle the option and -EINVAL when the option doesn't make any

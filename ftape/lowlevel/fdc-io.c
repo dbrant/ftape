@@ -60,6 +60,11 @@
 #include "ftape-calibr.h"
 #include "ftape-buffer.h"
 
+
+void fdc_set_drive_specs(fdc_info_t *fdc);
+int fdc_probe(fdc_info_t *fdc);
+
+
 /*      Global vars.
  */
 

@@ -45,6 +45,10 @@
 #include "ftape-calibr.h"
 #include "ftape-bsm.h"
 
+
+void pause_tape(fdc_info_t *fdc);
+
+
 /*      Global vars.
  */
 
