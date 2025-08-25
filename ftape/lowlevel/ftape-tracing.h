@@ -86,15 +86,15 @@ extern atomic_t ftape_function_nest_levels[5];
 extern void ftape_trace_call(atomic_t *function_nest_level,
 			     const char *file,
 			     const char *name,
-			     int sel) __attribute__ ((const));
+			     int sel);
 extern void ftape_trace_exit(atomic_t *function_nest_level,
 			     const char *file,
 			     const char *name,
-			     int sel) __attribute__ ((const));
+			     int sel);
 extern void ftape_trace_log (atomic_t *function_nest_level,
 			     const char *file,
 			     const char *name,
-			     int sel) __attribute__ ((const));
+			     int sel);
 
 #endif /* !defined(CONFIG_FT_NO_TRACE_AT_ALL) */
 

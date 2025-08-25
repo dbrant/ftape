@@ -145,6 +145,8 @@ __used __section("__versions") =
 	"__udelay\0\0\0\0"
 	"\x10\x00\x00\x00\xeb\x02\xe6\xb0"
 	"memmove\0"
+	"\x24\x00\x00\x00\x6f\x6f\x23\x4c"
+	"__x86_indirect_thunk_r15\0\0\0\0"
 	"\x18\x00\x00\x00\x0f\x6e\xa2\x12"
 	"param_array_ops\0"
 	"\x10\x00\x00\x00\x38\xdf\xac\x69"
@@ -175,8 +177,6 @@ __used __section("__versions") =
 	"__x86_indirect_thunk_r14\0\0\0\0"
 	"\x10\x00\x00\x00\x11\x13\x92\x5a"
 	"strncmp\0"
-	"\x24\x00\x00\x00\xe9\xc8\x79\x1a"
-	"__x86_indirect_thunk_r13\0\0\0\0"
 	"\x10\x00\x00\x00\xc5\x8f\x57\xfb"
 	"memset\0\0"
 	"\x18\x00\x00\x00\x5e\x1d\x51\x6f"
@@ -197,10 +197,10 @@ __used __section("__versions") =
 	"vfree\0\0\0"
 	"\x18\x00\x00\x00\xd6\xdf\xe3\xea"
 	"__const_udelay\0\0"
+	"\x24\x00\x00\x00\xf9\xa4\xcc\x66"
+	"__x86_indirect_thunk_rcx\0\0\0\0"
 	"\x1c\x00\x00\x00\x88\x00\x11\x37"
 	"remove_wait_queue\0\0\0"
-	"\x24\x00\x00\x00\xa8\xf9\x62\x03"
-	"__x86_indirect_thunk_r12\0\0\0\0"
 	"\x10\x00\x00\x00\x9c\x53\x4d\x75"
 	"strlen\0\0"
 	"\x18\x00\x00\x00\x4e\xc6\x24\xd8"
@@ -218,4 +218,4 @@ __used __section("__versions") =
 MODULE_INFO(depends, "");
 
 
-MODULE_INFO(srcversion, "A54242E5067286D5F227370");
+MODULE_INFO(srcversion, "98FF0326657C4A6E388F2AB");

@@ -104,11 +104,11 @@
 
 #define TRACE_FUN(level)						      \
 	const ft_trace_t _tracing = level;				      \
-	static char ft_trace_file[] FT_TRACE_ATTR = {__FILE__};	      \
+	static char ft_trace_file[] = __FILE__;	      \
 	if (ftape_tracing >= (ft_trace_t)(level) &&			      \
 	    (ft_trace_t)(level) <= FT_TRACE_TOP_LEVEL)			      \
 		ftape_trace_call(&ftape_function_nest_level,		      \
-				 ft_trace_file, __func__,	      \
+				 ft_trace_file, __FUNCTION__,	      \
 				 TRACE_SEL);				      \
 	atomic_inc(&ftape_function_nest_level);
 
@@ -117,7 +117,7 @@
 	if (ftape_tracing >= (ft_trace_t)(_tracing) &&			\
 	    (ft_trace_t)(_tracing) <= FT_TRACE_TOP_LEVEL)		\
 		ftape_trace_exit(&ftape_function_nest_level,		\
-				 ft_trace_file, __func__,	\
+				 ft_trace_file, __FUNCTION__,	\
 				 TRACE_SEL);				\
 	return
 
@@ -126,9 +126,9 @@
 	if (ftape_tracing >= (ft_trace_t)(l) &&				\
 	    (ft_trace_t)(l) <= FT_TRACE_TOP_LEVEL) {			\
 		ftape_trace_log(&ftape_function_nest_level,		\
-				ft_trace_file, __func__,	\
+				ft_trace_file, __FUNCTION__,	\
 				TRACE_SEL);				\
-		printk(m , ##__VA_ARGS__ );				\
+		printk(KERN_INFO m, ##__VA_ARGS__ );			\
 	}								\
 }
 

@@ -79,6 +79,8 @@ __used __section("__versions") =
 	"__fentry__\0\0"
 	"\x1c\x00\x00\x00\xf1\xc9\x50\xc1"
 	"ftape_read_segment\0\0"
+	"\x1c\x00\x00\x00\xd1\x1a\x11\x31"
+	"ftape_trace_exit\0\0\0\0"
 	"\x24\x00\x00\x00\x97\x70\x48\x65"
 	"__x86_indirect_thunk_rax\0\0\0\0"
 	"\x10\x00\x00\x00\x7e\x3a\x2c\x12"
@@ -111,6 +113,8 @@ __used __section("__versions") =
 	"strncmp\0"
 	"\x20\x00\x00\x00\xa7\x43\x73\x03"
 	"ftape_abort_operation\0\0\0"
+	"\x1c\x00\x00\x00\xf8\xad\x84\x2e"
+	"ftape_trace_call\0\0\0\0"
 	"\x10\x00\x00\x00\xda\xfa\x66\x91"
 	"strncpy\0"
 	"\x24\x00\x00\x00\x7d\x05\x76\x66"
@@ -153,6 +157,8 @@ __used __section("__versions") =
 	"param_ops_int\0\0\0"
 	"\x24\x00\x00\x00\xee\xc8\x5f\xe5"
 	"ftape_function_nest_levels\0\0"
+	"\x18\x00\x00\x00\x1a\xc9\x03\x12"
+	"ftape_trace_log\0"
 	"\x1c\x00\x00\x00\xc0\xfb\xc3\x6b"
 	"__unregister_chrdev\0"
 	"\x18\x00\x00\x00\x76\xf2\x0f\x5e"
@@ -162,4 +168,4 @@ __used __section("__versions") =
 MODULE_INFO(depends, "ftape-core");
 
 
-MODULE_INFO(srcversion, "09BFC250CD0FC9935E08497");
+MODULE_INFO(srcversion, "D694C6708C52D36F375BE9F");
