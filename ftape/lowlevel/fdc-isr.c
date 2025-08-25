@@ -523,7 +523,7 @@ static void determine_progress(fdc_info_t *fdc,
 			TRACE(ft_t_info, "Error \"%s\" at %d/%d",
 			      fdc_error_text(cause), buff->segment_id,
 			      buff->sector_offset);
-#if 0 || HACK
+#if 0 || defined(HACK)
 			if (HEAD->status == writing) {
 				TRACE(ft_t_warn,
 				      "Overrun error, "

@@ -149,7 +149,7 @@ int ftape_abort_operation(ftape_info_t *ftape)
 		ftape->location.known = 0;
 		ftape->runner_status  = idle;
 	}
-#if 0 || HACK
+#if 0 || defined(HACK)
 	TRACE(ft_t_info, "Resetting FDC and reprogramming FIFO threshold");
 	fdc_reset(ftape->fdc);	
 	fdc_fifo_threshold(ftape->fdc, ftape->fdc->threshold,

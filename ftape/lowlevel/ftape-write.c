@@ -247,7 +247,7 @@ static int write_segment(ftape_info_t *ftape,
 		      
 		bytes_written = -EAGAIN;
 		break;
-#if 0 || HACK
+#if 0 || defined(HACK)
 	/* TODO: it seems that at least the Ditto Max sometimes has
 	 * problems and reports overrun errors which occur after (???) 
 	 * all data has been transferred. In that case weird things

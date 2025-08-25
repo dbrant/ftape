@@ -911,7 +911,7 @@ int ftape_increase_threshold(ftape_info_t *ftape)
 	if (ftape->fdc->type < i82077 || ftape->fdc->threshold >= 16) {
 		TRACE_ABORT(-EIO, ft_t_err, "cannot increase fifo threshold");
 	}
-#if 0 || HACK
+#if 0 || defined(HACK)
 	fdc_reset(ftape->fdc);	
 #endif
 	if (fdc_fifo_threshold(ftape->fdc,
@@ -940,7 +940,7 @@ int ftape_half_data_rate(ftape_info_t *ftape)
 		TRACE_EXIT -EIO;
 	}
 	ftape_calc_timeouts(ftape, ftape->qic_std, ftape->data_rate, ftape->tape_len);
-#if 0 || HACK
+#if 0 || defined(HACK)
 	TRACE(ft_t_info,
 	      "Resetting FDC and reprogramming FIFO threshold");
 	fdc_reset(ftape->fdc);	

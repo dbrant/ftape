@@ -731,7 +731,7 @@ TRACE(ft_t_info, "another Colorado/T3000/imation tape bug: max_floppy_side off b
 	}
 	ftape_extract_bad_sector_map(ftape, address);
 	/* ftape_put_bad_sector_entry(ftape, 4, 0); */
-#if TESTING
+#ifdef TESTING
 	ftape_put_bad_sector_entry(ftape, 2, EMPTY_SEGMENT);
 	ftape_put_bad_sector_entry(ftape, 3, EMPTY_SEGMENT);
 	ftape_put_bad_sector_entry(ftape, 4, EMPTY_SEGMENT);
