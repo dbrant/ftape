@@ -239,9 +239,6 @@ int fdc_int_isapnp_init(fdc_info_t *fdc)
 	TRACE_EXIT 0;
 }
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 #ifdef MODULE
 void fdc_int_isapnp_disable(void)
 {

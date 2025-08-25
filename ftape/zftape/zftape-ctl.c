@@ -887,9 +887,6 @@ int zft_dirty(zftape_info_t *zftape)
 	return 0;
 }
 
-#define SEL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 /*      OPEN routine called by kernel-interface code
  *
  *      NOTE: this is also called by mt_reset() with dev_minor == -1
@@ -1032,9 +1029,6 @@ int _zft_open(unsigned int dev_minor, unsigned int access_mode)
 	ftape_door_lock(zftape->ftape, 1); /* lock the door, if supported */
 	TRACE_EXIT 0;
 }
-
-#define ZFTAPE_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
 
 /*      RELEASE routine called by kernel-interface code
  */

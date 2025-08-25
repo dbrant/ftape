@@ -363,9 +363,6 @@ static void fdc_int_release_regions(fdc_info_t *fdc)
 	TRACE_EXIT;
 }
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 static irqreturn_t ftape_interrupt(int irq, void *dev_id)
 {
 	fdc_info_t *fdc = (fdc_info_t *)dev_id;
@@ -395,9 +392,6 @@ static irqreturn_t ftape_interrupt(int irq, void *dev_id)
 		return IRQ_NONE;
 	}
 }
-
-#define FDC_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
 
 static volatile int fdc_int_got_irq = 0;
 

@@ -408,9 +408,6 @@ void trakker_read(fdc_info_t *fdc, buffer_struct *buff)
 	TRACE_EXIT;
 }
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 static void trakker_interrupt(int irq, void *dev_id, struct pt_regs *regs)
 {
 	fdc_info_t *fdc = (fdc_info_t *)dev_id;
@@ -508,10 +505,7 @@ static void trakker_grab_handler(fdc_info_t *fdc)
 	trakker->out(fdc, REG1E_OPEN, 0x1e);
 	TRACE_EXIT;
 }
-
-#define FDC_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-			
+	
 static const char * const trakker_init_sequence = 
 	"\x04\xbf\x04\x3f\x7f\x06\xff\xbf\xff\x04\x0c\x7f\x0e\xff"
 	"\x06\x7f\x04\x3f\xbf\x06\x04\x0c\xff\x04\x06\xbf\x04\x0c\x00";
@@ -1186,9 +1180,6 @@ static fdc_operations trakker_ops = {
 
 /* Initialization
  */
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 int trakker_register(void)
 {
 	TRACE_FUN(ft_t_flow);

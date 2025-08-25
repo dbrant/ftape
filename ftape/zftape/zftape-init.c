@@ -276,9 +276,6 @@ static loff_t zft_seek(struct file * file, loff_t offset, int origin)
 /*  driver/module initialization
  */
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 #if defined(CONFIG_ZFT_COMPRESSOR) || defined(CONFIG_ZFT_COMPRESSOR_MODULE)
 struct zft_cmpr_ops *zft_cmpr_ops = NULL;
 

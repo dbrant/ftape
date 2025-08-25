@@ -1217,9 +1217,6 @@ int fdc_probe(fdc_info_t *fdc)
 	TRACE_EXIT no_fdc;
 }
 
-#define SEL_TRACING
-#include "ftape-real-tracing.h"
-
 static fdc_info_t *get_new_fdc(int sel)
 {
 	fdc_info_t *info = fdc_infos[sel];
@@ -1312,9 +1309,6 @@ static fdc_operations *find_driver(const char *driver)
  * fdc_info structure.
  *
  */
-#define GLOBAL_TRACING
-#include "ftape-real-tracing.h"
-
 /* expensive, but only called when registering resp. searching for fdc
  * drivers
  */
@@ -1458,10 +1452,6 @@ void fdc_unregister(fdc_operations *info)
  * Side effects:
  * on -ENXIO the fdc is destroyed (i.e. its memory is released)
  */
-
-#define GLOBAL_TRACING
-#include "ftape-real-tracing.h"
-
 static int fdc_init_one(fdc_info_t *fdc)
 {
 	TRACE_FUN(ft_t_flow);
@@ -1522,10 +1512,6 @@ static int fdc_init_one(fdc_info_t *fdc)
  * on -ENXIO the fdc is destroyed (i.e. its memory is released). On
  * -EAGAIN there was no memory for this fdc, so it doesn't exist.
  */
-
-#define SEL_TRACING
-#include "ftape-real-tracing.h"
-
 static int fdc_search_driver(int sel)
 {
 	const char *ptr = ft_fdc_driver[sel];
@@ -1602,10 +1588,6 @@ static int fdc_search_driver(int sel)
  * try to create one. If initialization fails, try to use different
  * drivers
  */
-
-#define FTAPE_TRACING
-#include "ftape-real-tracing.h"
-
 int fdc_init(ftape_info_t *ftape)
 {
 	fdc_info_t *fdc = fdc_infos[ftape->drive_sel];

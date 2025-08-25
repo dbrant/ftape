@@ -275,9 +275,6 @@ static void get_next_cluster(struct zftc_struct *zftc,
 /*
  *  This function also allocates the "handle" and if handle == NULL
  */
-#define ZFTAPE_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 static void *zftc_open(zftape_info_t *zftape)
 {
 	struct zftc_struct *zftc = zftcs[FTAPE_SEL(zftape->unit)];
@@ -303,9 +300,6 @@ static void *zftc_open(zftape_info_t *zftape)
 	zftcs[FTAPE_SEL(zftape->unit)] = zftc;
 	TRACE_EXIT (void *)zftc;
 }
-
-#define ZFTC_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
 
 /*  this function is needed for zftape_reset_position in zftape-io.c 
  */
@@ -964,9 +958,6 @@ static struct zft_cmpr_ops cmpr_ops = {
 	zftc_close,
 	zftc_cleanup
 };
-
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
 
 int zft_compressor_init(void)
 {

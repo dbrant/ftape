@@ -63,9 +63,6 @@ int ft_soft_retries = FT_SOFT_RETRIES;
  * bytes and set ft_fdc_driver_no[sel] to the number of available
  * drivers.
  */
-#define GLOBAL_TRACING
-#include "ftape-real-tracing.h"
-
 static void ftape_build_driver_list(void)
 {
 	char *ptr, *newptr;

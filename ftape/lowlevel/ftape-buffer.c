@@ -127,9 +127,6 @@ void ftape_kfree(int sel, void *old, size_t size)
 	TRACE_EXIT;
 }
 
-#define FDC_TRACING
-#include "ftape-real-tracing.h"
-
 static int add_one_buffer(fdc_info_t *fdc)
 {
 	buffer_struct *new;

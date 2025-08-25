@@ -55,9 +55,6 @@ extern int ftape_internal_setup(char *str);
 /* extern int ftape_parport_setup(char *str); */
 #endif
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 /* do some option parsing here. The kernel get_options() function
  * doesn't allow negative numbers, we use the keywords "a" and "n" for
  * "auto" and "none" and convert it to "-1" and "-2".

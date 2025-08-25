@@ -95,9 +95,6 @@ int parport_proto = ft_bpck_none; /* parport protocol (changed to int for module
 } )
 
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 
 int bpck_fdc_grab(fdc_info_t *fdc);
 int bpck_fdc_register(void);
@@ -1453,9 +1450,6 @@ static int bpck_fdc_switch_proto(bpck_fdc_t *bpck,
 	TRACE_EXIT result;
 }
 
-#define FDC_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 /* This is called by the ftape fdc routines before trying to access
  * the FDC. Detection is done elsewhere, post-detection initialization
  * and claiming of resources should be done here.
@@ -1728,9 +1722,6 @@ static void bpck_fdc_disable_irq(fdc_info_t *fdc)
 	TRACE_EXIT;
 }
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 /* Yes, we do need this, we DO NEED software polling. The bpck logic
  * doesn't generate an interrupt while we are connected.
  */
@@ -1747,9 +1738,6 @@ static inline void bpck_fdc_poll_interrupt(bpck_fdc_t *bpck)
 	}
 	TRACE_EXIT;
 }
-
-#define FDC_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
 
 /* The parport irq is still disabled, which means that we are sure
  * that bpck_interrupt() won't be re-entered by spurious interrupts.
@@ -2151,9 +2139,6 @@ static fdc_operations bpck_fdc_ops = {
 
 /* Initialization
  */
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 int bpck_fdc_register(void)
 {
 	TRACE_FUN(ft_t_flow);

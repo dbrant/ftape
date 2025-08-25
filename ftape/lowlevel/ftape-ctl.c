@@ -648,8 +648,6 @@ int ftape_destroy(int sel)
 	return 0;
 }
 
-#define SEL_TRACING
-#include "ftape-real-tracing.h"
 /*      OPEN routine called by kernel-interface code
  */
 int ftape_enable(int drive_selection)
@@ -692,9 +690,6 @@ int ftape_enable(int drive_selection)
 	clear_history(ftape);
 	TRACE_EXIT 0;
 }
-
-#define FTAPE_TRACING
-#include "ftape-real-tracing.h"
 
 static void ftape_print_history(ftape_info_t *ftape)
 {
