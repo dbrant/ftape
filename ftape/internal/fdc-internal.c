@@ -354,28 +354,27 @@ static irqreturn_t ftape_interrupt(int irq, void *dev_id)
 
 	if (!fdc) {
 		TRACE(ft_t_bug, "BUG: Spurious interrupt (no fdc data)");
-		return IRQ_NONE;
+		TRACE_EXIT IRQ_NONE;
 	}
 	if (fdc->magic != FT_FDC_MAGIC) {
 		TRACE(ft_t_bug, "BUG: Magic number mismatch (0x%08x/0x%08x), "
 		      "prepare for Armageddon", FT_FDC_MAGIC, fdc->magic);
-		return IRQ_NONE;
+		TRACE_EXIT IRQ_NONE;
 	}
 	if (fdc->irq != irq) {
 		TRACE(ft_t_bug, "BUG: Wrong IRQ number (%d/%d)", irq, fdc->irq);
-		return IRQ_NONE;
+		TRACE_EXIT IRQ_NONE;
 	}
 
 	if (fdc->hook) {
 		void (*handler) (fdc_info_t *fdc) = fdc->hook;
 		fdc->hook = NULL;
 		handler(fdc);
-		return IRQ_HANDLED;
 	} else {
 		TRACE(ft_t_bug, "Unexpected ftape interrupt");
-		return IRQ_NONE;
+		TRACE_EXIT IRQ_NONE;
 	}
-	TRACE_EXIT IRQ_NONE;
+	TRACE_EXIT IRQ_HANDLED;
 }
 
 static volatile int fdc_int_got_irq = 0;
