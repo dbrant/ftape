@@ -131,7 +131,7 @@ TODO: handle this better in a modern way.
 		ftape_trace_log(&ftape_function_nest_level,		\
 				ft_trace_file, __FUNCTION__,	\
 				TRACE_SEL);				\
-		printk(KERN_INFO m, ##__VA_ARGS__ );			\
+		printk(KERN_CONT m, ##__VA_ARGS__ );			\
 	}								\
 }
 
