@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# remove all ftape modules 
+#
+rmmod bpck-fdc || true
+rmmod trakker || true
+rmmod ftape-internal || true
+rmmod zft-compressor || true
+rmmod zftape || true
+rmmod ftape-core || true
+rmmod parport_probe || true
+rmmod parport_pc || true
+rmmod parport || true
+
