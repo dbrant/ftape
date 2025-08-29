@@ -29,7 +29,7 @@
  *
  */
 
-#define FTAPE_VERSION "ftape v4.04a 07/25/2000"
+#define FTAPE_VERSION "ftape v4.05 08/28/2025"
 
 #ifdef __KERNEL__
 #include <linux/sched.h>

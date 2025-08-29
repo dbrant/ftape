@@ -383,14 +383,13 @@ int zft_init(void)
 #ifdef MODULE
 	printk(ZFTAPE_VERSION);
 	if (TRACE_LEVEL >= ft_t_info) {
-		printk(KERN_INFO "(c) 1996-2000 Claus-Justus Heine <heine@instmath.rwth-aachen.de>");
-		printk(KERN_INFO "vfs interface for ftape floppy tape driver.");
-		printk(KERN_INFO "Support for QIC-113 compatible volume table.");
-		printk(KERN_INFO "Compiled for Linux version %s", CONFIG_LOCALVERSION);
+		printk("(c) 1996-2000 Claus-Justus Heine <heine@instmath.rwth-aachen.de>");
+		printk("vfs interface for ftape floppy tape driver.");
+		printk("Support for QIC-113 compatible volume table.");
 	}
 #else /* !MODULE */
 	/* print a short no-nonsense boot message */
-	printk(KERN_INFO ZFTAPE_VERSION " for Linux " "Modern Linux" "\n");
+	printk(ZFTAPE_VERSION " for Linux");
 #endif /* MODULE */
 	TRACE(ft_t_info, "zft_init @ 0x%p", zft_init);
 	TRACE(ft_t_info, "installing zftape VFS interface for ftape driver ...");
