@@ -52,7 +52,7 @@
  *      This file contains code for the CMS FC-10/FC-20 card.
  */
 
-#include <linux/config.h>
+
 #include <linux/version.h>
 
 #include <linux/ioport.h>
@@ -60,7 +60,6 @@
 
 #include <linux/ftape.h>
 
-#define FDC_TRACING
 #include "../lowlevel/ftape-tracing.h"
 
 #include "../lowlevel/ftape-init.h"
@@ -70,22 +69,17 @@
 /*      Global vars.
  */
 
-const __u16 inbs_magic[] __initdata = {
+const __u16 inbs_magic[] = {
 	0x3, 0x3, 0x0, 0x4, 0x7, 0x2, 0x5, 0x3, 0x1, 0x4,
 	0x3, 0x5, 0x2, 0x0, 0x3, 0x7, 0x4, 0x2,
 	0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7
 };
 
-const __u16 fc10_ports[] __initdata = {
+const __u16 fc10_ports[] = {
 	0x180, 0x210, 0x2A0, 0x300, 0x330, 0x340, 0x370
 };
 
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR __initlocaldata
-
-int __init fc10_enable(fdc_info_t *fdc)
+int fc10_enable(fdc_info_t *fdc)
 {
 	int i;
 	__u8 cardConfig = 0x00;

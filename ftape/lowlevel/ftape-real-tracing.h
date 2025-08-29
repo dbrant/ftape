@@ -42,6 +42,10 @@
 #undef ftape_function_nest_level
 #undef ftape_tracing
 
+/*
+Legacy tracing definitions, for determining which drive unit the trace refers to.
+TODO: handle this better in a modern way.
+
 #ifdef FDC_TRACING
 # define TRACE_SEL fdc->unit
 # undef FDC_TRACING
@@ -64,11 +68,9 @@
 #else
 # define TRACE_SEL ftape->drive_sel
 #endif
+*/
+# define TRACE_SEL 4
 
-/* define this to be __initlocaldata if called from an init function */
-#ifndef FT_TRACE_ATTR
-# define FT_TRACE_ATTR /**/
-#endif
 
 #define ftape_function_nest_level ftape_function_nest_levels[TRACE_SEL]
 #define ftape_tracing             ftape_tracings[TRACE_SEL]
@@ -84,13 +86,12 @@
 #define TRACE_EXIT		atomic_dec(&ftape_function_nest_level); return
 #define TRACE(l, m, ...)					\
 {								\
-	static char ft_trace_msg[] FT_TRACE_ATTR = { m".\n" };	\
 	if (ftape_tracing >= (ft_trace_t)(l) &&			\
 	    (ft_trace_t)(l) <= FT_TRACE_TOP_LEVEL) {		\
 		ftape_trace_log(&ftape_function_nest_level,	\
-				__FILE__, __FUNCTION__,		\
+				__FILE__, __func__,		\
 				TRACE_SEL);			\
-		printk(ft_trace_msg , ##__VA_ARGS__ );			\
+		printk(m , ##__VA_ARGS__ );			\
 	}							\
 }
 
@@ -106,12 +107,11 @@
 
 #define TRACE_FUN(level)						      \
 	const ft_trace_t _tracing = level;				      \
-	static char ft_trace_file[] FT_TRACE_ATTR = {__FILE__};	      \
-	static char ft_trace_function[] FT_TRACE_ATTR = {__FUNCTION__}; \
+	static char ft_trace_file[] = __FILE_NAME__;	      \
 	if (ftape_tracing >= (ft_trace_t)(level) &&			      \
 	    (ft_trace_t)(level) <= FT_TRACE_TOP_LEVEL)			      \
 		ftape_trace_call(&ftape_function_nest_level,		      \
-				 ft_trace_file, ft_trace_function,	      \
+				 ft_trace_file, __FUNCTION__,	      \
 				 TRACE_SEL);				      \
 	atomic_inc(&ftape_function_nest_level);
 
@@ -120,19 +120,18 @@
 	if (ftape_tracing >= (ft_trace_t)(_tracing) &&			\
 	    (ft_trace_t)(_tracing) <= FT_TRACE_TOP_LEVEL)		\
 		ftape_trace_exit(&ftape_function_nest_level,		\
-				 ft_trace_file, ft_trace_function,	\
+				 ft_trace_file, __FUNCTION__,	\
 				 TRACE_SEL);				\
 	return
 
 #define TRACE(l, m, ...)						\
 {									\
-	static char ft_trace_msg[] FT_TRACE_ATTR = { m".\n" };		\
 	if (ftape_tracing >= (ft_trace_t)(l) &&				\
 	    (ft_trace_t)(l) <= FT_TRACE_TOP_LEVEL) {			\
 		ftape_trace_log(&ftape_function_nest_level,		\
-				ft_trace_file, ft_trace_function,	\
+				ft_trace_file, __FUNCTION__,	\
 				TRACE_SEL);				\
-		printk(ft_trace_msg , ##__VA_ARGS__ );				\
+		printk(KERN_CONT m, ##__VA_ARGS__ );			\
 	}								\
 }
 

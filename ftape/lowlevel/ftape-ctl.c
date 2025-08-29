@@ -26,21 +26,18 @@
  *
  */
 
-#include <linux/config.h>
+
 #include <linux/errno.h>
 #include <linux/signal.h>
 #include <linux/mm.h>
 #include <linux/mman.h>
 #include <linux/slab.h>
-#include <linux/wrapper.h>
+
 
 #include <linux/ftape.h>
 #include <linux/qic117.h>
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,6)
 #include <asm/uaccess.h>
-#else
 #include <asm/segment.h>
-#endif
 #include <asm/io.h>
 
 #include "ftape-tracing.h"
@@ -152,14 +149,14 @@ int ftape_abort_operation(ftape_info_t *ftape)
 		ftape->location.known = 0;
 		ftape->runner_status  = idle;
 	}
-#if 0 || HACK
+#if 0 || defined(HACK)
 	TRACE(ft_t_info, "Resetting FDC and reprogramming FIFO threshold");
 	fdc_reset(ftape->fdc);	
 	fdc_fifo_threshold(ftape->fdc, ftape->fdc->threshold,
 			   NULL, NULL, NULL);
 #endif
 	ftape_zap_read_buffers(ftape);
-	ftape_set_state(ftape, idle);
+	ftape_set_state(ftape, waiting);
 	TRACE_EXIT result;
 }
 
@@ -651,8 +648,6 @@ int ftape_destroy(int sel)
 	return 0;
 }
 
-#define SEL_TRACING
-#include "ftape-real-tracing.h"
 /*      OPEN routine called by kernel-interface code
  */
 int ftape_enable(int drive_selection)
@@ -695,9 +690,6 @@ int ftape_enable(int drive_selection)
 	clear_history(ftape);
 	TRACE_EXIT 0;
 }
-
-#define FTAPE_TRACING
-#include "ftape-real-tracing.h"
 
 static void ftape_print_history(ftape_info_t *ftape)
 {
@@ -752,7 +744,7 @@ void ftape_disable(int drive_selection)
 	ftape_info_t *ftape = ftapes[sel];
 	TRACE_FUN(ft_t_flow);
 
-	ftape_set_state(ftape, idle);
+	ftape_set_state(ftape, waiting);
 	ftape_detach_drive(ftape);
 	ftape_print_history(ftape);
 	ftape->active = 0;
@@ -793,7 +785,7 @@ void ftape_init_driver(ftape_info_t *ftape, int sel)
 	ftape->write_protected = 1;
 	ftape->new_tape        = 1;
 
-	ftape->driver_state = idle;
+	ftape->driver_state = waiting;
 
 	ftape->data_rate = 500;
 	ftape->drive_max_rate = 0; /* triggers set_rate_test() */

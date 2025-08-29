@@ -114,7 +114,7 @@ void ftape_trace_log(atomic_t *function_nest_level,
 		     int sel)
 {
 	char *indent;
-
+	
 	/*    Since printk seems not to work with "%*s" format
 	 *    we'll use this work-around.
 	 */

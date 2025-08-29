@@ -28,7 +28,6 @@
  *
  */
 
-#include <linux/config.h>
 #include <linux/errno.h>
 #include <linux/sched.h>
 #include <linux/ioport.h>
@@ -37,7 +36,7 @@
 #include <linux/list.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
-#include <asm/system.h>
+/* #include <asm/system.h> - removed in modern kernels */
 #include <asm/io.h>
 #include <asm/dma.h>
 #include <asm/irq.h>
@@ -46,11 +45,6 @@
 #include <linux/ftape.h>
 #include <linux/qic117.h>
 
-/* 
- * We need this definition for the sole purpose of keeping the trace
- * stuff working
- */
-#define FDC_TRACING
 #include "ftape-tracing.h"
 
 #include "fdc-io.h"
@@ -60,6 +54,11 @@
 #include "ftape-ctl.h"
 #include "ftape-calibr.h"
 #include "ftape-buffer.h"
+
+
+void fdc_set_drive_specs(fdc_info_t *fdc);
+int fdc_probe(fdc_info_t *fdc);
+
 
 /*      Global vars.
  */
@@ -102,19 +101,12 @@ LIST_HEAD(fdc_drivers);
  */
 inline void fdc_enable_irq(fdc_info_t *fdc)
 {
-
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (in_interrupt()) {
 		return;
 	}
-#else
-	if (intr_count) {
-		return;
-	}
-#endif
 #if 1
 	if (fdc->irq_level <= 0) {
-		printk(__FUNCTION__ " : negativ irq_level: %d\n",
+		printk("%s : negativ irq_level: %d\n", __func__,
 		       fdc->irq_level);
 		fdc->irq_level = 1;
 	}
@@ -127,16 +119,9 @@ inline void fdc_enable_irq(fdc_info_t *fdc)
 
 inline void fdc_disable_irq(fdc_info_t *fdc)
 {
-
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (in_interrupt()) {
 		return;
 	}
-#else
-	if (intr_count) {
-		return;
-	}
-#endif
 	if (!(fdc->irq_level++)) {
 		fdc->ops->disable_irq(fdc); 
 	}
@@ -374,15 +359,9 @@ int fdc_issue_command(fdc_info_t *fdc,
 	int result = -EIO;
 
 	fdc_disable_irq(fdc);
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (!in_interrupt() && fdc_seek_check(fdc)) {
 		goto out;
 	}
-#else
-	if (!intr_count && fdc_seek_check(fdc)) {
-		goto out;
-	}
-#endif
 
 	result =__fdc_issue_command(fdc,
 				    out_data, out_count, in_data, in_count);
@@ -404,50 +383,33 @@ int fdc_issue_command(fdc_info_t *fdc,
  */
 int fdc_interrupt_wait(fdc_info_t *fdc, unsigned int time)
 {
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,3,0)
 	DECLARE_WAITQUEUE(wait, current);
-#else
-	struct wait_queue wait = {current, NULL};
-#endif
 	long timeout;
 	TRACE_FUN(ft_t_fdc_dma);
 
 	if (fdc->irq_level > 1) {
 		TRACE(ft_t_warn,
-		      "Geeh! Calling "__FUNCTION__"() with irq's off %d",
+		      "Geeh! Calling %s() with irq's off %d", __func__,
 		      fdc->irq_level);
 	}
 	if (fdc->irq_level < 1) {
 		TRACE(ft_t_warn,
-		      "Geeh! Calling "__FUNCTION__"() with irq's on %d",
+		      "Geeh! Calling %s() with irq's on %d", __func__,
 		      fdc->irq_level);
 	}
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,0,16)
  	if (waitqueue_active(&fdc->wait_intr)) {
 		fdc_enable_irq(fdc);
 		TRACE_ABORT(-EIO, ft_t_err, "error: nested call");
 	}
-#else
-	if (fdc->wait_intr) {
-		fdc_enable_irq(fdc);
-		TRACE_ABORT(-EIO, ft_t_err, "error: nested call");
-	}
-#endif
  	/* timeout time will be up to USPT microseconds too long ! */
 	timeout = (1000 * time + FT_USPT - 1) / FT_USPT;
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,127)
-	current->timeout = jiffies + timeout;
-#endif
+
 	set_current_state(TASK_INTERRUPTIBLE);
 	add_wait_queue(&fdc->wait_intr, &wait);	
 	fdc_enable_irq(fdc);
-	while (!fdc->interrupt_seen && current->state != TASK_RUNNING) {
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,127)
-		schedule();	/* sets TASK_RUNNING on timeout */
-#else
+	while (!fdc->interrupt_seen && get_current_state() != TASK_RUNNING) {
 		timeout = schedule_timeout(timeout);
-#endif
 	}
 	remove_wait_queue(&fdc->wait_intr, &wait);
 	/*  the following IS necessary. True: as well
@@ -463,9 +425,6 @@ int fdc_interrupt_wait(fdc_info_t *fdc, unsigned int time)
 	 */
 	set_current_state(TASK_RUNNING);
 	if (fdc->interrupt_seen) { /* woken up by interrupt */
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,127)
-		current->timeout = 0;	  /* interrupt hasn't cleared this */
-#endif
 		fdc->interrupt_seen = 0;
 		TRACE_EXIT 0;
 	}
@@ -1002,6 +961,7 @@ int fdc_setup_read_write(fdc_info_t *fdc, buffer_struct * buff, __u8 operation)
 		if (fdc->type < i82077 || fdc->type == DITTOEZ) {
 			operation = FDC_READ;
 		}
+		// fall through
 	case FDC_READ:
 	case FDC_READ_DELETED:
 		dma_mode = DMA_MODE_READ;
@@ -1015,6 +975,7 @@ int fdc_setup_read_write(fdc_info_t *fdc, buffer_struct * buff, __u8 operation)
 		break;
 	case FDC_WRITE_DELETED:
 		TRACE(ft_t_noise, "deleting segment %d", buff->segment_id);
+		// fall through
 	case FDC_WRITE:
 		dma_mode = DMA_MODE_WRITE;
 		TRACE(ft_t_fdc_dma, "xfer %d sectors from 0x%lx",
@@ -1251,9 +1212,6 @@ int fdc_probe(fdc_info_t *fdc)
 	TRACE_EXIT no_fdc;
 }
 
-#define SEL_TRACING
-#include "ftape-real-tracing.h"
-
 static fdc_info_t *get_new_fdc(int sel)
 {
 	fdc_info_t *info = fdc_infos[sel];
@@ -1287,11 +1245,7 @@ static fdc_info_t *get_new_fdc(int sel)
 	info->current_cylinder = -1;
 	info->mode = fdc_idle;
 	info->resetting = 0;
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,3,0)
 	init_waitqueue_head(&info->wait_intr);
-#else
-	info->wait_intr = NULL;
-#endif
 	info->unit = sel;
 	info->type = no_fdc;
 #ifndef CONFIG_FT_NO_TRACE_AT_ALL
@@ -1350,9 +1304,6 @@ static fdc_operations *find_driver(const char *driver)
  * fdc_info structure.
  *
  */
-#define GLOBAL_TRACING
-#include "ftape-real-tracing.h"
-
 /* expensive, but only called when registering resp. searching for fdc
  * drivers
  */
@@ -1478,10 +1429,6 @@ void fdc_unregister(fdc_operations *info)
  * Side effects:
  * on -ENXIO the fdc is destroyed (i.e. its memory is released)
  */
-
-#define GLOBAL_TRACING
-#include "ftape-real-tracing.h"
-
 static int fdc_init_one(fdc_info_t *fdc)
 {
 	TRACE_FUN(ft_t_flow);
@@ -1542,10 +1489,6 @@ static int fdc_init_one(fdc_info_t *fdc)
  * on -ENXIO the fdc is destroyed (i.e. its memory is released). On
  * -EAGAIN there was no memory for this fdc, so it doesn't exist.
  */
-
-#define SEL_TRACING
-#include "ftape-real-tracing.h"
-
 static int fdc_search_driver(int sel)
 {
 	const char *ptr = ft_fdc_driver[sel];
@@ -1622,10 +1565,6 @@ static int fdc_search_driver(int sel)
  * try to create one. If initialization fails, try to use different
  * drivers
  */
-
-#define FTAPE_TRACING
-#include "ftape-real-tracing.h"
-
 int fdc_init(ftape_info_t *ftape)
 {
 	fdc_info_t *fdc = fdc_infos[ftape->drive_sel];

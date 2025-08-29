@@ -28,7 +28,7 @@
  *      QIC-40/80/3010/3020 floppy-tape driver "ftape" for Linux.
  */
 
-#include <linux/config.h>
+/* #include <linux/config.h> - not needed in modern kernels */
 #include <linux/signal.h>
 #include <linux/kernel.h>
 
@@ -78,32 +78,23 @@ typedef enum {
 /*      Global variables declared in tracing.c
  */
 
-ft_trace_t ftape_tracings[5];
-#if LINUX_VERSION_CODE < KERNEL_VER(2,0,0)
-typedef int atomic_t;
-#define atomic_inc(p) ++(*p)
-#define atomic_dec(p) (*p)--
-#endif
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,0)
-#define atomic_read(p) *(p)
-#define atomic_set(p, val) *(p) = (val)
-#endif
-atomic_t ftape_function_nest_levels[5];
+extern ft_trace_t ftape_tracings[5];
+extern atomic_t ftape_function_nest_levels[5];
 
 /*      Global functions declared in tracing.c
  */
 extern void ftape_trace_call(atomic_t *function_nest_level,
 			     const char *file,
 			     const char *name,
-			     int sel) __attribute__ ((const));
+			     int sel);
 extern void ftape_trace_exit(atomic_t *function_nest_level,
 			     const char *file,
 			     const char *name,
-			     int sel) __attribute__ ((const));
+			     int sel);
 extern void ftape_trace_log (atomic_t *function_nest_level,
 			     const char *file,
 			     const char *name,
-			     int sel) __attribute__ ((const));
+			     int sel);
 
 #endif /* !defined(CONFIG_FT_NO_TRACE_AT_ALL) */
 

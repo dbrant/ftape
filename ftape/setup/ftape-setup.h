@@ -37,7 +37,7 @@ typedef struct ftape_setup_struct {
 	int shared;        /* are we the only one who needs this option */
 } ftape_setup_t;
 
-extern int __init ftape_setup_parse(char *str, int *ints,
+extern int ftape_setup_parse(char *str, int *ints,
 				    ftape_setup_t *config_parms);
 
 #endif /* _FTAPE_SETUP_H */

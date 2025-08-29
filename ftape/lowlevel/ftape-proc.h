@@ -29,7 +29,7 @@
 
 #include <linux/proc_fs.h>
 
-extern int  ftape_proc_init(void) __init;
+extern int  ftape_proc_init(void);
 extern void ftape_proc_destroy(void);
 
 #endif

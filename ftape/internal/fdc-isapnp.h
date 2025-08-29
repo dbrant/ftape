@@ -26,7 +26,7 @@
  *     Prototypes for ISA PnP fdc controller support
  */
 
-#include <linux/config.h>
+/* #include <linux/config.h> - not needed in modern kernels */
 #include <linux/ftape.h>
 
 #include "../lowlevel/fdc-io.h"
@@ -34,8 +34,8 @@
 #ifdef MODULE
 void fdc_int_isapnp_disable(void);
 #else
-int fdc_int_isapnp_setup(char *str) __init;
+int fdc_int_isapnp_setup(char *str);
 #endif
-int fdc_int_isapnp_init(fdc_info_t *fdc)  __init;
+int fdc_int_isapnp_init(fdc_info_t *fdc);
 
 #endif

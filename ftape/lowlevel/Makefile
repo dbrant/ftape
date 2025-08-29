@@ -48,13 +48,7 @@ endif
 
 ifeq ($(CONFIG_PROC_FS),y)
 ifeq ($(CONFIG_FT_PROC_FS),y)
-ifneq (2.3,$(findstring 2.3,$(KERNELRELEASE)))
-ifneq (2.4,$(findstring 2.4,$(KERNELRELEASE)))
-  O_OBJS += ftape-proc-old.o
-else
   O_OBJS += ftape-proc.o
-endif
-endif
 endif
 endif
 

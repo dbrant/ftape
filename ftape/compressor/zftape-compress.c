@@ -31,9 +31,7 @@
  char zftc_rev[] = "$Revision: 1.10 $";
  char zftc_dat[] = "$Date: 2000/06/23 12:07:22 $";
 
-#define ZFTC_TRACING
 
-#include <linux/config.h>
 #include <linux/errno.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -41,11 +39,7 @@
 
 #include <linux/zftape.h>
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,6)
 #include <asm/uaccess.h>
-#else
-#include <asm/segment.h>
-#endif
 
 #include "../zftape/zftape-init.h"
 #include "../zftape/zftape-eof.h"
@@ -279,9 +273,6 @@ static void get_next_cluster(struct zftc_struct *zftc,
 /*
  *  This function also allocates the "handle" and if handle == NULL
  */
-#define ZFTAPE_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 static void *zftc_open(zftape_info_t *zftape)
 {
 	struct zftc_struct *zftc = zftcs[FTAPE_SEL(zftape->unit)];
@@ -291,9 +282,6 @@ static void *zftc_open(zftape_info_t *zftape)
 		TRACE_EXIT (void *)zftc;
 	}
 
-	MOD_INC_USE_COUNT; /*  sets MOD_VISITED and MOD_USED_ONCE,
-			    *  locking is done with can_unload()
-			    */
 	keep_module_locked ++;
 
 	if (zftc == NULL) {
@@ -301,7 +289,6 @@ static void *zftc_open(zftape_info_t *zftape)
 				     sizeof(struct zftc_struct), 1);
 	}
 	if (zftc == NULL) {
-		MOD_DEC_USE_COUNT;
 		keep_module_locked --;
 		return NULL;
 	}
@@ -311,9 +298,6 @@ static void *zftc_open(zftape_info_t *zftape)
 	zftcs[FTAPE_SEL(zftape->unit)] = zftc;
 	TRACE_EXIT (void *)zftc;
 }
-
-#define ZFTC_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
 
 /*  this function is needed for zftape_reset_position in zftape-io.c 
  */
@@ -329,7 +313,6 @@ static void zftc_close(void *handle)
 	zftc->locked = 0;
 	zftc_stats(zftc);
 	memset((void *)&zftc->cseg, 0, sizeof(zftc->cseg));
-	MOD_DEC_USE_COUNT;
 	keep_module_locked --;
 	TRACE_EXIT;
 }
@@ -495,17 +478,12 @@ static int zftc_read (void *handle,
 				TRACE_ABORT(-EIO, ft_t_warn,
 				      "Uncompressed blk (%d) != blk size (%d)",
 				      uncompressed_sz, volume->blk_sz);
-			}       
-#if LINUX_VERSION_CODE > KERNEL_VER(2,1,3)
+			}
 			if (copy_to_user(dst_buf + result, 
 					 zftc->scratch_buf, 
 					 uncompressed_sz) != 0 ) {
 				TRACE_EXIT -EFAULT;
 			}
-#else
-			memcpy_tofs(dst_buf + result, zftc->scratch_buf, 
-				    uncompressed_sz);
-#endif
 			remaining      -= uncompressed_sz;
 			result     += uncompressed_sz;
 			zftc->cseg.cmpr_pos  = 0;
@@ -979,15 +957,7 @@ static struct zft_cmpr_ops cmpr_ops = {
 	zftc_cleanup
 };
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR __initlocaldata
-
-int __init zft_compressor_init(void)
+int zft_compressor_init(void)
 {
 	TRACE_FUN(ft_t_flow);
 	
@@ -1016,24 +986,17 @@ KERN_INFO "Compiled for kernel version %s"
 
 
 #ifdef MODULE
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 MODULE_LICENSE("GPL");
 
 MODULE_AUTHOR(
 	"(c) 1996-1998 Claus-Justus Heine <heine@instmath.rwth-aachen.de>");
 MODULE_DESCRIPTION(
 "Compression routines for zftape. Uses the lzrw3 algorithm by Ross Williams");
-#endif
 
-#if LINUX_VERSION_CODE <= KERNEL_VER(1,2,13)
-char kernel_version[] = UTS_RELEASE;
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 static int can_unload(void)
 {
 	return keep_module_locked ? -EBUSY : 0;
 }
-#endif
 
 /* Called by modules package when installing the driver
  */
@@ -1041,16 +1004,10 @@ int init_module(void)
 {
 	int result;
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,1,85)
-# if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-	register_symtab(0); /* remove global ftape symbols */
-# else
 	if (!mod_member_present(&__this_module, can_unload))
 		return -EBUSY;
 	__this_module.can_unload = can_unload;
 	EXPORT_NO_SYMBOLS;
-# endif
-#endif
 	result = zft_compressor_init();
 	keep_module_locked = 0;
 	return result;

@@ -22,7 +22,7 @@
  *
  */
 
-#include <linux/config.h>
+
 #include <linux/module.h>
 #include <linux/version.h>
 
@@ -32,21 +32,14 @@
 #include <linux/mman.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>
-#include <asm/system.h>
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/pgtable.h>
-#include <asm/segment.h>
+#include <linux/uaccess.h>
 
 #include <linux/ftape.h>
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,16)
 #include <linux/init.h>
-#else
-#define __initdata
-#define __initfunc(__arg) __arg
-#endif
 
-#define FDC_TRACING
 #include "../lowlevel/ftape-tracing.h"
 
 #include "../lowlevel/fdc-io.h"
@@ -64,9 +57,9 @@
 
 /*      Global vars.
  */
-char trakker_src[] __initdata = "$RCSfile: trakker.c,v $";
-char trakker_rev[] __initdata = "$Revision: 1.20 $";
-char trakker_dat[] __initdata = "$Date: 2000/07/06 14:58:17 $";
+char trakker_src[] = "$RCSfile: trakker.c,v $";
+char trakker_rev[] = "$Revision: 1.20 $";
+char trakker_dat[] = "$Date: 2000/07/06 14:58:17 $";
 
 /* If you have problems with this driver try to define some of these */
 #undef	FULL_HANDSHAKE
@@ -74,6 +67,15 @@ char trakker_dat[] __initdata = "$Date: 2000/07/06 14:58:17 $";
 
 #define MAX_DELAY 3
 #define MIN_DELAY 0
+
+
+void trakker_read(fdc_info_t *fdc, buffer_struct *buff);
+static void trakker_write(fdc_info_t *fdc, buffer_struct *buff);
+int trakker_release(fdc_info_t *fdc);
+int trakker_register(void);
+int trakker_unregister(void);
+int trakker_grab(fdc_info_t *fdc);
+
 
 static __inline__ int min_(int x, int y)
 {
@@ -117,27 +119,15 @@ static void trakker_outb_fast(fdc_info_t *fdc,
 #ifdef TESTING
 	TRACE_FUN(ft_t_any);
 #endif
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (!in_interrupt() && !fdc->irq_level++) {
 		disable_irq(trakker->IRQ);
 	}
-#else
-	if (!intr_count && !fdc->irq_level++) {
-		disable_irq(trakker->IRQ);
-	}
-#endif
 	w_fast(trakker, reg);
 	w_fast(trakker, value);
 	trakker->chksum ^= reg^value;
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (!in_interrupt() && !--fdc->irq_level) {
 		enable_irq(trakker->IRQ);
 	}
-#else
-	if (!intr_count && !--fdc->irq_level) {
-		enable_irq(trakker->IRQ);
-	}
-#endif
 
 #ifdef TESTING
 	TRACE(ft_t_data_flow, "out(%x,%x)",reg,value);
@@ -178,11 +168,7 @@ static void trakker_outb_hshake(fdc_info_t *fdc,
 #ifdef TESTING
 	TRACE_FUN(ft_t_any);
 #endif
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (!in_interrupt() && !fdc->irq_level++)
-#else
-	if (!intr_count && !fdc->irq_level++)
-#endif
 		disable_irq(trakker->IRQ);
 
 	w_dtr(reg);
@@ -191,11 +177,7 @@ static void trakker_outb_hshake(fdc_info_t *fdc,
 	w_ctr(trakker->ctr);
 	trakker->chksum ^= reg^value;
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,0)
 	if (!in_interrupt() && !--fdc->irq_level)
-#else
-	if (!intr_count && !--fdc->irq_level)
-#endif
 		enable_irq(trakker->IRQ);
 
 #ifdef TESTING
@@ -425,20 +407,9 @@ void trakker_read(fdc_info_t *fdc, buffer_struct *buff)
 	TRACE_EXIT;
 }
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 static void trakker_interrupt(int irq, void *dev_id, struct pt_regs *regs)
-#else
-static void trakker_interrupt(int irq, struct pt_regs *regs)
-#endif
 {
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	fdc_info_t *fdc = (fdc_info_t *)dev_id;
-#else
-	fdc_info_t *fdc = ft_find_fdc_by_irq(irq);
-#endif
 	struct trakker_struct *trakker;
 	static int interrupt_active = 0;
 	TRACE_FUN(ft_t_any);
@@ -452,12 +423,10 @@ static void trakker_interrupt(int irq, struct pt_regs *regs)
 		      "prepare for Armageddon", FT_FDC_MAGIC, fdc->magic);
 		goto err_out;
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	if (fdc->irq != irq) {
 		TRACE(ft_t_bug, "BUG: Wrong IRQ number (%d/%d)", irq, fdc->irq);
 		goto err_out;
 	}
-#endif
 
 	if ((trakker = (struct trakker_struct *)fdc->data) == NULL) {
 		TRACE(ft_t_bug, "BUG: "
@@ -535,10 +504,7 @@ static void trakker_grab_handler(fdc_info_t *fdc)
 	trakker->out(fdc, REG1E_OPEN, 0x1e);
 	TRACE_EXIT;
 }
-
-#define FDC_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-			
+	
 static const char * const trakker_init_sequence = 
 	"\x04\xbf\x04\x3f\x7f\x06\xff\xbf\xff\x04\x0c\x7f\x0e\xff"
 	"\x06\x7f\x04\x3f\xbf\x06\x04\x0c\xff\x04\x06\xbf\x04\x0c\x00";
@@ -549,13 +515,11 @@ int trakker_grab(fdc_info_t *fdc)
 	const char * seq = trakker_init_sequence;
 	TRACE_FUN(ft_t_any);
 
-	MOD_INC_USE_COUNT;
 	fdc->hook = NULL;
 	
 	/*  allocate I/O regions and irq first.
 	 */
-	TRACE_CATCH(ft_parport_claim(fdc, &trakker->parinfo),
-		    MOD_DEC_USE_COUNT);
+	TRACE_CATCH(ft_parport_claim(fdc, &trakker->parinfo), );
 
 	while (*seq) {
 		if (*seq & 1) {
@@ -614,7 +578,6 @@ int trakker_release(fdc_info_t *fdc)
 	/* Turn IRQs on again, disable_irq/enable_irq must match */
 	enable_irq(trakker->IRQ);
 
-	MOD_DEC_USE_COUNT;
 	TRACE_EXIT 0;
 }
 
@@ -708,7 +671,6 @@ static void *trakker_get_deblock_buffer(fdc_info_t *fdc)
 	struct trakker_struct *trakker = fdc->data;
 
 	if (!trakker->locked) {
-		MOD_INC_USE_COUNT;
 		trakker->locked = 1;
 	}
 	return (void *)trakker->buffer;
@@ -727,7 +689,6 @@ static int trakker_put_deblock_buffer(fdc_info_t *fdc, __u8 **buffer)
 	}
 	if (trakker->locked) {
 		trakker->locked = 0;
-		MOD_DEC_USE_COUNT;
 	}
 	*buffer = NULL;
 	TRACE_EXIT 0;
@@ -895,12 +856,8 @@ static void trakker_speedtest(fdc_info_t *fdc)
 }
 
 #if 0
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR __initlocaldata
 
-static int __init trakker_probe_irq(fdc_info_t *fdc)
+static int trakker_probe_irq(fdc_info_t *fdc)
 {
 	struct trakker_struct *trakker = fdc->data;
 	int irqs;
@@ -921,9 +878,6 @@ static int __init trakker_probe_irq(fdc_info_t *fdc)
 
 	TRACE_EXIT irqs;
 }
-
-#undef FT_TRACE_ATTR
-#define FT_TRACE_ATTR /**/
 
 #endif
 
@@ -1225,27 +1179,16 @@ static fdc_operations trakker_ops = {
 
 /* Initialization
  */
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR __initlocaldata
-
-int __init trakker_register(void)
+int trakker_register(void)
 {
 	TRACE_FUN(ft_t_flow);
 
-	printk(__FILE__ ": "__FUNCTION__" @ 0x%p\n", trakker_register);
+	printk(__FILE__ ": %s @ 0x%p\n", __func__, trakker_register);
 
 	TRACE_CATCH (fdc_register(&trakker_ops),);
 
 	TRACE_EXIT 0;
 }
-
-#undef FT_TRACE_ATTR
-#define FT_TRACE_ATTR /**/
 
 #ifdef MODULE
 
@@ -1255,9 +1198,7 @@ int trakker_unregister(void)
 	return 0;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
-
-EXPORT_NO_SYMBOLS;
+/* EXPORT_NO_SYMBOLS - deprecated, no longer needed */
 
 MODULE_LICENSE("GPL");
 
@@ -1265,15 +1206,10 @@ MODULE_AUTHOR(
   "(c) 1997 Jochen Hoenicke (jochen.hoenicke@informatik.uni-oldenburg.de)");
 MODULE_DESCRIPTION("Ftape-interface for HP Colorado Trakker");
 
-#endif
-
 /* Called by modules package when installing the driver
  */
 int init_module(void)
 {
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-	register_symtab(0); /* remove global ftape symbols */
-#endif
 	return trakker_register();
 }
 
@@ -1293,7 +1229,7 @@ void cleanup_module(void)
 
 #include "../setup/ftape-setup.h"
 
-static ftape_setup_t config_params[] __initdata = {
+static ftape_setup_t config_params[] = {
 #ifndef USE_PARPORT
 	{ "base",      ft_fdc_base,      0x0, 0xffff, 1 },
 	{ "irq" ,      ft_fdc_irq,        -1,     15, 1 },
@@ -1307,9 +1243,9 @@ static ftape_setup_t config_params[] __initdata = {
 	{ NULL, }
 };
 
-int __init trakker_setup(char *str)
+int trakker_setup(char *str)
 {
-	static __initlocaldata int ints[6] = { 0, };
+	static int ints[6] = { 0, };
 
 	str = get_options(str, ARRAY_SIZE(ints), ints);
 

@@ -25,7 +25,7 @@
  *      "ftape" for Linux.
  */
 
-#include <linux/config.h>
+
 #include <linux/version.h>
 #include <linux/string.h>
 #include <linux/errno.h>
@@ -34,11 +34,11 @@
 #include <linux/ftape.h>
 #include "../lowlevel/ftape-tracing.h"
 
-#if LINUX_VERSION_CODE < KERNEL_VER(2,4,0)
-# error unsupported
-#endif
-
 #include "ftape-setup.h"
+
+
+int ftape_setup(char *str);
+
 
 /* the setup function are required to return 0 if they have handled an
  * option which doesn't need further processing, 1 if they didn't
@@ -51,16 +51,9 @@ extern int ftape_lowlevel_setup(char *str);
 extern int ftape_internal_setup(char *str);
 #endif
 #ifdef CONFIG_FT_PARPORT
-extern int ftape_parport_setup(char *str);
+/* ftape_parport_setup is in separate module - skip for now */
+/* extern int ftape_parport_setup(char *str); */
 #endif
-
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR __initlocaldata
 
 /* do some option parsing here. The kernel get_options() function
  * doesn't allow negative numbers, we use the keywords "a" and "n" for
@@ -70,30 +63,32 @@ extern int ftape_parport_setup(char *str);
  * already did the right thing
  */
 
-int __init ftape_setup(char *str)
+int ftape_setup(char *str)
 {
 	TRACE_FUN(ft_t_flow);
 
 	TRACE(ft_t_noise, "Called with %s", str);
 
+	/* Temporarily disabled to resolve symbol issues */
+	/*
 	if (ftape_lowlevel_setup(str) <= 0) {
-		/* error or no need to proceed */
+		// error or no need to proceed
 		TRACE_EXIT 1;
 	}
+	*/
 #ifdef CONFIG_FT_INTERNAL
 	if (ftape_internal_setup(str) <= 0) {
 		TRACE_EXIT 1;
 	}
 #endif
 #ifdef CONFIG_FT_PARPORT
-	ftape_parport_setup(str);
+	/* ftape_parport_setup is in separate module - skip for now */
+	/* ftape_parport_setup(str); */
 #endif
 	TRACE_EXIT 1;
 }
 
-
-
-int __init ftape_setup_parse(char *str, int *ints,
+int ftape_setup_parse(char *str, int *ints,
 			     ftape_setup_t *config_params)
 {
 	int i, j;

@@ -28,12 +28,4 @@
  *      Linux.
  */
 
-#if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-#include <linux/module.h>
-/*      ftape-vfs.c defined global vars.
- */
-
-extern struct symbol_table ftape_symbol_table;
-#endif
-
 #endif

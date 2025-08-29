@@ -22,7 +22,7 @@
  *
  */
 
-#include <linux/config.h>
+
 #include <linux/module.h>
 #include <linux/version.h>
 
@@ -32,15 +32,13 @@
 #include <linux/ioport.h>
 #include <linux/mman.h>
 #include <linux/interrupt.h>
-#include <asm/system.h>
 #include <asm/io.h>
 #include <asm/irq.h>
-#include <asm/segment.h>
+#include <linux/uaccess.h>
 #include <asm/dma.h>
 
 #include <linux/ftape.h>
 
-#define FDC_TRACING
 #include "../lowlevel/ftape-tracing.h"
 
 #include "../lowlevel/fdc-io.h"
@@ -61,9 +59,9 @@ char bpck_src[]  = "$RCSfile: bpck-fdc.c,v $";
 char bpck_rev[]  = "$Revision: 1.31 $";
 char bpck_dat[]  = "$Date: 2000/06/30 10:53:42 $";
 
-__u8 ecr_bits = 0x01; /* what to write to econtrol */
+int ecr_bits = 0x01; /* what to write to econtrol (changed to int for module_param) */
 
-ft_bpck_proto_t parport_proto = ft_bpck_none;
+int parport_proto = ft_bpck_none; /* parport protocol (changed to int for module_param) */
 
 /* backup register access macros. */
 
@@ -96,10 +94,11 @@ ft_bpck_proto_t parport_proto = ft_bpck_none;
 } )
 
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
 
-#define inline /**/
+int bpck_fdc_grab(fdc_info_t *fdc);
+int bpck_fdc_register(void);
+int bpck_fdc_unregister(void);
+
 
 /* read a byte on an uni-directional (4 bit) port. "toggle" is the value
  * that distinguishes the two nibbles.
@@ -345,8 +344,7 @@ static void bpck_fdc_read_reg_vals(bpck_fdc_t *bpck,
 		break;
 	case 4:
 		TRACE(ft_t_data_flow, "[%02x] -> 0x%02x 0x%02x 0x%02x 0x%02x",
-		      r,
-		      *ov++ & 0xff, ov[1] & 0xff, ov[2] & 0xff, ov[3] & 0xff);
+		      r, *ov & 0xff, ov[1] & 0xff, ov[2] & 0xff, ov[3] & 0xff);
 		break;
 	default:
 		break;
@@ -611,7 +609,7 @@ static int bpck_fdc_read_data(bpck_fdc_t *bpck, __u8 *data, int count)
 		bpck->ctr |= 0x20;
 		e2();
 		while (count) {
-			*((__u16 *)data)++ = r4w();
+			*(__u16 *)data = r4w(); data += 2;
 			count -= 2;
 		}
 		t2(PARPORT_CONTROL_DIRECTION);
@@ -620,7 +618,7 @@ static int bpck_fdc_read_data(bpck_fdc_t *bpck, __u8 *data, int count)
 		bpck->ctr |= 0x20;
 		e2();
 		while (count) {
-			*((__u32 *)data)++ = r4l();
+			*(__u32 *)data = r4l(); data += 4;
 			count -= 4;
 		}
 		t2(PARPORT_CONTROL_DIRECTION);
@@ -1113,17 +1111,9 @@ static int bpck_fdc_memory_test(bpck_fdc_t *bpck)
 	TRACE_EXIT 0;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 static void bpck_fdc_interrupt(int irq, void *dev_id, struct pt_regs *regs)
-#else
-static void bpck_fdc_interrupt(int irq, struct pt_regs *regs)
-#endif
 {
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	fdc_info_t *fdc = (fdc_info_t *)dev_id;
-#else
-	fdc_info_t *fdc = ft_find_fdc_by_irq(irq);
-#endif
 	bpck_fdc_t *bpck;
 	static int moan = 0;
 	int i;
@@ -1138,13 +1128,11 @@ static void bpck_fdc_interrupt(int irq, struct pt_regs *regs)
 		      "prepare for Armageddon", FT_FDC_MAGIC, fdc->magic);
 		goto err_out;
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 	if (fdc->irq != irq) {
 		TRACE(ft_t_bug,
 		      "BUG: Wrong IRQ number (%d/%d)", irq, fdc->irq);
 		goto err_out;
 	}
-#endif
 	if ((bpck = (bpck_fdc_t *)fdc->data) == NULL) {
 		TRACE(ft_t_bug,
 		      "BUG: no bpck data allocated for bpck driver");
@@ -1356,7 +1344,7 @@ static int bpck_fdc_detect_bpck(bpck_fdc_t *bpck)
 	WR (FT_BPCK_REG_0x05, 0x24);
 	WRM(FT_BPCK_REG_PROTO, 0x00, 0x24, 0x00);
 	b = RR(FT_BPCK_REG_CLEAR);
-#if TESTING
+#ifdef TESTING
 	TRACE(ft_t_warn,
 	      "Please notify "THE_FTAPE_MAINTAINER": reg 0x0b = 0x%02x. "
 	      "Thank you for using ftape", b);
@@ -1461,9 +1449,6 @@ static int bpck_fdc_switch_proto(bpck_fdc_t *bpck,
 	TRACE_EXIT result;
 }
 
-#define FDC_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 /* This is called by the ftape fdc routines before trying to access
  * the FDC. Detection is done elsewhere, post-detection initialization
  * and claiming of resources should be done here.
@@ -1476,12 +1461,11 @@ int bpck_fdc_grab(fdc_info_t *fdc)
 	if (bpck->failure) {
 		TRACE_EXIT -ENXIO;
 	}
-	MOD_INC_USE_COUNT;
 	fdc->hook = NULL;
 
 	/*  allocate I/O regions and irq first.
 	 */
-	TRACE_CATCH(ft_parport_claim(fdc, &bpck->parinfo), MOD_DEC_USE_COUNT);
+	TRACE_CATCH(ft_parport_claim(fdc, &bpck->parinfo), );
 
 	if (bpck->initialized) {
 		/* normal fdc grab, after bpck had been detected
@@ -1493,8 +1477,7 @@ int bpck_fdc_grab(fdc_info_t *fdc)
 		disable_irq(bpck->IRQ);
 		TRACE_CATCH(bpck_fdc_connect(bpck),
 			    ft_parport_release(fdc, &bpck->parinfo);
-			    enable_irq(bpck->IRQ);
-			    MOD_DEC_USE_COUNT);
+			    enable_irq(bpck->IRQ););
 
 		WR (FT_BPCK_REG_CTRL, bpck->proto_bits); /* play safe */
 
@@ -1532,8 +1515,6 @@ static int bpck_fdc_release(fdc_info_t *fdc)
 	}
 
 	ft_parport_release(fdc, &bpck->parinfo);
-
-	MOD_DEC_USE_COUNT;
 	TRACE_EXIT 0;
 }
 
@@ -1740,9 +1721,6 @@ static void bpck_fdc_disable_irq(fdc_info_t *fdc)
 	TRACE_EXIT;
 }
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 /* Yes, we do need this, we DO NEED software polling. The bpck logic
  * doesn't generate an interrupt while we are connected.
  */
@@ -1759,9 +1737,6 @@ static inline void bpck_fdc_poll_interrupt(bpck_fdc_t *bpck)
 	}
 	TRACE_EXIT;
 }
-
-#define FDC_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
 
 /* The parport irq is still disabled, which means that we are sure
  * that bpck_interrupt() won't be re-entered by spurious interrupts.
@@ -1878,7 +1853,6 @@ static void *bpck_fdc_get_deblock_buffer(fdc_info_t *fdc)
 	bpck_fdc_t *bpck = fdc->data;
 
 	if (!bpck->locked) {
-		MOD_INC_USE_COUNT;
 		bpck->locked = 1;
 	}
 	return (void *)bpck->buffer;
@@ -1897,7 +1871,6 @@ static int bpck_fdc_put_deblock_buffer(fdc_info_t *fdc, __u8 **buffer)
 	}
 	if (bpck->locked) {
 		bpck->locked = 0;
-		MOD_DEC_USE_COUNT;
 	}
 	*buffer = NULL;
 	TRACE_EXIT 0;
@@ -2165,27 +2138,16 @@ static fdc_operations bpck_fdc_ops = {
 
 /* Initialization
  */
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
-#ifdef FT_TRACE_ATTR
-# undef FT_TRACE_ATTR
-#endif
-#define FT_TRACE_ATTR __initlocaldata
-
-int __init bpck_fdc_register(void)
+int bpck_fdc_register(void)
 {
 	TRACE_FUN(ft_t_flow);
 
-	printk(__FILE__ ": "__FUNCTION__" @ 0x%p\n", bpck_fdc_register);
+	printk(__FILE__ ": %s @ 0x%p\n", __func__, bpck_fdc_register);
 
 	TRACE_CATCH(fdc_register(&bpck_fdc_ops),);
 
 	TRACE_EXIT 0;
 }
-
-#undef FT_TRACE_ATTR
-#define FT_TRACE_ATTR /**/
 
 #ifdef MODULE
 
@@ -2197,18 +2159,16 @@ int bpck_fdc_unregister(void)
 	return 0;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 
-FT_MOD_PARM(ecr_bits,        "i", "What to write to the econtrol ECR reg.");
-FT_MOD_PARM(parport_proto,   "i", "Parport protocol.");
+FT_MOD_PARM_INT(ecr_bits, "What to write to the econtrol ECR reg.");
+FT_MOD_PARM_INT(parport_proto, "Parport protocol.");
 
 MODULE_LICENSE("GPL");
 
 MODULE_AUTHOR(
   "(c) 1998 Claus-Justus Heine");
 MODULE_DESCRIPTION("Ftape-interface for Bpck parallel port floppy tape");
-EXPORT_NO_SYMBOLS;
-#endif
+/* EXPORT_NO_SYMBOLS - deprecated, no longer needed */
 
 /* Called by modules package when installing the driver
  */
@@ -2216,13 +2176,8 @@ int init_module(void)
 {
 	int result;
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,1,85)
-# if LINUX_VERSION_CODE < KERNEL_VER(2,1,18)
-	register_symtab(0); /* remove global ftape symbols */
-# else
-	EXPORT_NO_SYMBOLS;
-# endif
-#endif
+	/* EXPORT_NO_SYMBOLS - deprecated, no longer needed */
+
 	result = bpck_fdc_register();
 	return result;
 }
@@ -2243,7 +2198,7 @@ void cleanup_module(void)
 
 #include "../setup/ftape-setup.h"
 
-static ftape_setup_t config_params[] __initdata = {
+static ftape_setup_t config_params[] = {
 #ifndef USE_PARPORT
 	{ "base",      ft_fdc_base,      0x0, 0xffff, 1 },
 	{ "irq" ,      ft_fdc_irq,        -1,     15, 1 },
@@ -2254,9 +2209,9 @@ static ftape_setup_t config_params[] __initdata = {
 	{ NULL, }
 };
 
-int __init bpck_fdc_setup(char *str)
+int bpck_fdc_setup(char *str)
 {
-	static __initlocaldata int ints[6] = { 0, };
+	static int ints[6] = { 0, };
 
 	str = get_options(str, ARRAY_SIZE(ints), ints);
 

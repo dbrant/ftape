@@ -22,7 +22,7 @@
  *
  */
 
-#include <linux/config.h>
+
 #define __NO_VERSION__
 #include <linux/module.h>
 #include <linux/version.h>
@@ -30,7 +30,6 @@
 #include <linux/isapnp.h>
 #include <linux/ftape.h>
 
-#define FDC_TRACING
 #include "../lowlevel/ftape-tracing.h"
 
 #include "../lowlevel/fdc-io.h"
@@ -40,19 +39,19 @@
 /* The data to pass to isapnp_find_device() and isapnp_find_card().
  * BTW, shouldn't this be an "__u16" instead of "unsigned short"?
  */
-static unsigned short known_vendors[] __initdata = {
+static unsigned short known_vendors[] = {
 	ISAPNP_VENDOR('I', 'O', 'M'),
 };
 
-static unsigned short known_devices[] __initdata = {
+static unsigned short known_devices[] = {
 	ISAPNP_DEVICE(0x0040),
 };
 
-static unsigned short known_functions[] __initdata = {
+static unsigned short known_functions[] = {
 	ISAPNP_FUNCTION(0x0040),
 };
 
-static unsigned short ft_fdc_pnp_ven[4] __initdata = {
+static unsigned short ft_fdc_pnp_ven[4] = {
 #if CONFIG_FT_PNP_FDC_0
 	-1,
 #else
@@ -75,11 +74,11 @@ static unsigned short ft_fdc_pnp_ven[4] __initdata = {
 #endif
 };
 
-static unsigned short ft_fdc_pnp_dev[4] __initdata = {
+static unsigned short ft_fdc_pnp_dev[4] = {
 	-2, -2, -2, -2
 };
 
-static unsigned short ft_fdc_pnp_fct[4] __initdata = {
+static unsigned short ft_fdc_pnp_fct[4] = {
 	-2, -2, -2, -2
 };
 
@@ -87,16 +86,14 @@ static unsigned short ft_fdc_pnp_fct[4] __initdata = {
 static struct pci_dev *pnp_devices[4] = { NULL, };
 static char *ft_fdc_pnp_vendor[4] = { NULL, };
 
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
 #define FT_MOD_PARM(var,type,desc) \
 	MODULE_PARM(var,type); MODULE_PARM_DESC(var,desc)
 FT_MOD_PARM(ft_fdc_pnp_vendor, "1-4s", "PnP device vendor (three letters)");
 FT_MOD_PARM(ft_fdc_pnp_dev, "1-4h", "PnP device number");
 FT_MOD_PARM(ft_fdc_pnp_fct, "1-4h", "PnP function number");
 #endif
-#endif
 
-static int __init find_isapnp_fdc(fdc_info_t *fdc,
+static int find_isapnp_fdc(fdc_info_t *fdc,
 				  unsigned short ven,
 				  unsigned short dev,
 				  unsigned short fct)
@@ -195,7 +192,7 @@ static int __init find_isapnp_fdc(fdc_info_t *fdc,
  * irqs, dma and I/O base as command line argument, then we try to tell
  * the isapnp layer to configure the device accordingly.
  */
-int __init fdc_int_isapnp_init(fdc_info_t *fdc)
+int fdc_int_isapnp_init(fdc_info_t *fdc)
 {
 	int i;
 	int sel = fdc->unit;
@@ -241,9 +238,6 @@ int __init fdc_int_isapnp_init(fdc_info_t *fdc)
 	TRACE_EXIT 0;
 }
 
-#define GLOBAL_TRACING
-#include "../lowlevel/ftape-real-tracing.h"
-
 #ifdef MODULE
 void fdc_int_isapnp_disable(void)
 {
@@ -280,7 +274,7 @@ void fdc_int_isapnp_disable(void)
  * Retzurn
  *
  */
-int __init fdc_int_isapnp_setup(char *str)
+int fdc_int_isapnp_setup(char *str)
 {
 	size_t offset = strlen(str) - strlen("pnpdev");
 	TRACE_FUN(ft_t_flow);

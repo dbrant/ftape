@@ -34,7 +34,6 @@
 #include <linux/ftape.h>
 #include <linux/qic117.h>
 
-#define FDC_TRACING
 #include "ftape-tracing.h"
 
 #include "fdc-isr.h"
@@ -44,6 +43,10 @@
 #include "ftape-io.h"
 #include "ftape-calibr.h"
 #include "ftape-bsm.h"
+
+
+void pause_tape(fdc_info_t *fdc);
+
 
 /*      Global vars.
  */
@@ -523,7 +526,7 @@ static void determine_progress(fdc_info_t *fdc,
 			TRACE(ft_t_info, "Error \"%s\" at %d/%d",
 			      fdc_error_text(cause), buff->segment_id,
 			      buff->sector_offset);
-#if 0 || HACK
+#if 0 || defined(HACK)
 			if (HEAD->status == writing) {
 				TRACE(ft_t_warn,
 				      "Overrun error, "
@@ -822,7 +825,7 @@ static int determine_fmt_progress(fdc_info_t *fdc,
 		switch(cause) {
 		case no_error:
 			ftape->runner_status = aborting;
-			buff->status = idle;
+			buff->status = waiting;
 			break;
 		case overrun_error:
 			/*  got an overrun error on the first byte, must be a
@@ -960,8 +963,10 @@ static void handle_fdc_busy(fdc_info_t *fdc)
 			break;
 		case no_data_error:
 			fdc->no_data_error_count ++;
+			// fall through
 		case overrun_error:
 			retry ++;
+			// fall through
 		case id_am_error:
 		case id_crc_error:
 		case data_am_error:
@@ -1354,11 +1359,7 @@ static void handle_stray_interrupt(fdc_info_t *fdc, int st0, int pcn)
 		      pcn, fdc->current_cylinder);
 		fdc->current_cylinder = pcn;
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,0,16)
 	if (waitqueue_active(&fdc->wait_intr))
-#else
-	if (fdc->wait_intr)
-#endif
 	{
 		TRACE(ft_t_fdc_dma, "awaited stray interrupt");
 		TRACE_EXIT;
@@ -1447,23 +1448,12 @@ void fdc_isr(fdc_info_t *fdc)
 	 */
 	if (!fdc->hide_interrupt) {
 		fdc->interrupt_seen ++;
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,0,16)
 		if (waitqueue_active(&fdc->wait_intr)) {
 			wake_up_interruptible(&fdc->wait_intr);
 		}
-#else
-		if ((fdc->wait_intr)) {
-			wake_up_interruptible(&fdc->wait_intr);
-		}
-#endif
 	} else {
-#if LINUX_VERSION_CODE >= KERNEL_VER(2,0,16)
 		TRACE(ft_t_flow, "hiding interrupt while %s", 
 		      waitqueue_active(&fdc->wait_intr) ? "waiting":"active");
-#else
-		TRACE(ft_t_flow, "hiding interrupt while %s", 
-		      fdc->wait_intr ? "waiting" : "active");
-#endif
 		pause_tape(fdc); /* hide interrupt means pause_tape() */
 	}
 out:

@@ -28,7 +28,7 @@
  *
  */
 
-#include <linux/config.h>
+/* #include <linux/config.h> - not needed in modern kernels */
 #include <linux/delay.h>
 
 #if (defined(CONFIG_PNP_PARPORT) || defined(CONFIG_PNP_PARPORT_MODULE) || \
@@ -36,28 +36,33 @@
 #define USE_PARPORT
 #endif
 
-#if defined(MODULE) && LINUX_VERSION_CODE >= KERNEL_VER(2,1,18)
+#if defined(MODULE)
 # define FT_MOD_PARM(var,type,desc) \
-	MODULE_PARM(var,type); MODULE_PARM_DESC(var,desc)
+	module_param_array(var, int, NULL, 0644); MODULE_PARM_DESC(var,desc)
+# define FT_MOD_PARM_INT(var,desc) \
+	module_param(var, int, 0644); MODULE_PARM_DESC(var,desc)
 #else
 # define FT_MOD_PARM(var,type,desc) /**/
+# define FT_MOD_PARM_INT(var,desc) /**/
 #endif
 
 #ifdef USE_PARPORT
-# if LINUX_VERSION_CODE < KERNEL_VER(2,1,47)
-#  if LINUX_VERSION_CODE < KERNEL_VER(2,1,0)
-#   define port bus
-#  endif
-#  define pardevice ppd
-#  define PARPORT_MODE_PCPS2 PARPORT_MODE_PS2
-# endif
-# if LINUX_VERSION_CODE > KERNEL_VER(2,3,0)
+#include <linux/parport.h>
 #  define PARPORT_MODE_PCPS2 PARPORT_MODE_TRISTATE
-# endif
-#endif
 
-#ifdef USE_PARPORT
-# include <linux/parport.h>
+/* IRQ handler wrapper for modern parport API */
+struct ft_parport_wrapper {
+	void (*old_handler)(int, void *, struct pt_regs *);
+	void *fdc;
+};
+
+static void ft_parport_irq_wrapper(void *data)
+{
+	struct ft_parport_wrapper *wrapper = (struct ft_parport_wrapper *)data;
+	/* Call old-style handler with dummy parameters */
+	wrapper->old_handler(0, wrapper->fdc, NULL);
+}
+
 #else
 
 # define PARPORT_CONTROL_STROBE    0x1
@@ -96,6 +101,7 @@ typedef struct ft_parinfo {
 	void (*handler)(int, void *, struct pt_regs *);
 	int  (*probe)(fdc_info_t *fdc);
 	const char *id;
+	struct ft_parport_wrapper wrapper; /* IRQ handler wrapper for modern API */
 } ft_parinfo_t;
 
 /*  lowlevel input/ouput routines.
@@ -103,24 +109,6 @@ typedef struct ft_parinfo {
 #define ft_p(p) ((p).delay ? udelay((p).delay) : 0)
 
 #ifdef USE_PARPORT
-
-# if LINUX_VERSION_CODE < KERNEL_VER(2, 3, 0)
-
-#  define ft_w_dtr(p,b) ({parport_write_data((p).dev->port, b); ft_p(p);})
-#  define ft_r_dtr(p)   (ft_p(p), parport_read_data((p).dev->port))
-#  define ft_w_str(p,b) ({parport_write_status((p).dev->port, b); ft_p(p);})
-#  define ft_r_str(p)   (ft_p(p), parport_read_status((p).dev->port))
-#  define ft_w_ctr(p,b) ({parport_write_control((p).dev->port, b);ft_p(p);})
-#  define ft_r_ctr(p)   (ft_p(p), parport_read_control((p).dev->port))
-
-#  define ft_epp_w_adr(p,b) \
-	({parport_epp_write_addr((p).dev->port,b);ft_p(p);})
-#  define ft_epp_r_adr(p)   (ft_p(p), parport_epp_read_addr((p).dev->port))
-#  define ft_epp_w_dtr(p, b) \
-	({parport_epp_write_data((p).dev->port, b); ft_p(p);})
-#  define ft_epp_r_dtr(p)   (ft_p(p), parport_epp_read_data((p).dev->port))
-
-# else
 
 #  define out_p(p,offs,byte) ({outb(byte, (p).dev->port->base+offs); ft_p(p);})
 #  define in_p(p,offs)       (ft_p(p), inb((p).dev->port->base+offs) & 0xff)
@@ -135,8 +123,6 @@ typedef struct ft_parinfo {
 #  define ft_epp_r_adr(p)    in_p((p), 3)
 #  define ft_epp_w_dtr(p, b) out_p((p), 4, b)
 #  define ft_epp_r_dtr(p)    in_p((p), 4)
-
-# endif
 
 /* multi byte IO never supported by the parport module.
  */
@@ -211,13 +197,13 @@ static int ft_fdc_parport[4] = {
 	CONFIG_FT_FDC_PARPORT_2,
 	CONFIG_FT_FDC_PARPORT_3
 };
-static unsigned int ft_fdc_threshold[4] = {
+unsigned int ft_fdc_threshold[4] = {
 	CONFIG_FT_FDC_THRESHOLD_0,
 	CONFIG_FT_FDC_THRESHOLD_1,
 	CONFIG_FT_FDC_THRESHOLD_2,
 	CONFIG_FT_FDC_THRESHOLD_3
 };
-static unsigned int ft_fdc_rate_limit[4] = {
+unsigned int ft_fdc_rate_limit[4] = {
 	CONFIG_FT_FDC_MAX_RATE_0,
 	CONFIG_FT_FDC_MAX_RATE_1,
 	CONFIG_FT_FDC_MAX_RATE_2,
@@ -293,13 +279,8 @@ static int ft_parport_claim(fdc_info_t *fdc, const ft_parinfo_t *parinfo)
 	request_region(parinfo->base, parinfo->size, parinfo->id);
 	
 	if (parinfo->irq != -1) {
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 		if (request_irq(parinfo->irq, parinfo->handler, SA_INTERRUPT,
 				parinfo->id, fdc))
-#else
-		if (request_irq(parinfo->irq, parinfo->handler, SA_INTERRUPT,
-				parinfo->id))
-#endif
 		{
 			release_region(parinfo->base, parinfo->size);
 			TRACE_ABORT(-EBUSY, ft_t_bug, 
@@ -345,6 +326,7 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 	struct parport *port;
 	int len = 0;
 	int result = -ENXIO;
+	int i;
 	TRACE_FUN(ft_t_any);
 			   
 	switch(ft_fdc_parport[fdc->unit]) {
@@ -359,16 +341,29 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 		break;
 	}
 	
-	for (port = parport_enumerate(); port; port = port->next) {
-		if (strncmp(buffer, port->name, len) != 0) {
+	/* Modern parport API: iterate through available ports */
+	for (i = 0; i < 4; i++) {  /* Try first 4 parallel ports */
+		port = parport_find_number(i);
+		if (!port) continue;
+		
+		if (len && strncmp(buffer, port->name, len) != 0) {
+			parport_put_port(port);
 			continue;
 		}
 
-		parinfo->dev = parport_register_device(port, parinfo->id, 
-						       NULL, NULL, 
-						       parinfo->handler,
-						       PARPORT_DEV_TRAN,
-						       (void *)fdc);
+		/* Modern parport device registration - setup IRQ handler wrapper */
+		parinfo->wrapper.old_handler = parinfo->handler;
+		parinfo->wrapper.fdc = (void *)fdc;
+		
+		{
+			struct pardev_cb par_cb = {
+				.irq_func = ft_parport_irq_wrapper,
+				.private = &parinfo->wrapper,
+				.flags = 0
+			};
+			parinfo->dev = parport_register_dev_model(port, parinfo->id, &par_cb, i);
+		}
+		parport_put_port(port); /* Release reference */
 		
 		TRACE(ft_t_info, "dev: %p", parinfo->dev);
 		if (parinfo->dev) {
@@ -394,8 +389,6 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 	fdc->irq = -1;			
 	TRACE(ft_t_err,
 	      "can't find parport interface for ftape id %d", fdc->unit);
-	MOD_INC_USE_COUNT; /* mark module as used */
-	MOD_DEC_USE_COUNT;
 	/* return -ENXIO when probing several devices, more useful
 	 * return values otherwise
 	 */
@@ -444,8 +437,6 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 
 	if (ft_fdc_parport[fdc->unit] == FT_FDC_PARPORT_NONE) {
 		fdc->irq = -1;
-		MOD_INC_USE_COUNT; /* mark module as used */
-		MOD_DEC_USE_COUNT;
 		TRACE_EXIT -ENXIO;
 	}
 
@@ -481,8 +472,6 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 			TRACE_EXIT 0;
 		}
 	}
-	MOD_INC_USE_COUNT; /* mark module as used */
-	MOD_DEC_USE_COUNT;
 	TRACE_EXIT result;
 #endif
 }
@@ -494,11 +483,7 @@ static void ft_parport_release(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 #else
 	release_region(parinfo->base, parinfo->size);
 	if (parinfo->irq != -1) {
-#if LINUX_VERSION_CODE >= KERNEL_VER(1,3,70)
 		free_irq(parinfo->irq, (void *)fdc);
-#else
-		free_irq(parinfo->irq);
-#endif
 	}
 #endif /* USE_PARPORT */
 }	

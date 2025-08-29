@@ -36,6 +36,6 @@
  */
 #include "../lowlevel/fdc-io.h"
 
-extern int fc10_enable(fdc_info_t *info) __init;
+extern int fc10_enable(fdc_info_t *info);
 
 #endif

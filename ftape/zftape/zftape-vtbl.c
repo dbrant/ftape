@@ -33,7 +33,6 @@
 
 #include <linux/zftape.h>
 
-#define ZFTAPE_TRACING
 #include "zftape-init.h"
 #include "zftape-eof.h"
 #include "zftape-ctl.h"
@@ -44,6 +43,10 @@
 #include "zftape-inline.h"
 
 #define ZFT_CMAP_HACK 1 /* leave this defined to hide the compression map */
+
+
+void zft_create_volume_headers(zftape_info_t *zftape, __u8 *buffer);
+
 
 /*
  *  global variables 

@@ -124,4 +124,7 @@ extern int ftape_door_lock(struct ftape_info *ftape, int flag);
 extern int ftape_door_open(struct ftape_info *ftape, int flag);
 extern int ftape_set_partition(struct ftape_info *ftape, int partition);
 
+extern int ftape_report_rom_version(struct ftape_info *ftape, int *version);
+extern int ftape_report_signature(struct ftape_info *ftape, int *signature);
+
 #endif
