@@ -245,7 +245,7 @@ static ssize_t zft_write(struct file *fp, const char *buff,
 	TRACE_FUN(ft_t_flow);
 
 	TRACE(ft_t_data_flow, "called with count: %ld", (unsigned long)req_len);
-	
+
 	if (ppos != &fp->f_pos) {
 		TRACE(ft_t_err, "Request was outside the capabilities of the device: %ld != %ld", (long)ppos, (long)(&fp->f_pos));
 		TRACE_EXIT -ENXIO;
@@ -381,29 +381,19 @@ int zft_init(void)
 	TRACE_FUN(ft_t_flow);
 
 #ifdef MODULE
-	printk(KERN_INFO ZFTAPE_VERSION "\n");
-        if (TRACE_LEVEL >= ft_t_info) {
-		printk(
-KERN_INFO
-"(c) 1996-2000 Claus-Justus Heine <heine@instmath.rwth-aachen.de>\n"
-KERN_INFO
-"vfs interface for ftape floppy tape driver.\n"
-KERN_INFO
-"Support for QIC-113 compatible volume table.\n"
-KERN_INFO
-"Compiled for Linux version %s"
-#ifdef MODVERSIONS
-		       " with versioned symbols"
-#endif
-		       "\n", "Modern Linux");
-        }
+	printk(ZFTAPE_VERSION);
+	if (TRACE_LEVEL >= ft_t_info) {
+		printk(KERN_INFO "(c) 1996-2000 Claus-Justus Heine <heine@instmath.rwth-aachen.de>");
+		printk(KERN_INFO "vfs interface for ftape floppy tape driver.");
+		printk(KERN_INFO "Support for QIC-113 compatible volume table.");
+		printk(KERN_INFO "Compiled for Linux version %s", CONFIG_LOCALVERSION);
+	}
 #else /* !MODULE */
 	/* print a short no-nonsense boot message */
 	printk(KERN_INFO ZFTAPE_VERSION " for Linux " "Modern Linux" "\n");
 #endif /* MODULE */
 	TRACE(ft_t_info, "zft_init @ 0x%p", zft_init);
-	TRACE(ft_t_info,
-	      "installing zftape VFS interface for ftape driver ...");
+	TRACE(ft_t_info, "installing zftape VFS interface for ftape driver ...");
 	/* Register character device and create device nodes */
 	TRACE_CATCH(zft_device_register(),);
 
