@@ -216,7 +216,7 @@ static ssize_t zft_read(struct file *fp, char *buff,
 
 	if (ppos != &fp->f_pos) {
 		TRACE(ft_t_err, "Request was outside the capabilities of the device: %ld != %ld", (long)ppos, (long)(&fp->f_pos));
-		TRACE_EXIT -ENXIO;
+		// TRACE_EXIT -ENXIO;
 	}
 
 	if (!busy_flag[sel] ||
@@ -248,7 +248,7 @@ static ssize_t zft_write(struct file *fp, const char *buff,
 
 	if (ppos != &fp->f_pos) {
 		TRACE(ft_t_err, "Request was outside the capabilities of the device: %ld != %ld", (long)ppos, (long)(&fp->f_pos));
-		TRACE_EXIT -ENXIO;
+		// TRACE_EXIT -ENXIO;
 	}
 
 	if (!busy_flag[sel] ||
