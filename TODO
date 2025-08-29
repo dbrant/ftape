@@ -1,5 +1,11 @@
 Hey, Emacs, we're -*-Text-*- mode!
 
+NOTE: This file is kept for historical purposes. Please refer to
+README.md for current documentation.
+
+
+--------------------------------------------------------------------------
+
 "-" means not done, "*" in progress, "+" done, "?" means contradictory
 test results or error reports and total confusion of the Ftape
 maintainer.
