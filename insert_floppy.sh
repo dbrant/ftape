@@ -4,6 +4,10 @@
 #
 # Please modify to reflect your hardware configuration
 #
+
+# first make sure to remove the "floppy" kernel module to free up the resources it's using
+rmmod floppy
+
 # isapnp ./isapnp.conf
 insmod ./ftape-core.ko ft_soft_retries=1 ft_ignore_ecc_err=1 ft_tracings=5,5,5,5,5 # ft_fdc_driver=ftape-internal,bpck-fdc:trakker,none,none ft_tracings=3,3,3,3,3
 insmod ./zftape.ko # ft_major_device_number=27 # ${27-FT_MAJOR}
