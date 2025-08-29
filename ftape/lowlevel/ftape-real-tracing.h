@@ -107,7 +107,7 @@ TODO: handle this better in a modern way.
 
 #define TRACE_FUN(level)						      \
 	const ft_trace_t _tracing = level;				      \
-	static char ft_trace_file[] = __FILE__;	      \
+	static char ft_trace_file[] = __FILE_NAME__;	      \
 	if (ftape_tracing >= (ft_trace_t)(level) &&			      \
 	    (ft_trace_t)(level) <= FT_TRACE_TOP_LEVEL)			      \
 		ftape_trace_call(&ftape_function_nest_level,		      \
