@@ -37,7 +37,10 @@
 /* Bits of the minor device number that control the operation mode */
 
 #ifndef CONFIG_ZFT_OBSOLETE
-# define ZFT_MINOR_OP_MASK 0
+
+# define ZFT_RAW_MODE		(1 << 5)
+# define ZFT_MINOR_OP_MASK  ZFT_RAW_MODE
+
 #else
 
 /* NOTE: all of these bits are considered OBSOLETE. In-kernel

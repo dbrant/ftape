@@ -954,16 +954,15 @@ int _zft_open(unsigned int dev_minor, unsigned int access_mode)
 			zft_init_driver(zftape);
 			zft_uninit_mem(zftape);
 		}
-#if CONFIG_ZFT_OBSOLETE
-		else if ((old_unit & ZFT_RAW_MODE)
-			 !=
-			 (dev_minor & ZFT_RAW_MODE)) {
+		
+		// TODO: should this be an else-if, like before?
+		if ((old_unit & ZFT_RAW_MODE) != (dev_minor & ZFT_RAW_MODE)) {
 			if (dev_minor & ZFT_RAW_MODE) {
+				TRACE(ft_t_info, "Opening in raw mode.");
 				zftape->qic_mode = 0;
 			}
 			zft_reset_position(zftape, &zftape->pos);
 		}
-#endif
 	}
 	/*  no need for most of the buffers when no tape or not
 	 *  formatted.  for the read/write operations, it is the
