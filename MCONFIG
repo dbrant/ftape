@@ -101,7 +101,6 @@ CONFIG_M686=y
 #CONFIG_MAMDK6
 #CONFIG_ALPHA=y
 CONFIG_MODVERSIONS=y
-CONFIG_SMP=0
 
 #
 # DON'T touch the following two lines! To enable/disable the procfs
@@ -114,19 +113,6 @@ CONFIG_MODULES=y
 
 endif
 
-#
-###############################################################################
-
-###############################################################################
-# IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT  IMPORTANT #
-###############################################################################
-#
-# You MUST uncomment the following line if you are running a SMP
-# (multi-processor) system UNLESS you are unsing Linux v2.2 (or later)
-# and MCONFIG has been given the correct location of you correctly
-# configured kernel source tree.
-#
-#CONFIG_SMP = 1
 #
 ###############################################################################
 
@@ -439,13 +425,6 @@ KERNEL_OPT     := -DUSE_PARPORT -DLINUX -D__KERNEL__ $(INCLUDE_PATH)
 #
 CC              = gcc
 HOSTCC          = gcc
-
-#
-# Linux v2.2 defines this via a configuration option (finally :-)
-#
-ifdef CONFIG_SMP
-KERNEL_OPT     += -D__SMP__
-endif
 
 #
 # processor and architecture specific options.

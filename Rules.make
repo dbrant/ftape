@@ -212,29 +212,12 @@ ifneq "$(strip $(SYMTAB_OBJS))" ""
 
 MODINCL = $(TOPDIR)/include/linux/modules
 
-# The -w option (enable warnings) for genksyms will return here in 2.1
-# So where has it gone?
-#
-# Added the SMP separator to stop module accidents between uniprocessor
-# and SMP Intel boxes - AC - from bits by Michael Chastain
-#
-
-ifdef CONFIG_SMP
-	genksyms_smp_prefix := -p smp_
-else
-	genksyms_smp_prefix := 
-endif
-
 #
 #	Differ 1 and 2Gig kernels to avoid module misload errors
 #
 
 ifdef CONFIG_2GB
-ifdef CONFIG_SMP
-	genksyms_smp_prefix := -p smp2gig_
-else
 	genksyms_smp_prefix := -p 2gig_
-endif
 endif
 
 $(MODINCL)/%.ver: %.c

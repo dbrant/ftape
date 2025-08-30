@@ -72,12 +72,6 @@ static inline int ft_killed(void)
 /*      ftape-init.c defined global variables.
  */
 
-#ifdef CONFIG_SMP
-# define FT_SMP_STRING "SMP"
-#else
-# define FT_SMP_STRING "UP"
-#endif
-
 #define FTAPE_BANNER							     \
 FTAPE_VERSION"\n\n"							     \
 "(c) 1993-1996 Bas Laarhoven\n"						     \

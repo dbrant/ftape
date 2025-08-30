@@ -62,7 +62,6 @@ ccflags-y += -DTHE_FTAPE_MAINTAINER=\"me@dmitrybrant.com\"
 ccflags-y += -DCONFIG_MODULES
 ccflags-y += -DCONFIG_PROC_FS
 #ccflags-y += -DCONFIG_FT_PROC_FS
-ccflags-y += -DCONFIG_SMP
 
 ccflags-y += -DCONFIG_FTAPE_MODULE
 ccflags-y += -DCONFIG_FT_INTERNAL_MODULE  
