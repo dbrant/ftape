@@ -917,7 +917,10 @@ int _zft_open(unsigned int dev_minor, unsigned int access_mode)
 					    "insufficient memory to create zftape structure");
 			}
 			zftape->blk_sz   = CONFIG_ZFT_DFLT_BLK_SZ;
-			zftape->qic_mode = 1; /* default: use vtbl */
+			
+			zftape->qic_mode = (dev_minor & ZFT_RAW_MODE) ? 0 : 1;
+			TRACE(ft_t_info, "Opening in qic_mode: %d", zftape->qic_mode);
+			
 			/* initialize the driver flags now
 			 * s.t. zft_set_flags() works.
 			 */
@@ -927,6 +930,11 @@ int _zft_open(unsigned int dev_minor, unsigned int access_mode)
 						&zftapes[sel],
 						sizeof(*zftapes[sel])));
 			zft_init_driver(zftape);
+			
+			if (zftape->qic_mode == 0) {
+				zft_reset_position(zftape, &zftape->pos);
+			}
+			
 		} else {
 			old_unit     = zftape->unit;
 			zftape->unit = dev_minor;
@@ -953,15 +961,6 @@ int _zft_open(unsigned int dev_minor, unsigned int access_mode)
 			 */
 			zft_init_driver(zftape);
 			zft_uninit_mem(zftape);
-		}
-		
-		// TODO: should this be an else-if, like before?
-		if ((old_unit & ZFT_RAW_MODE) != (dev_minor & ZFT_RAW_MODE)) {
-			if (dev_minor & ZFT_RAW_MODE) {
-				TRACE(ft_t_info, "Opening in raw mode.");
-				zftape->qic_mode = 0;
-			}
-			zft_reset_position(zftape, &zftape->pos);
 		}
 	}
 	/*  no need for most of the buffers when no tape or not
