@@ -85,10 +85,6 @@ ccflags-y += -DCONFIG_FT_AUTO_0=1
 ccflags-y += -DFT_SOFT_RETRIES=3
 
 
-# Disable some problematic features for now
-#ccflags-y += -DCONFIG_FT_NO_TRACE_AT_ALL
-
-
 ccflags-y += -Wimplicit-fallthrough=1
 
 

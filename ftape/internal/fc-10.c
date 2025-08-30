@@ -100,8 +100,8 @@ int fc10_enable(fdc_info_t *fdc)
  */
 	if (fdc->irq < 3 || fdc->irq == 8 || fdc->irq > 9) {
 		TRACE(ft_t_bug, "\n"
- KERN_INFO "Error: The FC-10/20 must be set to use IRQ levels 3 - 7, or 9!\n"
- KERN_INFO "Note: IRQ 9 is the same as IRQ 2");
+"Error: The FC-10/20 must be set to use IRQ levels 3 - 7, or 9!\n"
+"Note: IRQ 9 is the same as IRQ 2");
 		goto no_fc_10;
 	}
 	/*  Clear state machine ???

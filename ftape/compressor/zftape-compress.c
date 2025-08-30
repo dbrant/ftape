@@ -1030,7 +1030,7 @@ void cleanup_module(void)
 			zftcs[sel] = NULL;
 		}
 	}
-        printk(KERN_INFO "zft-compressor successfully unloaded.\n");
+        printk(KERN_INFO "zft-compressor successfully unloaded.");
 	TRACE_EXIT;
 }
 #endif /* MODULE */

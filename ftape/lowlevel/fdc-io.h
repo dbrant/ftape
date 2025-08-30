@@ -312,10 +312,8 @@ typedef struct fdc_info {
 	volatile int hide_interrupt;            /* flag set by isr */	
 	struct ftape_info *ftape;
 
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 	ft_trace_t *tracing;
 	atomic_t *function_nest_level;
-#endif
 
 	void *data; /* in case the low level fdc driver needs additional per fdc data */
 } fdc_info_t;

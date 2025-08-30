@@ -30,8 +30,6 @@
  *      for the low level fdc modules when no device exists.
  */
 
-#ifndef  CONFIG_FT_NO_TRACE_AT_ALL
-
 #undef FT_TRACE_TOP_LEVEL
 #undef TRACE_FUN
 #undef TRACE_EXIT
@@ -147,5 +145,3 @@ TODO: handle this better in a modern way.
 }
 #define TRACE_LEVEL    							     \
 ((ftape_tracing <= FT_TRACE_TOP_LEVEL) ? ftape_tracing : FT_TRACE_TOP_LEVEL)
-
-#endif /* CONFIG_FT_NO_TRACE_AT_ALL */

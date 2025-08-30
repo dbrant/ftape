@@ -728,8 +728,7 @@ static void ftape_print_history(ftape_info_t *ftape)
 			      ftape->history.defects);
 		}
 		if (ftape->history.rewinds > 0) {
-			TRACE(ft_t_info, "tape motion statistics:\n"
-			      KERN_INFO "repositions       : %3d",
+			TRACE(ft_t_info, "tape motion statistics:\nrepositions       : %3d",
 			      ftape->history.rewinds);
 		}
 	}
@@ -817,8 +816,6 @@ void ftape_init_driver(ftape_info_t *ftape, int sel)
 
 	ftape_init_bsm(ftape);
 
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 	ftape->tracing             = &ftape_tracings[sel];
-	ftape->function_nest_level = &ftape_function_nest_levels[sel]; 
-#endif
+	ftape->function_nest_level = &ftape_function_nest_levels[sel];
 }

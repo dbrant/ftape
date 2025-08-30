@@ -109,10 +109,8 @@ typedef struct zftape_info {
 	void *cmpr_handle;
 #endif
 
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 	ft_trace_t *tracing;
 	atomic_t *function_nest_level;
-#endif
 } zftape_info_t;
 
 extern zftape_info_t *zftapes[4];

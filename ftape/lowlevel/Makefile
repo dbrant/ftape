@@ -40,11 +40,7 @@ O_TARGET := ftape.o
 O_OBJS    = ftape-init.o fdc-io.o fdc-isr.o \
 	    ftape-bsm.o ftape-ctl.o ftape-read.o ftape-rw.o \
 	    ftape-write.o ftape-io.o ftape-calibr.o ftape-ecc.o \
-	    ftape-buffer.o ftape-format.o
-
-ifndef CONFIG_FT_NO_TRACE_AT_ALL
-  O_OBJS   += ftape-tracing.o
-endif
+	    ftape-buffer.o ftape-format.o ftape-tracing.o
 
 ifeq ($(CONFIG_PROC_FS),y)
 ifeq ($(CONFIG_FT_PROC_FS),y)

@@ -101,13 +101,11 @@ EXPORT_SYMBOL_GPL(ftape_verify_segment);
 EXPORT_SYMBOL_GPL(ftape_ecc_set_segment_parity);
 EXPORT_SYMBOL_GPL(ftape_ecc_correct_data);
 /* from tracing.c */
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 EXPORT_SYMBOL_GPL(ftape_trace_call);
 EXPORT_SYMBOL_GPL(ftape_trace_exit);
 EXPORT_SYMBOL_GPL(ftape_trace_log);
 EXPORT_SYMBOL_GPL(ftape_tracings);
 EXPORT_SYMBOL_GPL(ftape_function_nest_levels);
-#endif
 /* from ftape-init.c */
 extern int ft_ignore_ecc_err;
 extern int ft_soft_retries;

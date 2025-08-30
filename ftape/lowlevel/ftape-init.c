@@ -142,19 +142,15 @@ int ftape_init(void)
 	return 0;
 }
 
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 static ft_trace_t ft_tracings[5] = {
 	ft_t_info, ft_t_info, ft_t_info, ft_t_info, ft_t_info
 };
-#endif
 
 module_param_array(ft_fdc_driver, charp, NULL, 0644);
 MODULE_PARM_DESC(ft_fdc_driver, "Colon separated list of FDC low level drivers");
 
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 module_param_array(ft_tracings, int, NULL, 0644);
 MODULE_PARM_DESC(ft_tracings, "Amount of debugging output, 0 <= tracing <= 8, default 3.");
-#endif
 
 /* [DB 2023] Added the following parameters:  */
 module_param(ft_ignore_ecc_err, int, 0644);
@@ -176,9 +172,7 @@ MODULE_DESCRIPTION(
  */
 static int ftape_module_init(void)
 {
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 	memcpy(ftape_tracings, ft_tracings, sizeof(ft_tracings));
-#endif
 	return ftape_init();
 }
 module_init(ftape_module_init);
@@ -236,7 +230,6 @@ int ftape_lowlevel_setup(char *str)
 			TRACE_EXIT 0;
 		}
 	}
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 	else if (strcmp(str, "tracing") == 0) {
 		int i;
 		if (ints[0] > 5) {
@@ -247,7 +240,6 @@ int ftape_lowlevel_setup(char *str)
 		}
 		TRACE_EXIT 0;
 	}
-#endif
 	TRACE_EXIT 1; /* wasn't our option, pass it to other ftape
 		       * setup funcs
 		       */

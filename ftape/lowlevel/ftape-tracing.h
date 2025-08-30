@@ -64,15 +64,6 @@ typedef enum {
 	ft_t_any
 } ft_trace_t;
 
-#ifdef  CONFIG_FT_NO_TRACE_AT_ALL
-
-/*  the compiler will optimize away most TRACE() macros
- */
-#define FT_TRACE_TOP_LEVEL	ft_t_bug
-#include "../lowlevel/ftape-fake-tracing.h"
-
-#else
-
 #include "../lowlevel/ftape-real-tracing.h"
 
 /*      Global variables declared in tracing.c
@@ -95,8 +86,6 @@ extern void ftape_trace_log (atomic_t *function_nest_level,
 			     const char *file,
 			     const char *name,
 			     int sel);
-
-#endif /* !defined(CONFIG_FT_NO_TRACE_AT_ALL) */
 
 /*
  *   Abort with a message.

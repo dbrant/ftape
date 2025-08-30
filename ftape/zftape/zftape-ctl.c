@@ -946,10 +946,8 @@ int _zft_open(unsigned int dev_minor, unsigned int access_mode)
 				    zftape->unit = old_unit);
 		}
 		zftape->file_access_mode = access_mode;
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 		zftape->tracing = &ftape_tracings[sel];
 		zftape->function_nest_level = &ftape_function_nest_levels[sel];
-#endif
 		TRACE_CATCH(ftape_enable(sel), zftape->unit = old_unit);
 		ftape = zftape->ftape = ftape_get_status(sel);
 
@@ -1465,9 +1463,9 @@ static int mtioc_zftape_getblksz(zftape_info_t *zftape,
 	TRACE_FUN(ft_t_flow);
 	
 	TRACE(ft_t_noise, "\n"
-	      KERN_INFO "Mag tape ioctl command: MTIOC_ZTAPE_GETBLKSZ\n"
-	      KERN_INFO "This ioctl is here merely for compatibility.\n"
-	      KERN_INFO "Please use MTIOCVOLINFO instead");
+	      "Mag tape ioctl command: MTIOC_ZTAPE_GETBLKSZ\n"
+	      "This ioctl is here merely for compatibility.\n"
+	      "Please use MTIOCVOLINFO instead");
 	if (arg_size != sizeof(struct mtblksz)) {
 		TRACE_ABORT(-EINVAL,
 			    ft_t_info, "bad argument size: %d", arg_size);

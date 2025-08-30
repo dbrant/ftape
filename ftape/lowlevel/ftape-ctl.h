@@ -151,13 +151,11 @@ typedef struct ftape_info {
 	 * miscinfo
 	 */
 	ft_history_t history; /* history */
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 	/*
 	 *  stuff to get the trace stuff going
 	 */
 	ft_trace_t *tracing;
 	atomic_t *function_nest_level;
-#endif
 } ftape_info_t;
 
 /*      Global vars.

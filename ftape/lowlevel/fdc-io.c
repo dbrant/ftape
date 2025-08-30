@@ -1248,10 +1248,8 @@ static fdc_info_t *get_new_fdc(int sel)
 	init_waitqueue_head(&info->wait_intr);
 	info->unit = sel;
 	info->type = no_fdc;
-#ifndef CONFIG_FT_NO_TRACE_AT_ALL
 	info->tracing             = &ftape_tracings[sel];
 	info->function_nest_level = &ftape_function_nest_levels[sel];
-#endif
 	return info;
 }
 
