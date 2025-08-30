@@ -346,18 +346,11 @@ FTAPE_OPT += -DCONFIG_ZFT_OBSOLETE
 # system console (or kernel log files). Also reduces the size of the
 # driver.
 #
-#  CONFIG_FT_FULL_DEBUG      - if NOT defined, all messages with trace
-#                              level 6 (i.e. ft_fdc_dma) or higher are
-#                              disabled. You probably don't want to
-#                              define this unless you want debug the
-#                              drive. If unsure, don't define this.
-#
 #  CONFIG_FT_NO_TRACE        - if defined, only information and errors
 #                              show up. If unsure, don't define it.
 #   
 
 #TRACE_FLAGS = -DCONFIG_FT_NO_TRACE
-#TRACE_FLAGS = -DCONFIG_FT_FULL_DEBUG
 
 #
 ###############################################################################

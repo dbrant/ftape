@@ -78,14 +78,12 @@ TODO: handle this better in a modern way.
 /*  the compiler will optimize away many TRACE() macros
  *  the ftape_simple_trace_call() function simply increments 
  *  the function nest level.
- */ 
-#define FT_TRACE_TOP_LEVEL	ft_t_warn
+ */
 #define TRACE_FUN(level)	atomic_inc(&ftape_function_nest_level)
 #define TRACE_EXIT		atomic_dec(&ftape_function_nest_level); return
 #define TRACE(l, m, ...)					\
 {								\
-	if (ftape_tracing >= (ft_trace_t)(l) &&			\
-	    (ft_trace_t)(l) <= FT_TRACE_TOP_LEVEL) {		\
+	if (ftape_tracing >= (ft_trace_t)(l)) {		\
 		ftape_trace_log(&ftape_function_nest_level,	\
 				__FILE__, __func__,		\
 				TRACE_SEL);			\
@@ -93,21 +91,12 @@ TODO: handle this better in a modern way.
 	}							\
 }
 
-
-
 #else
-
-#if defined(CONFIG_FT_FULL_DEBUG)
-#define FT_TRACE_TOP_LEVEL ft_t_any
-#else
-#define FT_TRACE_TOP_LEVEL ft_t_flow
-#endif
 
 #define TRACE_FUN(level)						      \
 	const ft_trace_t _tracing = level;				      \
 	static char ft_trace_file[] = __FILE_NAME__;	      \
-	if (ftape_tracing >= (ft_trace_t)(level) &&			      \
-	    (ft_trace_t)(level) <= FT_TRACE_TOP_LEVEL)			      \
+	if (ftape_tracing >= (ft_trace_t)(level))			      \
 		ftape_trace_call(&ftape_function_nest_level,		      \
 				 ft_trace_file, __FUNCTION__,	      \
 				 TRACE_SEL);				      \
@@ -115,8 +104,7 @@ TODO: handle this better in a modern way.
 
 #define TRACE_EXIT							\
 	atomic_dec(&ftape_function_nest_level);				\
-	if (ftape_tracing >= (ft_trace_t)(_tracing) &&			\
-	    (ft_trace_t)(_tracing) <= FT_TRACE_TOP_LEVEL)		\
+	if (ftape_tracing >= (ft_trace_t)(_tracing))		\
 		ftape_trace_exit(&ftape_function_nest_level,		\
 				 ft_trace_file, __FUNCTION__,	\
 				 TRACE_SEL);				\
@@ -124,8 +112,7 @@ TODO: handle this better in a modern way.
 
 #define TRACE(l, m, ...)						\
 {									\
-	if (ftape_tracing >= (ft_trace_t)(l) &&				\
-	    (ft_trace_t)(l) <= FT_TRACE_TOP_LEVEL) {			\
+	if (ftape_tracing >= (ft_trace_t)(l)) {			\
 		ftape_trace_log(&ftape_function_nest_level,		\
 				ft_trace_file, __FUNCTION__,	\
 				TRACE_SEL);				\
@@ -136,12 +123,7 @@ TODO: handle this better in a modern way.
 #endif
 
 #define SET_TRACE_LEVEL(l) 				\
-{							\
-	if ((ft_trace_t)(l) <= FT_TRACE_TOP_LEVEL) {	\
-		ftape_tracing = (ft_trace_t)(l);	\
-	} else {					\
-		ftape_tracing = FT_TRACE_TOP_LEVEL;	\
-	}						\
+{										\
+	ftape_tracing = (ft_trace_t)(l);	\
 }
-#define TRACE_LEVEL    							     \
-((ftape_tracing <= FT_TRACE_TOP_LEVEL) ? ftape_tracing : FT_TRACE_TOP_LEVEL)
+#define TRACE_LEVEL    					ftape_tracing
