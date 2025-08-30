@@ -44,7 +44,7 @@
 /*      Global vars.
  */
 
-/* rien */
+extern int ft_soft_retries;
 
 /*      Local vars.
  */
@@ -1031,7 +1031,7 @@ int ftape_start_tape(ftape_info_t *ftape,
 	result = -EIO;
 	retry = 0;
 	while (result < 0     &&
-	       retry++ <= 5   &&
+	       retry++ <= ft_soft_retries   &&
 	       !ftape->failure &&
 	       !ft_sigtest(_DONT_BLOCK)) {
 		
@@ -1081,8 +1081,7 @@ int ftape_start_tape(ftape_info_t *ftape,
 					ftape->timeout.rewind, &status);
 				check_bot_eot(ftape, status);	/* update location */
 			} else {
-				result= skip_reverse(ftape, segment_id - ftape->start_offset,
-						     &status);
+				result= skip_reverse(ftape, segment_id - ftape->start_offset, &status);
 			}
 		}
 		if (!ftape->location.known) {
@@ -1102,11 +1101,9 @@ int ftape_start_tape(ftape_info_t *ftape,
 		    (segment_id - ((ftape->tape_running || ftape->location.bot)
 				   ? 0 : ftape->start_offset))) {
 			if (short_start) {
-				result = seek_forward(ftape, segment_id,
-						      retry <= 3);
+				result = seek_forward(ftape, segment_id, retry <= (ft_soft_retries / 2));
 			} else {
-				result = seek_forward(ftape, segment_id - 1,
-						      retry <= 3);
+				result = seek_forward(ftape, segment_id - 1, retry <= (ft_soft_retries / 2));
 			}
 		}
 		if (result == 0 &&
