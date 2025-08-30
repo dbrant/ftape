@@ -47,7 +47,7 @@ insmod ./zftape.ko # ft_major_device_number=27 # ${27-FT_MAJOR}
 # by messing up the number of "0"s!
 #
 
-insmod ./ftape-internal.ko # ft_fdc_fc10=0 ft_fdc_mach2=0 ft_fdc_base=0x210 ft_fdc_dma=0 ft_fdc_threshold=15 # ft_fdc_rate_limit=4000
+insmod ./ftape-internal.ko ft_fdc_rate_limit=1000 # ft_fdc_fc10=0 ft_fdc_mach2=0 ft_fdc_base=0x210 ft_fdc_dma=0 ft_fdc_threshold=15 # ft_fdc_rate_limit=4000
 
 # modprobe parport || true # pre-2.1 kernels don't have the parport module
 # insmod ./trakker.o

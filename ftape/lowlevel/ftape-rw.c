@@ -45,6 +45,7 @@
  */
 
 extern int ft_soft_retries;
+extern int ft_ignore_ecc_err;
 
 /*      Local vars.
  */
@@ -182,9 +183,9 @@ int ftape_setup_new_segment(ftape_info_t *ftape,
 		retry = 1;
 		if (skip && buff->skip > 0) {	/* allow skip on retry */
 
-			if (ft_ignore_ecc_err && (buff->skip > 2)) {
-				TRACE(ft_t_flow, ">>> skipping to last sector in segment.");
-				buff->skip = FT_SECTORS_PER_SEGMENT - 2;
+			if (ft_ignore_ecc_err && (buff->skip > 2) && (buff->skip < (FT_SECTORS_PER_SEGMENT - 2))) {
+				TRACE(ft_t_flow, ">>> FAST FAIL: force skipping to last sector in segment.");
+				buff->skip = FT_SECTORS_PER_SEGMENT - 1;
 			}
 
 			offset = buff->skip;
