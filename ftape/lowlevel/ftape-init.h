@@ -77,7 +77,7 @@ FTAPE_VERSION"\n\n"							     \
 "(c) 1993-1996 Bas Laarhoven\n"						     \
 "(c) 1995-1996 Kai Harrekilde-Petersen\n"				     \
 "(c) 1996-2000 Claus-Justus Heine <heine@instmath.rwth-aachen.de)\n"	     \
-"(2025+) Hacky modernizations by Dmitry Brant (me@dmitrybrant.com)\n\n"	     \
+"(c) 2025 Dmitry Brant (me@dmitrybrant.com)\n\n"	     \
 "QIC-117 driver for QIC-40/80/3010/3020/Ditto 2GB/MAX floppy tape drives.\n"
 
 /*      ftape-init.c defined global functions not defined in ftape.h

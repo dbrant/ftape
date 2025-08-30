@@ -384,6 +384,7 @@ int zft_init(void)
 	printk(ZFTAPE_VERSION);
 	if (TRACE_LEVEL >= ft_t_info) {
 		printk("(c) 1996-2000 Claus-Justus Heine <heine@instmath.rwth-aachen.de>");
+		printk("(c) 2025 Dmitry Brant <me@dmitrybrant.com>");
 		printk("vfs interface for ftape floppy tape driver.");
 		printk("Support for QIC-113 compatible volume table.");
 	}
