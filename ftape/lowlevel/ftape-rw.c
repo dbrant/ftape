@@ -181,6 +181,12 @@ int ftape_setup_new_segment(ftape_info_t *ftape,
 		TRACE(ft_t_flow, "setting up for retry nr %d", buff->retry);
 		retry = 1;
 		if (skip && buff->skip > 0) {	/* allow skip on retry */
+
+			if (ft_ignore_ecc_err && (buff->skip > 2)) {
+				TRACE(ft_t_flow, ">>> skipping to last sector in segment.");
+				buff->skip = FT_SECTORS_PER_SEGMENT - 2;
+			}
+
 			offset = buff->skip;
 			count -= offset;
 			TRACE(ft_t_flow, "skipping %d sectors", offset);
