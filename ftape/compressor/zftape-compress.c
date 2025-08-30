@@ -106,14 +106,14 @@ typedef struct
 
 #define DUMP_CMPR_INFO(level, msg, info)				\
 	TRACE(level, msg "\n"						\
-	      KERN_INFO "cmpr_pos   : %d\n"				\
-	      KERN_INFO "cmpr_sz    : %d\n"				\
-	      KERN_INFO "first_block: %d\n"				\
-	      KERN_INFO "count      : %d\n"				\
-	      KERN_INFO "offset     : %d\n"				\
-	      KERN_INFO "spans      : %d\n"				\
-	      KERN_INFO "uncmpr     : 0x%04x\n"				\
-	      KERN_INFO "foffs      : " LL_X,				\
+	      "cmpr_pos   : %d\n"				\
+	      "cmpr_sz    : %d\n"				\
+	      "first_block: %d\n"				\
+	      "count      : %d\n"				\
+	      "offset     : %d\n"				\
+	      "spans      : %d\n"				\
+	      "uncmpr     : 0x%04x\n"				\
+	      "foffs      : " LL_X,				\
 	      (info)->cmpr_pos, (info)->cmpr_sz, (info)->first_block,	\
 	      (info)->count, (info)->offset, (info)->spans == 1,	\
 	      (info)->uncmpr, LL((info)->foffs))
@@ -187,8 +187,8 @@ static int get_cseg (struct zftc_struct *zftc,
 		if (cinfo->first_block > seg_sz) {
 			/* data corrupted */
 			TRACE_ABORT(-EIO, ft_t_err, "corrupted data:\n"
-				    KERN_INFO "segment size: %d\n"
-				    KERN_INFO "first block : %d",
+				    "segment size: %d\n"
+				    "first block : %d",
 				    seg_sz, cinfo->first_block);
 		}
 	        cinfo->count  = cinfo->first_block - sizeof(__u16);
@@ -214,14 +214,14 @@ static int get_cseg (struct zftc_struct *zftc,
 	}
 	if (cinfo->foffs > volume->size) {
 		TRACE_ABORT(-EIO, ft_t_err, "Inconsistency:\n"
-			    KERN_INFO "offset in current volume: %d\n"
-			    KERN_INFO "size of current volume  : %d",
+			    "offset in current volume: %d\n"
+			    "size of current volume  : %d",
 			    (int)(cinfo->foffs>>10), (int)(volume->size>>10));
 	}
 	if (cinfo->cmpr_pos + cinfo->count > volume->blk_sz) {
 		TRACE_ABORT(-EIO, ft_t_err, "Inconsistency:\n"
-			    KERN_INFO "block size : %d\n"
-			    KERN_INFO "data record: %d",
+			    "block size : %d\n"
+			    "data record: %d",
 			    volume->blk_sz, cinfo->cmpr_pos + cinfo->count);
 	}
 	DUMP_CMPR_INFO(ft_t_noise /* ft_t_any */, "", cinfo);
@@ -372,8 +372,8 @@ static unsigned int zft_uncompress(struct zftc_struct *zftc,
 	
 	if (TRACE_LEVEL >= ft_t_info) {
 		TRACE(ft_t_data_flow, "\n"
-		      KERN_INFO "before decompression: %d bytes\n"
-		      KERN_INFO "after decompression : %d bytes", 
+		      "before decompression: %d bytes\n"
+		      "after decompression : %d bytes", 
 		      in_sz < 0 ? -in_sz : in_sz,(int)max_out_sz);
 		/*  for statistical purposes
 		 */
@@ -396,12 +396,12 @@ static void zftc_stats(struct zftc_struct *zftc)
 	if (zftc->rd_uncompressed != 0) {
 		if (zftc->rd_compressed > (1<<14)) {
 			TRACE(ft_t_info, "compression statistics (reading):\n"
-			      KERN_INFO " compr./uncmpr.   : %3d %%",
+			      " compr./uncmpr.   : %3d %%",
 			      (((zftc->rd_compressed>>10) * 100)
 			       / (zftc->rd_uncompressed>>10)));
 		} else {
 			TRACE(ft_t_info, "compression statistics (reading):\n"
-			      KERN_INFO " compr./uncmpr.   : %3d %%",
+			      " compr./uncmpr.   : %3d %%",
 			      ((zftc->rd_compressed * 100)
 			       / zftc->rd_uncompressed));
 		}
@@ -502,9 +502,9 @@ static int zftc_read (void *handle,
 			}
 		}
 		TRACE(ft_t_data_flow, "\n" 
-		      KERN_INFO "compressed_sz: %d\n"
-		      KERN_INFO "compos       : %d\n"
-		      KERN_INFO "*read_cnt    : %d",
+		      "compressed_sz: %d\n"
+		      "compos       : %d\n"
+		      "*read_cnt    : %d",
 		      zftc->cseg.cmpr_sz, zftc->cseg.cmpr_pos, *read_cnt);
 	}
 	if (seg_sz - zftc->cseg.offset <= 18) {
@@ -512,10 +512,10 @@ static int zftc_read (void *handle,
 		TRACE(ft_t_data_flow, "expanding read cnt to: %d", *read_cnt);
 	}
 	TRACE(ft_t_data_flow, "\n"
-	      KERN_INFO "segment size   : %d\n"
-	      KERN_INFO "read count     : %d\n"
-	      KERN_INFO "buf_pos_read   : %d\n"
-	      KERN_INFO "remaining      : %d",
+	      "segment size   : %d\n"
+	      "read count     : %d\n"
+	      "buf_pos_read   : %d\n"
+	      "remaining      : %d",
 		seg_sz, *read_cnt, pos->seg_byte_pos, 
 		seg_sz - *read_cnt - pos->seg_byte_pos);
 	TRACE(ft_t_data_flow, "returning: %d", result);
@@ -583,12 +583,12 @@ static int zftc_seek(void *handle, unsigned int new_block_pos,
 	while (distance != 0) {
 		seg_dist = compute_seg_pos(dest, pos, volume);
 		TRACE(ft_t_noise, "\n"
-		      KERN_INFO "seg_dist: %d\n"
-		      KERN_INFO "distance: %d\n"
-		      KERN_INFO "dest    : %d\n"
-		      KERN_INFO "vpos    : %d\n"
-		      KERN_INFO "seg_pos : %d\n"
-		      KERN_INFO "trials  : %d",
+		      "seg_dist: %d\n"
+		      "distance: %d\n"
+		      "dest    : %d\n"
+		      "vpos    : %d\n"
+		      "seg_pos : %d\n"
+		      "trials  : %d",
 		      seg_dist, distance, dest,
 		      (unsigned int)(pos->volume_pos>>10), pos->seg_pos,
 		      fast_seek_trials);
@@ -608,9 +608,9 @@ static int zftc_seek(void *handle, unsigned int new_block_pos,
 			    seg_dist <= ZFT_SLOW_SEEK_THRESHOLD ||
 			    fast_seek_trials >= ZFT_FAST_SEEK_MAX_TRIALS) {
 				TRACE(ft_t_noise, "starting slow seek:\n"
-				   KERN_INFO "fast seek failed too often: %s\n"
-				   KERN_INFO "near target position      : %s\n"
-				   KERN_INFO "looping between two segs  : %s",
+				   "fast seek failed too often: %s\n"
+				   "near target position      : %s\n"
+				   "looping between two segs  : %s",
 				      (fast_seek_trials >= 
 				       ZFT_FAST_SEEK_MAX_TRIALS)
 				      ? "yes" : "no",
@@ -762,9 +762,9 @@ static int seek_in_segment(struct zftc_struct *zftc,
 		c_info->offset = seg_sz;
 	}
 	TRACE(ft_t_noise, "\n"
-	      KERN_INFO "segment size   : %d\n"
-	      KERN_INFO "buf_pos_read   : %d\n"
-	      KERN_INFO "remaining      : %d",
+	     "segment size   : %d\n"
+	      "buf_pos_read   : %d\n"
+	      "remaining      : %d",
 	      seg_sz, c_info->offset,
 	      seg_sz - c_info->offset);
 	TRACE_EXIT result;
@@ -807,10 +807,10 @@ static int slow_seek_forward_until_error(struct zftc_struct *zftc,
 		 */
 		FT_SIGNAL_EXIT(_DONT_BLOCK);
 		TRACE(ft_t_noise, "\n"
-		      KERN_INFO "remaining:  %d\n"
-		      KERN_INFO "seg_pos:    %d\n"
-		      KERN_INFO "end_seg:    %d\n"
-		      KERN_INFO "result:     %d",
+		      "remaining:  %d\n"
+		      "seg_pos:    %d\n"
+		      "end_seg:    %d\n"
+		      "result:     %d",
 		      remaining, seg_pos, volume->end_seg, result);  
 	} while (remaining > 0 && seg_pos <= volume->end_seg);
 	TRACE_EXIT 0;
@@ -844,8 +844,8 @@ static int search_valid_segment(struct zftc_struct *zftc,
 		    (tmp_info.foffs != 0 || segment == volume->start_seg)) {
 			if ((tmp_info.foffs>>10) > max_foffs) {
 				TRACE_ABORT(-EIO, ft_t_noise, "\n"
-					    KERN_INFO "zftc->cseg.foff: %d\n"
-					    KERN_INFO "dest     : %d",
+					    "zftc->cseg.foff: %d\n"
+					    "dest     : %d",
 					    (int)(tmp_info.foffs >> 10),
 					    max_foffs);
 			}
@@ -962,12 +962,11 @@ int zft_compressor_init(void)
 	TRACE_FUN(ft_t_flow);
 	
 #ifdef MODULE
-	printk(KERN_INFO "zftape de-compressor for "FTAPE_VERSION"\n");
+	printk(KERN_INFO "zftape de-compressor for "FTAPE_VERSION);
         if (TRACE_LEVEL >= ft_t_info) {
-		printk(
-KERN_INFO "(c) 1994-1998 Claus-Justus Heine <heine@instmath.rwth-aachen.de>\n"
-KERN_INFO "De-compressor for zftape (lzrw3 algorithm)\n"
-KERN_INFO "Compiled for kernel version %s"
+		printk(KERN_INFO "(c) 1994-1998 Claus-Justus Heine <heine@instmath.rwth-aachen.de>\n"
+"De-compressor for zftape (lzrw3 algorithm)\n"
+"Compiled for kernel version %s"
 #ifdef MODVERSIONS
 		" with versioned symbols"
 #endif
@@ -975,8 +974,7 @@ KERN_INFO "Compiled for kernel version %s"
         }
 #else /* !MODULE */
 	/* print a short no-nonsense boot message */
-	printk("zftape de-compressor for "FTAPE_VERSION
-	       " for Linux " UTS_RELEASE "\n");
+	printk("zftape de-compressor for "FTAPE_VERSION" for Linux " UTS_RELEASE);
 #endif /* MODULE */
 	TRACE(ft_t_info, "zft_compressor_init @ 0x%p", zft_compressor_init);
 	TRACE(ft_t_info, "installing compressor for zftape ...");

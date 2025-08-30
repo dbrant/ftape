@@ -225,8 +225,8 @@ static void update_error_maps(fdc_info_t *fdc, buffer_struct *buff,
 		hard = 1;
 	}
 	TRACE(ft_t_noise, "sector %d : %s error\n"
-	      KERN_INFO "hard map: 0x%08lx\n"
-	      KERN_INFO "soft map: 0x%08lx",
+	      "hard map: 0x%08lx\n"
+	      "soft map: 0x%08lx",
 	      FT_SECTOR(error_offset), hard ? "hard" : "soft",
 	      (long) buff->hard_error_map, (long) buff->soft_error_map);
 	TRACE_EXIT;
@@ -351,12 +351,12 @@ static int get_transfer_size(fdc_info_t *fdc,
 		 */
 		TRACE(ft_t_err, "DMA residue <-> FDC result mismatch! "
 		      "This is %s Ditto EZ FDC\n"
-		      KERN_INFO "error       : %s\n"
-		      KERN_INFO "fdc count   : %d\n"
-		      KERN_INFO "dma residue : %d\n"
-		      KERN_INFO "sector count: %d\n"
-		      KERN_INFO "IRQ: C: %d, R: %d\n"
-		      KERN_INFO "BUF: C: %d, R: %d/%d",
+		      "error       : %s\n"
+		      "fdc count   : %d\n"
+		      "dma residue : %d\n"
+		      "sector count: %d\n"
+		      "IRQ: C: %d, R: %d\n"
+		      "BUF: C: %d, R: %d/%d",
 		      fdc->type == DITTOEZ ? "a" : "no",
 		      fdc_error_text(cause),
 		      fdc_count, dma_residue, buff->sector_count,
@@ -370,13 +370,13 @@ static int get_transfer_size(fdc_info_t *fdc,
 		TRACE(ft_t_err, 
 		      "ERROR: unexpected error after transfer had completed\n"
 		      "This is %s Ditto EZ FDC\n"
-		      KERN_INFO "segment     : %d\n"
-		      KERN_INFO "error       : %s\n"
-		      KERN_INFO "fdc count   : %d\n"
-		      KERN_INFO "dma residue : %d\n"
-		      KERN_INFO "sector count: %d\n"
-		      KERN_INFO "IRQ: C: %d, R: %d\n"
-		      KERN_INFO "BUF: C: %d, R: %d/%d",
+		      "segment     : %d\n"
+		      "error       : %s\n"
+		      "fdc count   : %d\n"
+		      "dma residue : %d\n"
+		      "sector count: %d\n"
+		      "IRQ: C: %d, R: %d\n"
+		      "BUF: C: %d, R: %d/%d",
 		      fdc->type == DITTOEZ ? "a" : "no",
 		      buff->segment_id,
 		      fdc_error_text(cause),
@@ -542,8 +542,8 @@ static void determine_progress(fdc_info_t *fdc,
 		if (buff->remaining == 0) {
 			TRACE(ft_t_warn,
 			      "No data remaining, but \"%s\" error\n"
-			      KERN_INFO "count : %d\n"
-			      KERN_INFO "offset: %d\n",
+			      "count : %d\n"
+			      "offset: %d\n",
 			      fdc_error_text(cause),
 			      buff->sector_count,
 			      buff->sector_offset);
@@ -920,7 +920,7 @@ static void handle_fdc_busy(fdc_info_t *fdc)
 
 	if (fdc_result(fdc, in, 7) < 0) { /* better get it fast ! */
 		TRACE(ft_t_err,"Probably fatal error during FDC Result Phase\n"
-		      KERN_INFO "drive may hang until (power on) reset :-(");
+		      "drive may hang until (power on) reset :-(");
 		/*  what to do next ????
 		 */
 		TRACE_EXIT;

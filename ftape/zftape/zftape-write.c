@@ -380,11 +380,11 @@ static int flush_handle_hard_errors(zftape_info_t *zftape,
 		      pos->seg_byte_pos -
 		      zftape->hard_error_cnt * FT_SECTOR_SIZE);
 	TRACE(ft_t_noise, "\n"
-	      KERN_INFO "hard_error_cnt: %d\n"
-	      KERN_INFO "space_left    : %d\n"
-	      KERN_INFO "seg_size      : %d\n"
-	      KERN_INFO "seg_byte_pos  : %d\n"
-	      KERN_INFO "pad_cnt       : %d",
+	      "hard_error_cnt: %d\n"
+	      "space_left    : %d\n"
+	      "seg_size      : %d\n"
+	      "seg_byte_pos  : %d\n"
+	      "pad_cnt       : %d",
 	      zftape->hard_error_cnt, space_left, this_segs_size,
 	      pos->seg_byte_pos, *pad_cnt);  
 	if (space_left >= -(*pad_cnt)) {
@@ -482,8 +482,8 @@ int zft_flush_buffers(zftape_info_t *zftape)
 		 * append zero's up to the end of the segment.
 		 */
 		TRACE(ft_t_noise, "Position:\n"
-		      KERN_INFO "seg_pos  : %d\n"
- 		      KERN_INFO "byte pos : %d",
+		      "seg_pos  : %d\n"
+ 		      "byte pos : %d",
 		      zftape->pos.seg_pos,
 		      zftape->pos.seg_byte_pos);
 
@@ -594,7 +594,7 @@ static int check_write_access(zftape_info_t *zftape,
 			}
 			TRACE(ft_t_noise, 
 			      "ftape_read_segment() result: %d.\n"
-			      KERN_INFO "This might be normal when using "
+			      "This might be normal when using "
 			      "a newly formatted tape", result);
 			memset(zftape->deblock_buf, '\0', pos->seg_byte_pos);
 		}
@@ -617,8 +617,8 @@ static int fill_deblock_buf(zftape_info_t *zftape,
 		TRACE_ABORT(0, ft_t_data_flow, "empty segment");
 	}
 	TRACE(ft_t_data_flow, "\n"
-	      KERN_INFO "remaining req_len: %d\n"
-	      KERN_INFO "          buf_pos: %d", 
+	      "remaining req_len: %d\n"
+	      "          buf_pos: %d", 
 	      req_len, pos->seg_byte_pos);
 
 	/* First handle the hard write error recovery ...
@@ -639,8 +639,8 @@ static int fill_deblock_buf(zftape_info_t *zftape,
 	pos->seg_byte_pos += cnt;
 	pos->tape_pos     += cnt;
 	TRACE(ft_t_data_flow, "\n"
-	      KERN_INFO "removed from user-buffer : %d bytes.\n"
-	      KERN_INFO "zft_tape_pos             : " LL_X " bytes.",
+	      "removed from user-buffer : %d bytes.\n"
+	      "zft_tape_pos             : " LL_X " bytes.",
 	      cnt, LL(pos->tape_pos));
 	TRACE_EXIT cnt;
 }

@@ -413,8 +413,8 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 		break;
 	default:
 		TRACE(ft_t_warn, "\n"
-		      KERN_INFO "Configuration error, wrong rate limit (%d)."
-		      KERN_INFO "Falling back to %d Kbps", 
+		      "Configuration error, wrong rate limit (%d)."
+		      "Falling back to %d Kbps", 
 		      fdc->rate_limit, 4000);
 		fdc->rate_limit = 4000;
 		break;

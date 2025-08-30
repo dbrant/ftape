@@ -2188,7 +2188,7 @@ void cleanup_module(void)
 {
 	TRACE_FUN(ft_t_flow);
 	bpck_fdc_unregister();
-        printk(KERN_INFO "bpck module successfully unloaded.\n");
+        printk(KERN_INFO "bpck module successfully unloaded.");
 	TRACE_EXIT;
 }
 

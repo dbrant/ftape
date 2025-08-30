@@ -147,17 +147,17 @@ typedef struct zft_internal_vtbl
 	strncpy(tmp, desc, 20);						\
 	tmp[20] = '\0';							\
 	TRACE(level, "Volume %d:\n"					\
-	      KERN_INFO "description  : %s\n"				\
-	      KERN_INFO "first segment: %d\n"				\
-	      KERN_INFO "last  segment: %d\n"				\
-	      KERN_INFO "size         : " LL_X "\n"			\
-	      KERN_INFO "rawsize      : " LL_X "\n"			\
-	      KERN_INFO "block size   : %d\n"				\
-	      KERN_INFO "version      : %d\n"				\
-	      KERN_INFO "offset       : %d\n"				\
-	      KERN_INFO "compression  : %d\n"				\
-	      KERN_INFO "zftape volume: %d\n"				\
-	      KERN_INFO "QIC-113 conf.: %d",				\
+	      "description  : %s\n"				\
+	      "first segment: %d\n"				\
+	      "last  segment: %d\n"				\
+	      "size         : " LL_X "\n"			\
+	      "rawsize      : " LL_X "\n"			\
+	      "block size   : %d\n"				\
+	      "version      : %d\n"				\
+	      "offset       : %d\n"				\
+	      "compression  : %d\n"				\
+	      "zftape volume: %d\n"				\
+	      "QIC-113 conf.: %d",				\
 	      (info)->count, tmp, (info)->start_seg, (info)->end_seg,	\
 	      LL((info)->size), LL((info)->rawsize), (info)->blk_sz,	\
 	      (info)->version, (info)->offset,				\

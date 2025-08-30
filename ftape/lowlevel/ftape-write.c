@@ -355,10 +355,10 @@ static int write_segment(ftape_info_t *ftape,
 	      ftape->HEAD == ftape->TAIL) ||
 	     write_mode != FT_WR_ASYNC)) {
 		TRACE(ft_t_any, "Starting runner because:\n"
-		      KERN_INFO "not running: %s\n"
-		      KERN_INFO "tail waiting: %s\n"
-		      KERN_INFO "head %p == tail %p\n"
-		      KERN_INFO "write_mode %d != FT_WR_ASYNC: %s",
+		      "not running: %s\n"
+		      "tail waiting: %s\n"
+		      "head %p == tail %p\n"
+		      "write_mode %d != FT_WR_ASYNC: %s",
 		      ftape->runner_status != running ? "yes":"no",
 		      ftape->TAIL->status == waiting ? "yes" : "no",
 		      ftape->HEAD, ftape->TAIL,

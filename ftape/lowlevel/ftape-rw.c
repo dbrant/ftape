@@ -979,11 +979,11 @@ int ftape_start_tape(ftape_info_t *ftape,
 				ftape->history.overrun_errors;
 		} else if (error_count >= tolerance) {
 			TRACE(ft_t_any, "\n"
-			      KERN_INFO "segment  : %d\n"
-			      KERN_INFO "last     : %d\n"
-			      KERN_INFO "history  : %d\n"
-			      KERN_INFO "offset   : %d\n"
-			      KERN_INFO "tolerance: %d\n",
+			      "segment  : %d\n"
+			      "last     : %d\n"
+			      "history  : %d\n"
+			      "offset   : %d\n"
+			      "tolerance: %d\n",
 			      segment_id, ftape->last_segment,
 			      ftape->history.overrun_errors,
 			      ftape->overrun_count_offset,
@@ -1063,9 +1063,9 @@ int ftape_start_tape(ftape_info_t *ftape,
 			++(ftape->history.rewinds);
 			if (segment_id % ftape->segments_per_track < ftape->start_offset){
 				TRACE(ft_t_noise, "end of track condition\n"
-				      KERN_INFO "segment_id        : %d\n"
-				      KERN_INFO "segments_per_track: %d\n"
-				      KERN_INFO "start_offset      : %d",
+				      "segment_id        : %d\n"
+				      "segments_per_track: %d\n"
+				      "start_offset      : %d",
 				      segment_id, ftape->segments_per_track, 
 				      ftape->start_offset);
 				      

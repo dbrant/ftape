@@ -339,8 +339,8 @@ static int fdc_seek_check(fdc_info_t *fdc)
 			 */
 			TRACE_ABORT(-EIO, ft_t_bug,
 				    "BUG? isr() is still seeking?\n"
-				    KERN_INFO "hide: %d\n"
-				    KERN_INFO "seek: %x",
+				    "hide: %d\n"
+				    "seek: %x",
 				    fdc->hide_interrupt,
 				    fdc->seek_result);
 

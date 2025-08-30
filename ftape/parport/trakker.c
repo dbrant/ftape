@@ -1219,7 +1219,7 @@ void cleanup_module(void)
 {
 	TRACE_FUN(ft_t_flow);
 	trakker_unregister();
-	printk(KERN_INFO "trakker successfully unloaded.\n");
+	printk(KERN_INFO "trakker successfully unloaded.");
 	TRACE_EXIT;
 }
 

@@ -333,14 +333,14 @@ static void ftape_log_vendor_id(ftape_info_t *ftape,
 		 * for this new vendor.  
 		 */
 		TRACE(ft_t_warn, "\n"
-		      KERN_INFO "============ unknown vendor id ===========\n"
-		      KERN_INFO "A new, yet unsupported tape drive is found\n"
-		      KERN_INFO "Please report the following values:\n"
-		      KERN_INFO "   Vendor id     : 0x%04x\n"
-		      KERN_INFO "   Wakeup method : %s\n"
-		      KERN_INFO "And a description of your tape drive\n"
-		      KERN_INFO "to "THE_FTAPE_MAINTAINER"\n"
-		      KERN_INFO "==========================================",
+		      "============ unknown vendor id ===========\n"
+		      "A new, yet unsupported tape drive is found\n"
+		      "Please report the following values:\n"
+		      "   Vendor id     : 0x%04x\n"
+		      "   Wakeup method : %s\n"
+		      "And a description of your tape drive\n"
+		      "to "THE_FTAPE_MAINTAINER"\n"
+		      "==========================================",
 		      drive_type->vendor_id,
 		      methods[drive_type->wake_up].name);
 		drive_type->speed = 0;		/* unknown */
@@ -362,11 +362,11 @@ static void ftape_log_vendor_id(ftape_info_t *ftape,
 		}
 		if (drive_type->wake_up != vendors[vendor_index].wake_up) {
 			TRACE(ft_t_warn, "\n"
-		     KERN_INFO "==========================================\n"
-		     KERN_INFO "wakeup type mismatch:\n"
-		     KERN_INFO "found: %s, expected: %s\n"
-		     KERN_INFO "please report this to "THE_FTAPE_MAINTAINER"\n"
-		     KERN_INFO "==========================================",
+		     "==========================================\n"
+		     "wakeup type mismatch:\n"
+		     "found: %s, expected: %s\n"
+		     "please report this to "THE_FTAPE_MAINTAINER"\n"
+		     "==========================================",
 			      methods[drive_type->wake_up].name,
 			      methods[vendors[vendor_index].wake_up].name);
 		}
@@ -449,12 +449,12 @@ void ftape_calc_timeouts(ftape_info_t *ftape,
 			ftape->drive_type.speed = 
 				(2 * 12 * tape_len * 1000) / ftape->timeout.dt;
 			TRACE(ft_t_warn, "\n"
-		     KERN_INFO "==========================================\n"
-		     KERN_INFO "drive type: %s\n"
-		     KERN_INFO "delta time = %d ms, length = %d ft\n"
-		     KERN_INFO "has a maximum tape speed of %d ips\n"
-		     KERN_INFO "please report this to "THE_FTAPE_MAINTAINER"\n"
-		     KERN_INFO "==========================================",
+		     "==========================================\n"
+		     "drive type: %s\n"
+		     "delta time = %d ms, length = %d ft\n"
+		     "has a maximum tape speed of %d ips\n"
+		     "please report this to "THE_FTAPE_MAINTAINER"\n"
+		     "==========================================",
 			      ftape->drive_type.name, ftape->timeout.dt, tape_len, 
 			      ftape->drive_type.speed);
 		}
@@ -483,9 +483,9 @@ void ftape_calc_timeouts(ftape_info_t *ftape,
 	ftape->timeout.rewind = (length * 144 * FT_SECOND) / (10 * ff_speed);
 	ftape->timeout.reset = 20 * FT_SECOND + ftape->timeout.rewind;
 	TRACE(ft_t_noise, "timeouts for speed = %d, length = %d\n"
-	      KERN_INFO "seek timeout  : %d sec\n"
-	      KERN_INFO "rewind timeout: %d sec\n"
-	      KERN_INFO "reset timeout : %d sec",
+	      "seek timeout  : %d sec\n"
+	      "rewind timeout: %d sec\n"
+	      "reset timeout : %d sec",
 	      speed, length,
 	      (ftape->timeout.seek + 500) / 1000,
 	      (ftape->timeout.rewind + 500) / 1000,
@@ -614,9 +614,9 @@ static int ftape_init_drive(ftape_info_t *ftape)
 		    ((qic_std == QIC_40 || qic_std == QIC_80) &&
 		     !ftape->write_protected)) {
 			TRACE(ft_t_warn, "\n"
-	KERN_INFO "The famous Colorado T3000 bug:\n"
-	KERN_INFO "%s drives can't write QIC40 and QIC80\n"
-	KERN_INFO "cartridges but don't set the write-protect flag!",
+			      "The famous Colorado T3000 bug:\n"
+			      "%s drives can't write QIC40 and QIC80\n"
+			      "cartridges but don't set the write-protect flag!",
 			      ftape->drive_type.name);
 			ftape->write_protected = 1;
 		}
@@ -698,13 +698,13 @@ static void ftape_print_history(ftape_info_t *ftape)
 	if (ftape->history.used) {
 		TRACE(ft_t_info, "== Non-fatal errors this run: ==");
 		TRACE(ft_t_info, "fdc isr statistics:\n"
-		      KERN_INFO " id_am_errors     : %3d\n"
-		      KERN_INFO " id_crc_errors    : %3d\n"
-		      KERN_INFO " data_am_errors   : %3d\n"
-		      KERN_INFO " data_crc_errors  : %3d\n"
-		      KERN_INFO " overrun_errors   : %3d\n"
-		      KERN_INFO " no_data_errors   : %3d\n"
-		      KERN_INFO " retries          : %3d",
+		      " id_am_errors     : %3d\n"
+		      " id_crc_errors    : %3d\n"
+		      " data_am_errors   : %3d\n"
+		      " data_crc_errors  : %3d\n"
+		      " overrun_errors   : %3d\n"
+		      " no_data_errors   : %3d\n"
+		      " retries          : %3d",
 		      ftape->history.id_am_errors,
 		      ftape->history.id_crc_errors,
 		      ftape->history.data_am_errors,
@@ -714,10 +714,10 @@ static void ftape_print_history(ftape_info_t *ftape)
 		      ftape->history.retries);
 		if (ftape->history.used & FT_HISTORY_READ) {
 			TRACE(ft_t_info, "ecc statistics:\n"
-			      KERN_INFO " crc_errors       : %3d\n"
-			      KERN_INFO " crc_failures     : %3d\n"
-			      KERN_INFO " ecc_failures     : %3d\n"
-			      KERN_INFO " sectors corrected: %3d",
+			      " crc_errors       : %3d\n"
+			      " crc_failures     : %3d\n"
+			      " ecc_failures     : %3d\n"
+			      " sectors corrected: %3d",
 			      ftape->history.crc_errors,
 			      ftape->history.crc_failures,
 			      ftape->history.ecc_failures,

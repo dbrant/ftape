@@ -634,8 +634,8 @@ static void fdc_int_config(fdc_info_t *fdc)
 		break;
 	default:
 		TRACE(ft_t_warn, "\n"
-		      KERN_INFO "Configuration error, wrong rate limit (%d)."
-		      KERN_INFO "Falling back to %d Kbps", 
+		      "Configuration error, wrong rate limit (%d)."
+		      "Falling back to %d Kbps", 
 		      fdc->rate_limit, 4000);
 		fdc->rate_limit = 4000;
 		break;
@@ -775,7 +775,7 @@ int fdc_internal_register(void)
 {
 	int result;
 
-	printk(KERN_INFO "ftape_internal: %s @ 0x%p\n", __func__, fdc_internal_register);
+	printk(KERN_INFO "ftape_internal: %s @ 0x%p", __func__, fdc_internal_register);
 
 	/* try to register ...
 	 */
@@ -830,7 +830,7 @@ void cleanup_module(void)
 	fdc_int_isapnp_disable();
 #endif
 	fdc_unregister(&fdc_internal_ops);
-        printk(KERN_INFO "fdc_internal successfully unloaded.\n");
+        printk(KERN_INFO "fdc_internal successfully unloaded.");
 }
 #endif /* MODULE */
 

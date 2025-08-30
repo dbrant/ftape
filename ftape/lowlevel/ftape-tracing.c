@@ -65,7 +65,7 @@ void ftape_trace_call(atomic_t *function_nest_level,
 	 *    we'll use this work-around.
 	 */
 	if (atomic_read(function_nest_level) < 0) {
-		printk(KERN_INFO "function nest level (%d) < 0\n",
+		printk(KERN_INFO "function nest level (%d) < 0",
 		       atomic_read(function_nest_level));
 		atomic_set(function_nest_level, 0);
 	}
@@ -76,7 +76,7 @@ void ftape_trace_call(atomic_t *function_nest_level,
 	} else {
 		indent = spacing;
 	}
-	printk(KERN_INFO "[%03d] %c%s+%s (%s)\n",
+	printk(KERN_INFO "[%03d] %c%s+%s (%s)",
 	       (int) trace_id++,
 	       sel == 4 ? ' ' : '0' + sel,	       
 	       indent, file, name);
@@ -92,7 +92,7 @@ void ftape_trace_exit(atomic_t *function_nest_level,
 	 *    we'll use this work-around.
 	 */
 	if (atomic_read(function_nest_level) < 0) {
-		printk(KERN_INFO "function nest level (%d) < 0\n",
+		printk(KERN_INFO "function nest level (%d) < 0",
 		       atomic_read(function_nest_level));
 		atomic_set(function_nest_level, 0);
 	}
@@ -103,7 +103,7 @@ void ftape_trace_exit(atomic_t *function_nest_level,
 	} else {
 		indent = spacing;
 	}
-	printk(KERN_INFO "[%03d] %c%s-%s (%s)\n",
+	printk(KERN_INFO "[%03d] %c%s-%s (%s)",
 	       (int) trace_id++,
 	       sel == 4 ? ' ' : '0' + sel,
 	       indent, file, name);
@@ -119,7 +119,7 @@ void ftape_trace_log(atomic_t *function_nest_level,
 	 *    we'll use this work-around.
 	 */
 	if (atomic_read(function_nest_level) <= 0) {
-		printk(KERN_INFO "function nest level (%d) <= 0\n",
+		printk(KERN_INFO "function nest level (%d) <= 0",
 		       atomic_read(function_nest_level));
 		atomic_set(function_nest_level, 1);
 	}

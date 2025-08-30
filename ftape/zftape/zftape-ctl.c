@@ -422,12 +422,12 @@ static int seek_block_in_volume(zftape_info_t *zftape,
 		zft_position_before_eof(zftape, pos, volume);
 	}
 	TRACE(ft_t_noise, "\n"
-	      KERN_INFO "new_seg_pos : %d\n"
-	      KERN_INFO "new_tape_pos: " LL_X "\n"
-	      KERN_INFO "volume_pos  : " LL_X "\n"
-	      KERN_INFO "vol_size    : " LL_X "\n"
-	      KERN_INFO "seg_byte_pos: %d\n"
-	      KERN_INFO "blk_sz  : %d", 
+	      "new_seg_pos : %d\n"
+	      "new_tape_pos: " LL_X "\n"
+	      "volume_pos  : " LL_X "\n"
+	      "vol_size    : " LL_X "\n"
+	      "seg_byte_pos: %d\n"
+	      "blk_sz  : %d", 
 	      pos->seg_pos, LL(pos->tape_pos),
 	      LL(pos->volume_pos),
 	      LL(volume->size), pos->seg_byte_pos,
@@ -1091,8 +1091,8 @@ int _zft_close(zftape_info_t *zftape, unsigned int dev_minor)
 	}
 	if (zft_dirty(zftape)) {
 		TRACE(ft_t_noise, "Keeping module locked in memory because:\n"
-		      KERN_INFO "header segments need updating: %s\n"
-		      KERN_INFO "tape not at BOT              : %s",
+		      "header segments need updating: %s\n"
+		      "tape not at BOT              : %s",
 		      (zftape->volume_table_changed || zftape->header_changed) 
 		      ? "yes" : "no",
 		      zft_tape_at_lbot(zftape, &zftape->pos) ? "no" : "yes");

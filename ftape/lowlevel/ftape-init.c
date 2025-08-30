@@ -110,9 +110,9 @@ int ftape_init(void)
 	printk(FTAPE_BANNER); /* defined in ftape-init.h */
 #else /* !MODULE */
 	/* print a short no-nonsense boot message */
-	printk(KERN_INFO FTAPE_VERSION " for Linux " UTS_RELEASE "\n");
+	printk(KERN_INFO FTAPE_VERSION " for Linux " UTS_RELEASE);
 #endif /* MODULE */
-	printk("installing QIC-117 floppy tape driver ... \n");
+	printk("installing QIC-117 floppy tape driver...");
 #ifdef MODULE
 	printk("ftape_init @ 0x%p.\n", ftape_init);
 #endif
@@ -194,7 +194,7 @@ static void __exit ftape_module_exit(void)
 	for (sel = 0; sel < 4; sel++) {
 		ftape_destroy(sel);
 	}
-        printk(KERN_INFO "ftape: unloaded.\n");
+        printk(KERN_INFO "ftape: unloaded.");
 }
 module_exit(ftape_module_exit);
 

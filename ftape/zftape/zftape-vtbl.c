@@ -403,8 +403,8 @@ static void extract_zft_volume(zftape_info_t *zftape,
 				(entry[VTBL_CMPR] & VTBL_CMPR_USED) != 0; 
 		} else {
 			TRACE(ft_t_warn, "Geeh! There is something wrong:\n"
-			      KERN_INFO "QIC compression (Rev = K): %x\n"
-			      KERN_INFO "QIC compression (Rev > K): %x",
+			      "QIC compression (Rev = K): %x\n"
+			      "QIC compression (Rev > K): %x",
 			      entry[VTBL_K_CMPR], entry[VTBL_CMPR]);
 		}
 	}
@@ -711,11 +711,11 @@ int zft_skip_volumes(zftape_info_t *zftape,
 	/* no need to keep cache */
 	zft_release_deblock_buffer(zftape, &zftape->deblock_buf);
 	TRACE(ft_t_noise, "repositioning to:\n"
-	      KERN_INFO "zftape->seg_pos     : %d\n"
-	      KERN_INFO "zftape->seg_byte_pos: %d\n"
-	      KERN_INFO "zftape->tape_pos    : " LL_X "\n"
-	      KERN_INFO "zftape->volume_pos  : " LL_X "\n"
-	      KERN_INFO "file number         : %d",
+	      "zftape->seg_pos     : %d\n"
+	      "zftape->seg_byte_pos: %d\n"
+	      "zftape->tape_pos    : " LL_X "\n"
+	      "zftape->volume_pos  : " LL_X "\n"
+	      "file number         : %d",
 	      pos->seg_pos, pos->seg_byte_pos, 
 	      LL(pos->tape_pos), LL(pos->volume_pos), vtbl->count);
 	zftape->resid = count < 0 ? -count : count;

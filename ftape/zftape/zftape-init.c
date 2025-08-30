@@ -474,7 +474,7 @@ void cleanup_module(void)
 			ftape_kfree(FTAPE_SEL(sel), &zftapes[sel], sizeof(*zftapes[sel]));
 		}
 	}
-        printk(KERN_INFO "zftape successfully unloaded.\n");
+        printk(KERN_INFO "zftape successfully unloaded.");
 	TRACE_EXIT;
 }
 

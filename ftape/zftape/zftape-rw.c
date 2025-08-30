@@ -83,8 +83,8 @@ int zft_set_flags(zftape_info_t *zftape, unsigned minor_unit)
 # endif
 	default:
 		TRACE(ft_t_warn, "Warning:\n"
-		      KERN_INFO "Wrong combination of minor device bits.\n"
-		      KERN_INFO "Bailing out.");
+		      "Wrong combination of minor device bits.\n"
+		      "Bailing out.");
 		TRACE_EXIT -ENXIO;
 		break;
 	}
@@ -267,10 +267,7 @@ int zft_verify_write_segments(zftape_info_t *zftape,
 	single    = size <= seg_sz;
 	remaining = size;
 	do {
-		TRACE(ft_t_noise, "\n"
-		      KERN_INFO "remaining: %d\n"
-		      KERN_INFO "seg_sz   : %d\n"
-		      KERN_INFO "segment  : %d",
+		TRACE(ft_t_noise, "\nremaining: %d\nseg_sz   : %d\nsegment  : %d",
 		      remaining, seg_sz, seg_pos);
 		if ((zftape->deblock_buf = fdc_get_deblock_buffer(zftape->ftape->fdc)) == NULL) {
 			TRACE_ABORT(-EIO, ft_t_bug, "No deblock buffer");
@@ -293,8 +290,7 @@ int zft_verify_write_segments(zftape_info_t *zftape,
 		if ((result = ftape_write_segment(zftape->ftape, seg_pos, 
 						  &zftape->deblock_buf, 
 						  write_mode)) != seg_sz) {
-			TRACE(ft_t_err, "Error: "
-			      "Couldn't write segment %d", seg_pos);
+			TRACE(ft_t_err, "Error: Couldn't write segment %d", seg_pos);
 			TRACE_EXIT result < 0 ? result : -EIO; /* bail out */
 		}
 		zftape->written_segments ++;
@@ -320,15 +316,10 @@ int zft_verify_write_segments(zftape_info_t *zftape,
 		}
 		if (memcmp(src_buf, zftape->deblock_buf, 
 			   remaining > result ? result : remaining) != 0) {
-			TRACE_ABORT(-EIO, ft_t_err,
-				    "Failed to verify written segment %d",
-				    seg_pos);
+			TRACE_ABORT(-EIO, ft_t_err, "Failed to verify written segment %d", seg_pos);
 		}
 		remaining -= result;
-		TRACE(ft_t_noise, "verify successful:\n"
-		      KERN_INFO "segment  : %d\n"
-		      KERN_INFO "segsize  : %d\n"
-		      KERN_INFO "remaining: %d",
+		TRACE(ft_t_noise, "verify successful:\nsegment  : %d\nsegsize  : %d\nremaining: %d",
 		      seg_pos, result, remaining);
 		src_buf   += seg_sz;
 		seg_pos++;
