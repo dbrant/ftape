@@ -30,7 +30,6 @@
  *      for the low level fdc modules when no device exists.
  */
 
-#undef FT_TRACE_TOP_LEVEL
 #undef TRACE_FUN
 #undef TRACE_EXIT
 #undef TRACE

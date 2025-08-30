@@ -96,13 +96,11 @@ typedef union {
 /* This defines the number of retries that the driver will allow
  * before giving up (and letting a higher level handle the error).
  */
-#ifdef TESTING
-#define FT_SOFT_RETRIES 1	   /* number of low level retries */
-#define FT_RETRIES_ON_ECC_ERROR 3  /* ecc error when correcting segment */
-#else
+#ifndef FT_SOFT_RETRIES
 #define FT_SOFT_RETRIES 6	   /* number of low level retries (triple) */
-#define FT_RETRIES_ON_ECC_ERROR 3  /* ecc error when correcting segment */
 #endif
+
+#define FT_RETRIES_ON_ECC_ERROR 3  /* ecc error when correcting segment */
 
 #ifndef THE_FTAPE_MAINTAINER
 #define THE_FTAPE_MAINTAINER "the ftape maintainer"
