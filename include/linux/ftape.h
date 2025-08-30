@@ -100,8 +100,6 @@ typedef union {
 #define FT_SOFT_RETRIES 6	   /* number of low level retries (triple) */
 #endif
 
-#define FT_RETRIES_ON_ECC_ERROR 3  /* ecc error when correcting segment */
-
 #ifndef THE_FTAPE_MAINTAINER
 #define THE_FTAPE_MAINTAINER "the ftape maintainer"
 #endif

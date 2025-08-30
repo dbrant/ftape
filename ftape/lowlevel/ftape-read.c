@@ -48,6 +48,7 @@
  */
 
 extern int ft_ignore_ecc_err;
+extern int ft_soft_retries;
 
 /*      Local vars.
  */
@@ -292,7 +293,7 @@ int ftape_read_segment(ftape_info_t *ftape,
 		if (read_done) { /* no special case for empty segments */
 			TRACE_EXIT bytes_read;
 		}
-		if (retry > FT_RETRIES_ON_ECC_ERROR) {
+		if (retry > ft_soft_retries) {
 			ftape->history.defects ++;
 			/* why no data? This is a r/w error, hence an I/O error
 			 */
