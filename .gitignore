@@ -7,3 +7,4 @@
 *.markers
 *.order
 *.symvers
+.vscode

@@ -2,7 +2,8 @@ Hey, Emacs, we're -*-Text-*- mode!
 
 ===== Release notes for ftape-4.05 30/08/25 =====
 
--- Make ftape build and run on modern versions of the kernel.
+-- Make ftape build and run on modern versions of the kernel (as of
+   kernel 6.8.0).
 
 ===== Release notes for ftape-4.04a 25/07/00 ====
 
