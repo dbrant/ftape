@@ -123,45 +123,23 @@ int ftape_ecc_correct(ftape_info_t *ftape, buffer_struct *buff)
 	result = ftape_ecc_correct_data(&mseg);
 
 	if (read_bad != 0 || mseg.corrected != 0) {
-		ft_trace_t level;
-#if 0
-		if ((read_bad ^ mseg.corrected) & mseg.corrected) {
-			level = ft_t_info;
-		} else {
-			level = ft_t_noise;
-		}
-#else
-		level = ft_t_info;
-#endif
-		TRACE(level, "crc error map: 0x%08lx",
-		      (unsigned long)read_bad);
-		TRACE(level, "corrected map: 0x%08lx",
-		      (unsigned long)mseg.corrected);
+		TRACE(ft_t_info, "crc error map: 0x%08lx", (unsigned long)read_bad);
+		TRACE(ft_t_info, "corrected map: 0x%08lx", (unsigned long)mseg.corrected);
 		ftape->history.corrected += count_ones(mseg.corrected);
 	}
 
-
-
-	if (ft_ignore_ecc_err) {
-		if (result == ECC_CORRECTED || result == ECC_OK) {
-
-		} else {
-			TRACE(ft_t_info, ">>> Ignoring ECC failure at segment: %d", buff->segment_id);
-		}
-		TRACE_EXIT (mseg.blocks - 3) * FT_SECTOR_SIZE;
-	}
-
-
-
 	if (result == ECC_CORRECTED || result == ECC_OK) {
 		if (result == ECC_CORRECTED) {
-			TRACE(ft_t_info, "ecc corrected segment: %d",
-			      buff->segment_id);
+			TRACE(ft_t_info, "ecc corrected segment: %d", buff->segment_id);
 		}
 		if ((read_bad ^ mseg.corrected) & mseg.corrected) {
 			/* sectors corrected without crc errors set */
 			ftape->history.crc_failures++;
 		}
+		TRACE_EXIT (mseg.blocks - 3) * FT_SECTOR_SIZE;
+	} else if (ft_ignore_ecc_err) {
+		TRACE(ft_t_info, ">>> Ignoring ECC failure at segment: %d", buff->segment_id);
+		ftape->history.crc_failures++;
 		TRACE_EXIT (mseg.blocks - 3) * FT_SECTOR_SIZE;
 	} else {
 		ftape->history.ecc_failures++;
