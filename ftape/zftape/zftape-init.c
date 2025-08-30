@@ -214,8 +214,8 @@ static ssize_t zft_read(struct file *fp, char *buff,
 
 	TRACE(ft_t_data_flow, "called with count: %ld", (unsigned long)req_len);
 
-	if (&ppos != fp->f_pos) {
-		TRACE(ft_t_warn, "file offset different from device offset: %ld != %ld", (long)&ppos, (long)(fp->f_pos));
+	if (*ppos != fp->f_pos) {
+		TRACE(ft_t_warn, "file offset different from device offset: %ld != %ld", (long)*ppos, (long)(fp->f_pos));
 		// TRACE_EXIT -ENXIO;
 	}
 
@@ -246,8 +246,8 @@ static ssize_t zft_write(struct file *fp, const char *buff,
 
 	TRACE(ft_t_data_flow, "called with count: %ld", (unsigned long)req_len);
 
-	if (&ppos != fp->f_pos) {
-		TRACE(ft_t_warn, "file offset different from device offset: %ld != %ld", (long)&ppos, (long)(fp->f_pos));
+	if (*ppos != fp->f_pos) {
+		TRACE(ft_t_warn, "file offset different from device offset: %ld != %ld", (long)*ppos, (long)(fp->f_pos));
 		// TRACE_EXIT -ENXIO;
 	}
 
