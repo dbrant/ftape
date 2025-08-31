@@ -1,8 +1,8 @@
 # ftape
 
-This is a copy of the last official release of the `ftape` driver (version 4.04a) by Claus-Justus Heine et al, with some of my (Dmitry Brant) own tweaks for getting it to compile and run on CentOS 3.5.
+This is a continuation of the development of the `ftape` driver, originally by Claus-Justus Heine et al, with some of my (Dmitry Brant) own tweaks and modernizations for getting it to compile and run on modern Linux kernels (version 6.8.0 in 2025).
 
-DISCLAIMER: I am not a kernel developer, and I barely stumbled through getting this driver to compile and make it work the way I needed. In case anyone wants to learn from my mistakes (and in the spirit of GPL) I'm making this code and my changes available, but don't judge me for the horrible jury-rigging I did to make it work.
+TLDR: It absolutely works! (*on my system running Xubuntu 24.04 (64-bit!)) However, there is still a lot of testing to be done, and therefore there may still be bugs related to the modernization effort. For my previous work getting the completely original (unmodified) driver to work with CentOS 3.5 (with kernel version 2.4.21), refer to the `centos35` branch of this repo, and the README therein.
 
 ## The story so far
 
@@ -12,31 +12,27 @@ This driver used to be included in the Linux kernel, until it was [removed](http
 
 However, that's not the whole story:
 * The last version of the driver that was included in the kernel, right up until it was removed, was version 3.04.
-* BUT, the author continued to develop the driver independently of kernel releases. In fact, the last known version of the driver was 4.04a.
-* Unfortunately the author continued to develop the driver on an _older_ version of the kernel (probably 2.2.x), which made it somewhat incompatible with later kernel versions.
+* BUT, the author continued to develop the driver independently of kernel releases. In fact, the last known version of the driver was 4.04a, in 2000.
+* My goal is to continue maintaining this driver for modern kernel versions, 25 years after the last official release.
 
-## Why CentOS 3.5?
+## Motivation
 
-This is the oldest distro I could find (installed from [ISO images](https://vault.centos.org/3.5/isos/i386/)) that boots nicely (graphically, with USB support, etc) on my old PC workstation, _and_ has a kernel version of 2.4.21, which brings it just within reach of a horribly amateur kernel hacker to compile `ftape` onto.
+Even though QIC tapes have long been obsolete as a backup medium, there is still a nontrivial market for _data recovery_ from such tapes that still exist in the wild, where the ftape driver can fill an important niche. There is also the retrocomputing community, which can benefit from such a driver bringing old hardware back to life.
 
-With a default install of CentOS 3.5 (all defaults except "software development" and "kernel development" packages selected), I was able to compile `ftape`, load it, and use it to communicate with my tape drives!
+## Goals
+
+* Since this driver is intended mostly for recovering data from old cartridges, more emphasis will be placed on maintaining _reading_ functionality rather than writing, emphasizing compatibility with various tape drives. Bugs related to _writing_ may be deprioritized, and indeed I might consider removing writing/formatting functionality entirely, and leave it in a separate unmaintained branch.
+* In the interest of making this driver into a "forensic"-quality recovery tool, more emphasis will be placed on lower-level data extraction, e.g. raw mode, disregarding volume tables, disregarding ECC failures, etc.
 
 ## Rough instructions
 
-* Install CentOS from the aforementioned ISO images, making sure to install the "kernel development" package.
-* Get this repo somewhere into your home directory on your new CentOS install.
-* Make any necessary modifications to MCONFIG. Specifically, you might need to modify the LINUX_LOCATION variable, to point to the source tree of your linux kernel, and the KERNELRELEASE variable to be the exact name of your kernel release.
-* Run `make`!
+* Clone the repo and run `make`!
 
-The build process might complain about the `.config` file not being present in your kernel source tree. To fix this, you can copy your current `config...` from your `/boot` partition and name it `.config` in the root of the kernel tree.
+When (if) the build process finishes, it should make several kernel modules (`.ko` files) in the base folder of the repo. These are modules that are loadable using `insmod` or `modprobe`. There's actually no need to run `make install` (which copies the modules into your actual `/lib/modules/...` directory), I just prefer to load the modules directly from the repo directory on demand.
 
-When (if) the build process finishes, it should make several kernel modules (`.o` files) in the `modules` subfolder. These are modules that are loadable using `insmod` or `modprobe`. There's actually no need to run `make install` (which copies the modules into your actual `/lib/modules/...` directory), I just prefer to load the modules directly from the build directory on demand.
+For convenience, there are scripts for loading the modules in the proper order, with the proper parameters for specific types of drives (look inside these scripts for examples and explanations of the parameters):
+* `insert_floppy.sh` for when you have a drive connected to the floppy controller (FDC), such as Colorado 250, etc.
+* `insert_max.sh` for when you have a Ditto Max drive, specifically, connected to the floppy controller.
+* `insert_parallel.sh` for when you have a drive connected to the parallel port. This script might show warnings when loading, but ignore them and check `dmesg` for the true state of the driver. (And make sure your parallel port is configured for ECP in your BIOS.)
 
-There is also `scripts/MAKEDEV.ftape` that you should run to create the necessary device nodes under `/dev/`.
-
-Once all of this is done, and the kernel modules get loaded without errors, you can interact with the device files, e.g. `/dev/nqft0`, `/dev/rawqft0` and so on.
-
-For extra convenience, there are scripts in the `modules/` directory for loading the modules with the proper parameters for specific types of drives (look inside these scripts for examples and explanations of the parameters):
-* `insert_floppy` for when you have a drive connected to the floppy controller (FDC), such as Colorado 250, etc.
-* `insert_max` for when you have a Ditto Max drive, specifically, connected to the floppy controller.
-* `insert_parallel` for when you have a drive connected to the parallel port. This script might show warnings when loading, but ignore them and check `dmesg` for the true state of the driver. (And make sure your parallel port is configured for ECP in your BIOS.)
+Once all of this is done, and the kernel modules are loaded without errors, you can interact with the tape device files, e.g. `/dev/nqft0`, `/dev/rawqft0` and so on. You can proceed to dump the data from a tape using a command like: `dd if=/dev/nrawqft0 of=out.bin bs=10240`
