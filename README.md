@@ -1,6 +1,6 @@
 # ftape
 
-This is a continuation of the development of the `ftape` driver, originally by Claus-Justus Heine et al, with some of my (Dmitry Brant) own tweaks and modernizations for getting it to compile and run on modern Linux kernels (version 6.8.0 in 2025).
+This is a continuation of the development of the `ftape` driver, originally by Claus-Justus Heine et al, with some of my (Dmitry Brant) own tweaks and modernizations for getting it to compile and run on modern Linux kernels (version 6.8 and higher, in 2025).
 
 TLDR: It absolutely works! (*on my system running Xubuntu 24.04 (64-bit!)) However, there is still a lot of testing to be done, and therefore there may still be bugs related to the modernization effort. For my previous work getting the completely original (unmodified) driver to work with CentOS 3.5 (with kernel version 2.4.21), refer to the `centos35` branch of this repo, and the README therein.
 
@@ -27,7 +27,9 @@ Even though QIC tapes have long been obsolete as a backup medium, there is still
 
 ## Rough instructions
 
-* Clone the repo and run `make`!
+* Make sure your build tools are installed: `sudo apt install build-essential`
+* Clone this repo.
+* Run `make`!
 
 When (if) the build process finishes, it should make several kernel modules (`.ko` files) in the base folder of the repo. These are modules that are loadable using `insmod` or `modprobe`. There's actually no need to run `make install` (which copies the modules into your actual `/lib/modules/...` directory), I just prefer to load the modules directly from the repo directory on demand.
 
@@ -37,3 +39,7 @@ For convenience, there are scripts for loading the modules in the proper order, 
 * `insert_parallel.sh` for when you have a drive connected to the parallel port. This script might show warnings when loading, but ignore them and check `dmesg` for the true state of the driver. (And make sure your parallel port is configured for ECP in your BIOS.)
 
 Once all of this is done, and the kernel modules are loaded without errors, you can interact with the tape device files, e.g. `/dev/nqft0`, `/dev/rawqft0` and so on. You can proceed to dump the data from a tape using a command like: `dd if=/dev/nrawqft0 of=out.bin bs=10240`
+
+## Troubleshooting
+
+Make generous use of `dmesg` and look at the log messages therein. Use the `ft_tracings` module parameter to increase the verbosity of the messages to narrow down any issues.
