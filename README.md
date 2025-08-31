@@ -23,7 +23,7 @@ Even though QIC tapes have long been obsolete as a backup medium, there is still
 
 * Since this driver is intended mostly for recovering data from old cartridges, more emphasis will be placed on maintaining _reading_ functionality rather than writing, emphasizing compatibility with various tape drives. Bugs related to _writing_ may be deprioritized, and indeed I might consider removing writing/formatting functionality entirely, and leave it in a separate unmaintained branch.
 * In the interest of making this driver into a "forensic"-quality recovery tool, more emphasis will be placed on lower-level data extraction, e.g. raw mode, disregarding volume tables, disregarding ECC failures, etc.
-* The intention is to compile this driver as an out-of-tree kernel module, without needing to copy it into the kernel source tree. I can't really imagine any further need to build this driver into the kernel itself.
+* The intention is to compile this driver as an out-of-tree kernel module, without needing to copy it into the kernel source tree. That's why there's just a simple Makefile, and no other affordances for kernel inclusion. I can't really imagine any further need to build this driver into the kernel itself.
 
 ## Rough instructions
 
@@ -43,3 +43,8 @@ Once all of this is done, and the kernel modules are loaded without errors, you 
 ## Troubleshooting
 
 Make generous use of `dmesg` and look at the log messages therein. Use the `ft_tracings` module parameter to increase the verbosity of the messages to narrow down any issues.
+
+## Disclaimers
+
+* This driver should work on either 32-bit or 64-bit x86 architecture, but obviously it still only works with the same limited set of FDC chipsets as before. If you want to use it with a real FDC tape drive, you must connect the drive to a motherboard with a supported FDC.
+* I have a rather limited collection of tape drives for testing and experimenting, so I make no guarantees about the driver working with your system. If you have a drive that doesn't seem to work with this driver, or if you simply need to recover data from QIC tapes, get in touch!
