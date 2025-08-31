@@ -1,3 +1,21 @@
+2025-08-30  Dmitry Brant <me@dmitrybrant.com>
+
+	* Release version 4.05.
+
+	* Modernized the code to be buildable for modern Linux kernels (6.8.0 and later):
+	- Replaced `init_module()` / `cleanup_module()` with `module_init()` / `module_exit()`
+	- Updated `MODULE_PARM` to modern `module_param()` API
+	- Removed deprecated `register_symtab()` calls
+	- Removed deprecated `linux/config.h`, `linux/wrapper.h`, `asm/system.h` 
+	- Replaced deprecated `virt_to_bus()` with `virt_to_phys()`
+	- Updated DMA buffer allocation methods
+	- Replaced deprecated `check_region()` with proper `request_region()`
+	- Added proper resource cleanup on failure
+	- Modernized port allocation/deallocation
+	- Replaced `MOD_INC_USE_COUNT` / `MOD_DEC_USE_COUNT` with `try_module_get()` / `module_put()`
+	- Created modern Kconfig for kernel configuration
+	- Updated Makefile for out-of-tree compilation
+
 2000-07-25  Claus-Justus Heine  <heine@instmath.rwth-aachen.de (Claus-Justus Heine)>
 
 	* Release version 4.04a.

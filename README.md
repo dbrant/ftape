@@ -23,6 +23,7 @@ Even though QIC tapes have long been obsolete as a backup medium, there is still
 
 * Since this driver is intended mostly for recovering data from old cartridges, more emphasis will be placed on maintaining _reading_ functionality rather than writing, emphasizing compatibility with various tape drives. Bugs related to _writing_ may be deprioritized, and indeed I might consider removing writing/formatting functionality entirely, and leave it in a separate unmaintained branch.
 * In the interest of making this driver into a "forensic"-quality recovery tool, more emphasis will be placed on lower-level data extraction, e.g. raw mode, disregarding volume tables, disregarding ECC failures, etc.
+* The intention is to compile this driver as an out-of-tree kernel module, without needing to copy it into the kernel source tree. I can't really imagine any further need to build this driver into the kernel itself.
 
 ## Rough instructions
 
