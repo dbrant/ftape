@@ -35,8 +35,13 @@
 #include "../lowlevel/fdc-io.h"
 #include "../lowlevel/ftape-init.h"
 #include "../lowlevel/ftape-bsm.h"
+#include <linux/version.h>
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 12, 0)
 #include <asm/unaligned.h>
+#else
+#include <linux/unaligned.h>
+#endif
 
 #define GET2(address, offset) get_unaligned((__u16*)((__u8 *)address + offset))
 #define GET4(address, offset) get_unaligned((__u32*)((__u8 *)address + offset))
