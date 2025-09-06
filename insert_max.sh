@@ -8,8 +8,7 @@
 # first make sure to remove the "floppy" kernel module to free up the resources it's using
 rmmod floppy
 
-# isapnp ./isapnp.conf
-insmod ./ftape-core.ko ft_soft_retries=1 ft_ignore_ecc_err=1 ft_tracings=5,5,5,5,5 # ft_fdc_driver=ftape-internal,bpck-fdc:trakker,none,none ft_tracings=3,3,3,3,3
+insmod ./ftape-core.ko ft_soft_retries=1 ft_ignore_ecc_err=1 ft_tracings=5,5,5,5,5 ft_fdc_driver=ftape-internal,none,none,none
 insmod ./zftape.ko # ft_major_device_number=27 # ${27-FT_MAJOR}
 
 # Don't use the rate limit parameter if everything works without it.
@@ -22,4 +21,4 @@ insmod ./zftape.ko # ft_major_device_number=27 # ${27-FT_MAJOR}
 # QIC-40 tape drives work at 250Kbps.
 #
 
-insmod ./ftape-internal.ko ft_fdc_rate_limit=1000 # ft_fdc_fc10=0 ft_fdc_mach2=0 ft_fdc_base=0x210 ft_fdc_dma=0 ft_fdc_threshold=15
+insmod ./ftape-internal.ko ft_fdc_rate_limit=4000 # ft_fdc_fc10=0 ft_fdc_mach2=0 ft_fdc_base=0x210 ft_fdc_dma=0 ft_fdc_threshold=15
