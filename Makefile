@@ -70,6 +70,7 @@ ccflags-y += -DCONFIG_PROC_FS
 #ccflags-y += -DCONFIG_FT_PROC_FS
 
 # Parallel port support enabled
+ccflags-y += -DCONFIG_PARPORT
 ccflags-y += -DCONFIG_FT_PARPORT
 ccflags-y += -DCONFIG_FT_TRAKKER
 ccflags-y += -DCONFIG_FT_BPCK
