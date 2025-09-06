@@ -9,8 +9,8 @@ rmmod ftape_internal || true
 rmmod zft_compressor || true
 rmmod zftape || true
 rmmod ftape_core || true
-rmmod parport_probe || true
-rmmod parport_pc || true
-rmmod ppdev || true
-rmmod parport || true
+#rmmod parport_probe || true
+#rmmod parport_pc || true
+#rmmod ppdev || true
+#rmmod parport || true
 

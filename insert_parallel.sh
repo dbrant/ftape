@@ -10,14 +10,14 @@ insmod ./ftape-core.ko ft_soft_retries=1 ft_ignore_ecc_err=1 ft_tracings=5,5,5,5
 insmod ./zftape.ko # ft_major_device_number=27 # ${27-FT_MAJOR}
 
 # remove any running instances of parport or related modules
-rmmod lp
-rmmod parport_pc
-rmmod ppdev
-rmmod parport
+#rmmod lp
+#rmmod parport_pc
+#rmmod ppdev
+#rmmod parport
 
 # and now install our stuff.
-modprobe parport_pc io=0x378 irq=7
-modprobe parport
+#modprobe parport_pc io=0x378 irq=7
+#modprobe parport
 insmod ./ftape-parport.ko
 insmod ./ftape-bpck.ko
 
