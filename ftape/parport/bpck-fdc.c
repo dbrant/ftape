@@ -1131,7 +1131,7 @@ static void bpck_fdc_interrupt(int irq, void *dev_id, struct pt_regs *regs)
 	if (fdc->irq != irq) {
 		TRACE(ft_t_bug,
 		      "BUG: Wrong IRQ number (%d/%d)", irq, fdc->irq);
-		goto err_out;
+		// goto err_out;
 	}
 	if ((bpck = (bpck_fdc_t *)fdc->data) == NULL) {
 		TRACE(ft_t_bug,
