@@ -1,8 +1,8 @@
 # ftape
 
-This is a continuation of the development of the `ftape` driver, originally by Claus-Justus Heine et al, with some of my (Dmitry Brant) own tweaks and modernizations for getting it to compile and run on modern Linux kernels (version 6.8 and higher, in 2025).
+This is a continuation of the development of the `ftape` driver, originally by Claus-Justus Heine et al, with some of [my](https://dmitrybrant.com) (Dmitry Brant) own tweaks and modernizations for getting it to compile and run on modern Linux kernels (version 6.8 and higher, in 2025).
 
-TLDR: It absolutely works! (*on my system running Xubuntu 24.04 (64-bit!)) However, there is still a lot of testing to be done, and therefore there may still be bugs related to the modernization effort. For my previous work getting the completely original (unmodified) driver to work with CentOS 3.5 (with kernel version 2.4.21), refer to the `centos35` branch of this repo, and the README therein.
+TLDR: It absolutely works! (*on my system running Xubuntu 24.04 (64-bit!)) However, there is still a lot of testing to be done, and therefore there may still be bugs related to the modernization effort. For my previous work getting the completely original (unmodified) driver to work with CentOS 3.5 (with kernel version 2.4.21), refer to the `centos35` [branch](tree/centos35) of this repo, and the README therein.
 
 ## The story so far
 
@@ -47,4 +47,4 @@ Make generous use of `dmesg` and look at the log messages therein. Use the `ft_t
 ## Disclaimers
 
 * This driver should work on either 32-bit or 64-bit x86 architecture, but obviously it still only works with the same limited set of FDC chipsets as before. If you want to use it with a real FDC tape drive, you must connect the drive to a motherboard with a supported FDC.
-* I have a rather limited collection of tape drives for testing and experimenting, so I make no guarantees about the driver working with your system. If you have a drive that doesn't seem to work with this driver, or if you simply need to recover data from QIC tapes, get in touch!
+* I have a rather [limited collection](https://dmitrybrant.com/inventory-media) of tape drives for testing and experimenting, so I make no guarantees about the driver working with your system. If you have a drive that doesn't seem to work with this driver, or if you simply need to recover data from QIC tapes, get in touch!
