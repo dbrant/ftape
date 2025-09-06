@@ -2,7 +2,7 @@
 
 This is a continuation of the development of the `ftape` driver, originally by Claus-Justus Heine et al, with some of [my](https://dmitrybrant.com) (Dmitry Brant) own tweaks and modernizations for getting it to compile and run on modern Linux kernels (version 6.8 and higher, in 2025).
 
-TLDR: It absolutely works! (*on my system running Xubuntu 24.04 (64-bit!)) However, there is still a lot of testing to be done, and therefore there may still be bugs related to the modernization effort. For my previous work getting the completely original (unmodified) driver to work with CentOS 3.5 (with kernel version 2.4.21), refer to the `centos35` [branch](tree/centos35) of this repo, and the README therein.
+TLDR: It absolutely works! (*on my system running Xubuntu 24.04 (64-bit!)) However, there is still a lot of testing to be done, and therefore there may still be bugs related to the modernization effort. For my previous work getting the completely original (unmodified) driver to work with CentOS 3.5 (with kernel version 2.4.21), refer to the `centos35` [branch](/tree/centos35) of this repo, and the README therein.
 
 ## The story so far
 
