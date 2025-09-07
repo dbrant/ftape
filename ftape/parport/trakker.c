@@ -424,8 +424,8 @@ static void trakker_interrupt(int irq, void *dev_id, struct pt_regs *regs)
 		goto err_out;
 	}
 	if (fdc->irq != irq) {
-		TRACE(ft_t_bug, "BUG: Wrong IRQ number (%d/%d)", irq, fdc->irq);
-		goto err_out;
+		TRACE(ft_t_warn, "BUG?: Wrong IRQ number: got %d, expected %d", irq, fdc->irq);
+		// goto err_out;
 	}
 
 	if ((trakker = (struct trakker_struct *)fdc->data) == NULL) {
