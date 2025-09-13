@@ -44,6 +44,18 @@ Once all of this is done, and the kernel modules are loaded without errors, you 
 
 Make generous use of `dmesg` and look at the log messages therein. Use the `ft_tracings` module parameter to increase the verbosity of the messages to narrow down any issues.
 
+### Floppy controller
+
+In your BIOS, enable at least one floppy drive in your system (the size/capacity doesn't matter), to make sure that the motherboard enables the floppy controller.
+
+Look at `/proc/ioports` and `/proc/interrupts` to see what IO ports and interrupts the system believes are assigned to the floppy controller, and use those assigments as parameters when loading `ftape-internal` (if they are different from the defaults). When the system boots up, it automatically loads the `floppy` module which claims those resources for itself. This is why the `insert_floppy.sh` script in this repo explicitly unloads the `floppy` module before loading the ftape modules, to ensure those resources are freed first.
+
+### Parallel port
+
+In your BIOS, make sure your parallel port is configured for EPP or ECP mode.
+
+Look at `/proc/ioports` and make sure that the IO ports are assigned to the `parport` module. You don't need to pass any custom parameters into ftape for using the parallel port, since ftape uses the `parport` API to get access to the parallel port, therefore it's only necessary to ensure that `parport` itself is working properly.
+
 ## Disclaimers
 
 * This driver should work on either 32-bit or 64-bit x86 architecture, but obviously it still only works with the same limited set of FDC chipsets as before. If you want to use it with a real FDC tape drive, you must connect the drive to a motherboard with a supported FDC.
