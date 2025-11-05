@@ -73,8 +73,8 @@ extern int                  zft_cmpr_lock(struct zftape_info *zftape,
 
 #ifdef MODULE
 
-asmlinkage extern int  init_module(void);
-asmlinkage extern void cleanup_module(void);
+extern int  init_module(void);
+extern void cleanup_module(void);
 
 #endif
 

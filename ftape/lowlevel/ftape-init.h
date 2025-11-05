@@ -83,8 +83,8 @@ FTAPE_VERSION"\n\n"							     \
 /*      ftape-init.c defined global functions not defined in ftape.h
  */
 #ifdef MODULE
-asmlinkage extern int  init_module   (void);
-asmlinkage extern void cleanup_module(void);
+extern int  init_module   (void);
+extern void cleanup_module(void);
 #endif
 
 #endif
