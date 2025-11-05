@@ -339,7 +339,12 @@ static int zft_device_register(void)
 	
 	TRACE_CATCH(register_chrdev(ft_major_device_number, "zft", &zft_cdev),);
 	
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0)
+	ftape_class = class_create(THIS_MODULE, "ftape");
+#else
 	ftape_class = class_create("ftape");
+#endif
+
 	if (IS_ERR(ftape_class)) {
 		unregister_chrdev(ft_major_device_number, "zft");
 		TRACE_ABORT(PTR_ERR(ftape_class), ft_t_err, "class_create failed");
