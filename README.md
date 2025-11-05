@@ -28,6 +28,7 @@ Even though QIC tapes have long been obsolete as a backup medium, there is still
 ## Rough instructions
 
 * Make sure your build tools are installed: `sudo apt install build-essential`
+* (You may also need to install Linux headers: ``sudo apt install linux-headers-`uname -r` ``)
 * Clone this repo.
 * Run `make`!
 
