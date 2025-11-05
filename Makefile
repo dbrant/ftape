@@ -31,6 +31,8 @@ ftape-core-objs := ftape/lowlevel/ftape-init.o \
 # Internal FDC objects
 ftape-internal-objs := ftape/internal/fdc-internal.o \
 		       ftape/internal/fc-10.o
+# TODO: investigate isapnp:
+#		       ftape/internal/fdc-isapnp.o
 
 # Zftape VFS interface
 zftape-objs := ftape/zftape/zftape-init.o \

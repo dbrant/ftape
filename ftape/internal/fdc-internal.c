@@ -694,7 +694,8 @@ static int fdc_int_detect(fdc_info_t *fdc)
 #if defined(CONFIG_ISAPNP) || \
     (defined(CONFIG_ISAPNP_MODULE) && defined(CONFIG_FT_INTERNAL_MODULE))
 	else {
-		TRACE_CATCH(fdc_int_isapnp_init(fdc),);
+		printk(KERN_INFO ">>> TODO: investigate isapnp support in ftape_internal_setup\n");
+		//TRACE_CATCH(fdc_int_isapnp_init(fdc),);
 	}
 #endif	
 	/* FIXME: autoprobe default parameters.
@@ -827,7 +828,8 @@ int init_module(void)
 void cleanup_module(void)
 {
 #if defined(CONFIG_ISAPNP) || defined(CONFIG_ISAPNP_MODULE)
-	fdc_int_isapnp_disable();
+    printk(KERN_INFO ">>> TODO: investigate isapnp support in ftape_internal_setup\n");
+	//fdc_int_isapnp_disable();
 #endif
 	fdc_unregister(&fdc_internal_ops);
         printk(KERN_INFO "fdc_internal successfully unloaded.");
@@ -860,10 +862,11 @@ int ftape_internal_setup(char *str)
 #ifdef CONFIG_ISAPNP
 	int result;
 
-	result = fdc_int_isapnp_setup(str);
-	if (result <= 0) {
-		return result;
-	}
+	printk(KERN_INFO ">>> TODO: investigate isapnp support in ftape_internal_setup\n");
+	//result = fdc_int_isapnp_setup(str);
+	//if (result <= 0) {
+	//	return result;
+	//}
 #endif
 	str = get_options(str, ARRAY_SIZE(ints), ints);
 
