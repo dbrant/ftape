@@ -6,9 +6,11 @@ TLDR: It absolutely works! (*on my system running Xubuntu 24.04 (64-bit!)) Howev
 
 ## The story so far
 
-Ftape was a driver that allowed Linux to read data from "floppy tape" drives, i.e. tape drives that would connect to the floppy controller (FDC) directly on the motherboard, such as the Colorado Jumbo 250, the Ditto Max, etc. It also supported numerous external tape drives that connected to the parallel port of the PC, such as the Trakker, Iomega Ditto 2GB, etc.
+Ftape is a driver that allows Linux to read data from "floppy tape" drives, i.e. tape drives that connect to the floppy controller (FDC) directly on the motherboard, such as the Colorado Jumbo 250, the Ditto Max, etc. Formally speaking, the driver works with tape drives that support the [QIC-117](https://www.qic.org/html/standards/11x.x/qic117j.pdf) specification. It also supports numerous external tape drives that connect to the parallel port of the PC, such as the Trakker, Iomega Ditto 2GB, etc.
 
-This driver used to be included in the Linux kernel, until it was [removed](https://lwn.net/Articles/202253/) in 2006, as of kernel version 2.6.20.
+The types of tapes supported by these drives are called [QIC](https://en.wikipedia.org/wiki/Quarter-inch_cartridge) (quarter-inch cartridge), such as QIC-40, QIC-80, and their later cousins like QIC-3020, QIC-Wide, Travan, and Ditto.
+
+The `ftape` driver used to be included in the Linux kernel, until it was [removed](https://lwn.net/Articles/202253/) in 2006, as of kernel version 2.6.20.
 
 However, that's not the whole story:
 * The last version of the driver that was included in the kernel, right up until it was removed, was version 3.04.
