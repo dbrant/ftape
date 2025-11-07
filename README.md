@@ -62,6 +62,7 @@ Look at `/proc/ioports` and make sure that the IO ports are assigned to the `par
 ## Disclaimers
 
 * This driver should work on either 32-bit or 64-bit x86 architecture, but obviously it still only works with the same limited set of FDC chipsets as before. If you want to use it with a real FDC tape drive, you must connect the drive to a motherboard with a supported FDC.
+* The only thing that hasn't been modernized is Legacy Plug-and-Play support (Notice that `internal/fdc-isapnp.c` is left out of the makefile), simply because I don't have any PnP cards/devices to test with. If you have such a device, feel free to get in touch, or just take this driver and try to get it working, and submit a pull request.
 * I have a rather [limited collection](https://dmitrybrant.com/inventory-media) of tape drives for testing and experimenting, so I make no guarantees about the driver working with your system. If you have a drive that doesn't seem to work with this driver, or if you simply need to recover data from QIC tapes, get in touch!
 
 ![QIC-80 tapes](https://raw.githubusercontent.com/dbrant/ftape/refs/heads/master/qic80.jpg)
