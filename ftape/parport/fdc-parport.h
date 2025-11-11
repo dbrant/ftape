@@ -386,14 +386,14 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 			parport_unregister_device(parinfo->dev);
 		}
 	}
-	fdc->irq = -1;			
-	TRACE(ft_t_err,
-	      "can't find parport interface for ftape id %d", fdc->unit);
+	fdc->irq = -1;
+	printk(KERN_ERR "Can't find parport interface for ftape id %d", fdc->unit);
 	/* return -ENXIO when probing several devices, more useful
 	 * return values otherwise
 	 */
 	TRACE_EXIT (len == 0) ? result : -ENXIO;
  found:
+	printk(KERN_INFO "Found parport interface for ftape id %d", fdc->unit);
 	allocated[fdc->unit] = port->number;
 
 	if (ft_fdc_threshold[fdc->unit] != -1) {

@@ -1236,17 +1236,19 @@ static int bpck_fdc_query_proto(bpck_fdc_t *bpck)
 	case PARPORT_STATUS_ACK:
 		t2(PARPORT_CONTROL_SELECT);
 		t2(PARPORT_CONTROL_SELECT);
+		printk(KERN_INFO "Detected possible drive in SPP mode!");
 		bpck->used_proto = ft_bpck_spp; /* could also be PS2 */
 		break;
 	case PARPORT_STATUS_ACK | PARPORT_STATUS_BUSY:
 		t2(PARPORT_CONTROL_SELECT | PARPORT_CONTROL_INIT);
 		t2(PARPORT_CONTROL_SELECT | PARPORT_CONTROL_INIT);
+		printk(KERN_INFO "Detected possible drive in EPP mode!");
 		bpck->used_proto = ft_bpck_epp8; /* could also be better */
 		break;
 	default:
 		bpck->used_proto = ft_bpck_none; /* failure, not connected */
-		TRACE(ft_t_err, "Got 0x%02x, expected either 0xc0 or 0x40",
-		      res);
+		TRACE(ft_t_err, "Drive likely not connected: parport reports status 0x%02x, expected 0xc0 or 0x40", res);
+		printk(KERN_ERR "Drive not connected, or unable to detect or communicate.");
 		break;
 	}
 
