@@ -393,7 +393,7 @@ static int ft_parport_probe(fdc_info_t *fdc, ft_parinfo_t *parinfo)
 	 */
 	TRACE_EXIT (len == 0) ? result : -ENXIO;
  found:
-	printk(KERN_INFO "Found parport interface for ftape id %d", fdc->unit);
+	printk("Found parport interface for ftape id %d", fdc->unit);
 	allocated[fdc->unit] = port->number;
 
 	if (ft_fdc_threshold[fdc->unit] != -1) {
