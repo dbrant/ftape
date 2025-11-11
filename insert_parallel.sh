@@ -6,7 +6,7 @@
 # and/or the Sony StorStation 2GB, which is just a rebranded Iomega.
 #
 
-insmod ./ftape-core.ko ft_soft_retries=1 ft_ignore_ecc_err=1 ft_tracings=5,5,5,5,5 ft_fdc_driver=bpck-fdc,none,none,none # ft_fdc_driver=ftape-internal,bpck-fdc:trakker,none,none ft_tracings=3,3,3,3,3
+insmod ./ftape-core.ko ft_soft_retries=1 ft_ignore_ecc_err=1 ft_tracings=3,3,3,3,3 ft_fdc_driver=bpck-fdc,none,none,none # ft_fdc_driver=ftape-internal,bpck-fdc:trakker,none,none ft_tracings=3,3,3,3,3
 insmod ./zftape.ko # ft_major_device_number=27 # ${27-FT_MAJOR}
 
 # The following used to be necessary, but recent kernels
