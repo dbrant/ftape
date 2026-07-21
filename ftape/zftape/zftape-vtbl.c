@@ -351,7 +351,7 @@ int zft_update_volume_table(zftape_info_t *zftape, unsigned int segment)
 	TRACE(ft_t_noise, "writing volume table segment %d", segment);
 	TRACE_CATCH(zft_verify_write_segments(zftape, segment,
 					      zftape->vtbl_buf,
-					      zft_get_seg_sz(zftape, segment)),);
+					      zft_get_seg_data_sz(zftape, segment)),);
 	TRACE_EXIT 0;
 }
 

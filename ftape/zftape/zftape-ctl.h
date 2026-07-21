@@ -38,6 +38,11 @@
 typedef struct zftape_info {
 	ftape_info_t *ftape;
 	unsigned int qic_mode:1; /* use the vtbl */
+	unsigned int raw_ecc:1;  /* hand out the ECC sectors as well.
+				  * Only ever set when !qic_mode and
+				  * the tape is read-only, see
+				  * zft_update_raw_ecc()
+				  */
 	unsigned int old_ftape:1; /* prevents old ftaped tapes to be overwritten */
 	unsigned int exvt_extension:1; /* force r/o */
 	unsigned int vtbl_broken:1;    /* force r/o */

@@ -43,7 +43,15 @@ For convenience, there are scripts for loading the modules in the proper order, 
 * `insert_max.sh` for when you have a Ditto Max drive, specifically, connected to the floppy controller.
 * `insert_parallel.sh` for when you have a drive connected to the parallel port. This script might show warnings when loading, but ignore them and check `dmesg` for the true state of the driver. (And make sure your parallel port is configured for ECP in your BIOS.)
 
-Once all of this is done, and the kernel modules are loaded without errors, you can interact with the tape device files, e.g. `/dev/nqft0`, `/dev/rawqft0` and so on. You can proceed to dump the data from a tape using a command like: `dd if=/dev/nrawqft0 of=out.bin bs=10240`
+Once all of this is done, and the kernel modules are loaded without errors, you can interact with the tape device files, e.g. `/dev/nqft0`, `/dev/rawqft0` and so on. You can proceed to dump the data from a tape using a command like: `dd if=/dev/nrawqft0 of=out.bin bs=32768`
+
+### Raw mode and ECC data
+
+When a raw device (`/dev/rawqft0`, `/dev/nrawqft0`) is opened read-only, the driver hands out an unabridged image of every segment: all 0x8000 bytes, i.e. the 29 data sectors *followed by* the 3 ECC sectors, exactly as they were read from the tape. This makes the dump a faithful preservation of the cartridge. (Segments containing bad sectors, as listed in the bad sector map, are correspondingly shorter, since those sectors don't exist on tape.)
+
+ECC checking and correction still happen as before, and a corrected segment is dumped in its corrected form. Use the `ft_ignore_ecc_err` module parameter of `ftape-core` if you want segments that fail ECC to be dumped anyway.
+
+If a raw device is opened for writing, the ECC sectors are *not* part of the data stream (the driver generates them itself when writing), and the old behavior of 0x7400 bytes per segment applies. The same is true for the `MTIOCRDFTSEG` ioctl, whose user buffer is specified to be 29kb.
 
 ## Troubleshooting
 

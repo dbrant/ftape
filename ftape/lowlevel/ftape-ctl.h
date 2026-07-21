@@ -79,6 +79,13 @@ typedef struct ftape_info {
 	unsigned int diagnostic_mode:1;
 	unsigned int set_rate_supported:1;
 	unsigned int bad_bus_timing:1;
+	/* Set by the high level driver when the ECC sectors of each
+	 * segment are handed out to user space as well (raw device,
+	 * read-only). The low level drivers must then always transfer
+	 * the entire segment, including the ECC sectors, even when the
+	 * data sectors alone would do.
+	 */
+	unsigned int pass_ecc:1;
 	/*************/
 	ft_format_type format_code;
 	unsigned int drive_sel;

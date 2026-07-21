@@ -44,6 +44,7 @@
 #include "../lowlevel/fdc-io.h"
 #include "../lowlevel/fdc-isr.h"
 #include "../lowlevel/ftape-init.h"
+#include "../lowlevel/ftape-ctl.h"
 #include "../lowlevel/ftape-rw.h"
 #include "../lowlevel/ftape-read.h"
 #include "../lowlevel/ftape-ecc.h"
@@ -2004,9 +2005,12 @@ static ft_bpck_error_t bpck_fdc_read(fdc_info_t *fdc, buffer_struct *buff)
 	    FT_BPCK_ECC_CHECK | FT_BPCK_ECC_SIZE(buff->bytes),
 	    FT_BPCK_ECC_START(buff->dma_address));
 	
-	/* first try to transfer without ECC information
+	/* first try to transfer without ECC information -- unless the
+	 * user wants to see the ECC sectors, then we always need them
 	 */
-	size = buff->bytes - FT_ECC_SECTORS * FT_SECTOR_SIZE;
+	size = fdc->ftape->pass_ecc
+		? buff->bytes
+		: buff->bytes - FT_ECC_SECTORS * FT_SECTOR_SIZE;
 
 	for (i = 0; i < size; i += BPCK_FDC_POLL_SIZE) {
 		bpck_fdc_poll_interrupt(bpck);

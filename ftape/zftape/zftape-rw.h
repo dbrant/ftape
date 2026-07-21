@@ -69,6 +69,9 @@ struct zftape_info; /* forward */
  */
 extern unsigned int zft_get_seg_sz(struct zftape_info *zftape,
 				   unsigned int segment);
+extern unsigned int zft_get_seg_data_sz(struct zftape_info *zftape,
+					unsigned int segment);
+extern void  zft_update_raw_ecc(struct zftape_info *zftape);
 extern int   zft_set_flags(struct zftape_info *zftape,
 			   unsigned int minor_unit);
 extern int   zft_calc_seg_byte_coord(struct zftape_info *zftape,

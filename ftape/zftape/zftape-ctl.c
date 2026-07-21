@@ -1000,10 +1000,15 @@ int _zft_open(unsigned int dev_minor, unsigned int access_mode)
 	if (zftape->write_protected) {
 		TRACE(ft_t_noise,
 		      "read only access mode: %d, "
-		      "drive write protected: %d", 
+		      "drive write protected: %d",
 		      access_mode == O_RDONLY,
 		      ftape->write_protected != 0);
 	}
+	/*  now that qic_mode and write_protected are known, decide
+	 *  whether the ECC sectors are part of the data stream
+	 */
+	zft_update_raw_ecc(zftape);
+	ftape->pass_ecc = zftape->raw_ecc;
 
 	/* zft_seg_pos should be greater than the vtbl segpos but not
 	 * if in compatability mode and only after we read in the
@@ -1307,6 +1312,13 @@ static int mtiocrdftseg(zftape_info_t *zftape,
 						       mtftseg->mt_segno,
 						       &zftape->deblock_buf,
 						       mtftseg->mt_mode);
+		if (mtftseg->mt_result > 0 && zftape->raw_ecc) {
+			/*  the user buffer is specified to be 29kb, so
+			 *  never hand out the ECC sectors here, no
+			 *  matter what the read() interface does
+			 */
+			mtftseg->mt_result -= FT_ECC_SECTORS * FT_SECTOR_SIZE;
+		}
 		buffer = zftape->deblock_buf;
 	}
 
@@ -1782,6 +1794,8 @@ static int mtiocftmode(zftape_info_t *zftape,
 	     zft_reset_position(zftape, &zftape->pos);
 	}
 	zftape->qic_mode = !ftmode->ft_rawmode;
+	zft_update_raw_ecc(zftape);
+	zftape->ftape->pass_ecc = zftape->raw_ecc;
 
 	TRACE_EXIT 0; /* this is not an i/o error */
 }

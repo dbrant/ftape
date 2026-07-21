@@ -150,6 +150,16 @@ int zft_fetch_segment(zftape_info_t *zftape,
 	TRACE_CATCH(seg_sz = ftape_read_segment(zftape->ftape,
 						segment, buffer, read_mode),);
 	TRACE(ft_t_data_flow, "segment %d, result %d", segment, seg_sz);
+	if (seg_sz > 0 && zftape->raw_ecc) {
+		/*  The deblock buffer holds the entire segment as it
+		 *  was read from the tape, the ECC sectors following
+		 *  the data sectors. ftape_read_segment() only counts
+		 *  the data sectors, so add the ECC sectors to hand
+		 *  out an unabridged image of the segment.
+		 */
+		seg_sz += FT_ECC_SECTORS * FT_SECTOR_SIZE;
+		TRACE(ft_t_data_flow, "including ECC: %d", seg_sz);
+	}
 	if (*buffer == NULL) {
 		TRACE_ABORT(-EIO, ft_t_bug, "No deblock buffer");
 	}
