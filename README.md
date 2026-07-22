@@ -55,7 +55,10 @@ ECC checking and correction still happen as before, and a corrected segment is d
 
 In addition, raw mode also dumps the _header_ segment(s) that appear at the very beginning of the tape (previous versions of `ftape` only dumped the data segments, starting with the volume table). A header segment contains the formatting details of the tape, as well as the bad-sector map, and other metadata. This means that any offsets encoded into the dump are relative to the first data segment (the VTBL segment) instead of the beginning of the dump.
 
-All of this is for the purpose of having a 100% complete image of the tape, not just for proper archiving, but also for potential _emulation_ in software, where an emulated DOS or Linux environment communicates with an emulated QIC drive, using a dumped tape image as the emulated tape.
+All of this is for the purpose of having a 100% complete image of the tape, not just for proper archiving, but also for potential _emulation_ in software, where an emulated DOS or Linux environment communicates with an emulated QIC drive, using a dumped tape image as the emulated cartridge.
+This also creates a couple of implications for dealing with raw tape images:
+* When parsing a raw image, remember to take into account (or ignore) the ECC sectors at the end of each segment, and remember to take into account any header segments that come before the volume table.
+* If you ever want to _write_ a raw image back to a new physical tape, you'd need to strip away the header segments and ECC data, so that the driver can add those things on its own.
 
 ## Troubleshooting
 
