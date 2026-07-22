@@ -45,13 +45,18 @@ For convenience, there are scripts for loading the modules in the proper order, 
 
 Once all of this is done, and the kernel modules are loaded without errors, you can interact with the tape device files, e.g. `/dev/nqft0`, `/dev/rawqft0` and so on. You can proceed to dump the data from a tape using a command like: `dd if=/dev/nrawqft0 of=out.bin bs=32768`
 
-### Raw mode and ECC data
+### Raw mode: full cartridge images
 
-When a raw device (`/dev/rawqft0`, `/dev/nrawqft0`) is opened read-only, the driver hands out an unabridged image of every segment: all 0x8000 bytes, i.e. the 29 data sectors *followed by* the 3 ECC sectors, exactly as they were read from the tape. This makes the dump a faithful preservation of the cartridge. (Segments containing bad sectors, as listed in the bad sector map, are correspondingly shorter, since those sectors don't exist on tape.)
+When a raw device (`/dev/rawqft0`, `/dev/nrawqft0`) is opened read-only, the driver hands out a verbatim image of the cartridge:
 
-ECC checking and correction still happen as before, and a corrected segment is dumped in its corrected form. Use the `ft_ignore_ecc_err` module parameter of `ftape-core` if you want segments that fail ECC to be dumped anyway.
+* **All 0x8000 bytes of every segment**, i.e. the 29 data sectors *followed by* the 3 ECC sectors, exactly as they were read from the tape. Segments containing bad sectors, as listed in the bad sector map, are correspondingly shorter, since those sectors don't physically exist on tape.
+* **Every segment from the physical start of the tape**, not just the data area. The dump therefore begins with the header segment (magic `0x55aa55aa`, bad sector map, format code, tape length), followed by its backup copy and any spare segments, and only then reaches the first data segment holding the volume table. Previously the dump started at the first data segment, and everything in front of it — typically 4 to 6 segments — was invisible.
 
-If a raw device is opened for writing, the ECC sectors are *not* part of the data stream (the driver generates them itself when writing), and the old behavior of 0x7400 bytes per segment applies. The same is true for the `MTIOCRDFTSEG` ioctl, whose user buffer is specified to be 29kb.
+Segments in front of the first data segment that can't be read at all are dumped as a full zero-filled segment, with a warning in `dmesg`. This is a normal condition: segments that were defective at format time are written with deleted data marks and read back as an error. Zero filling keeps the segment stride of the image predictable instead of aborting the dump at the very first segment.
+
+ECC checking and correction still happen as before, and a corrected segment is dumped in its corrected form. Segments in the data area that fail ECC hard still abort the read with an I/O error; use the `ft_ignore_ecc_err` module parameter of `ftape-core` if you want them dumped anyway.
+
+If a raw device is opened for writing, none of the above applies and the old behavior is kept exactly: the stream starts at the first data segment and carries 0x7400 bytes per segment. The driver generates the ECC sectors itself when writing, so a segment image carrying its own ECC can be read but not written back, and a raw writer has no business overwriting the header segments. The `MTIOCRDFTSEG` ioctl is likewise unchanged, since its user buffer is specified to be 29kb.
 
 ## Troubleshooting
 
