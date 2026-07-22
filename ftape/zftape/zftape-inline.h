@@ -95,7 +95,7 @@ extern inline int zft_tape_at_lbot(struct zftape_info *zftape, const zft_positio
 		return (pos->seg_pos <= zft_first_vtbl->start_seg &&
 			pos->volume_pos == 0);
 	} else {
-		return (pos->seg_pos <= zftape->ftape->first_data_segment && 
+		return (pos->seg_pos <= zft_first_segment(zftape) &&
 			pos->volume_pos == 0);
 	}
 }

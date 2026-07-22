@@ -129,7 +129,7 @@ void zft_init_vtbl(zftape_info_t *zftape)
 	zftape->eot_vtbl.count           = -1;
 	zftape->eot_vtbl.offset          = -1;
 
-	zftape->tape_vtbl.start_seg = zftape->ftape->first_data_segment;
+	zftape->tape_vtbl.start_seg = zft_first_segment(zftape);
 	zftape->tape_vtbl.end_seg   = zftape->ftape->last_data_segment;
 	zftape->tape_vtbl.blk_sz    = zftape->blk_sz;
 	zftape->tape_vtbl.size      =

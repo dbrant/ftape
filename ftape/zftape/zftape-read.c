@@ -133,6 +133,28 @@ int zft_read_volume_table(zftape_info_t *zftape)
 	TRACE_EXIT result;
 }
 
+/*  Hand out a zero filled segment for a segment that couldn't be read
+ *  at all. Only used in front of the first data segment, where deleted
+ *  data marks are a normal, expected condition: those segments were
+ *  skipped at format time and never carried any data. Zero filling them
+ *  keeps the dump's segment stride predictable.
+ */
+static int zft_blank_segment(zftape_info_t *zftape,
+			     unsigned int segment, __u8 **buffer)
+{
+	int seg_sz = zft_get_seg_sz(zftape, segment);
+	TRACE_FUN(ft_t_flow);
+
+	if (seg_sz == 0) {
+		TRACE_EXIT 0; /* nothing to hand out anyway */
+	}
+	if ((*buffer = fdc_get_deblock_buffer(zftape->ftape->fdc)) == NULL) {
+		TRACE_ABORT(-EIO, ft_t_bug, "No deblock buffer");
+	}
+	memset(*buffer, '\0', seg_sz);
+	TRACE_EXIT seg_sz;
+}
+
 int zft_fetch_segment(zftape_info_t *zftape,
 		      unsigned int segment, __u8 **buffer,
 		      ft_read_mode_t read_mode)
@@ -147,10 +169,30 @@ int zft_fetch_segment(zftape_info_t *zftape,
 		TRACE_EXIT zft_get_seg_sz(zftape, segment);
 	}
 	zft_release_deblock_buffer(zftape, buffer);
-	TRACE_CATCH(seg_sz = ftape_read_segment(zftape->ftape,
-						segment, buffer, read_mode),);
+	seg_sz = ftape_read_segment(zftape->ftape, segment, buffer, read_mode);
+	if (seg_sz < 0) {
+		if (seg_sz == -EINTR ||
+		    !zftape->raw_image ||
+		    segment >= zftape->ftape->first_data_segment) {
+			TRACE_EXIT seg_sz;
+		}
+		/*  A segment in front of the first data segment. Those
+		 *  carry deleted data marks when they were skipped at
+		 *  format time, which reads back as an error. Don't let
+		 *  that abort the dump of an otherwise fine cartridge.
+		 */
+		TRACE(ft_t_warn,
+		      "segment %d in front of the first data segment (%d) "
+		      "is unreadable (%d), zero filling it",
+		      segment, zftape->ftape->first_data_segment, seg_sz);
+		TRACE_CATCH(seg_sz = zft_blank_segment(zftape, segment, buffer),);
+		if (seg_sz > 0) {
+			zftape->deblock_segment = segment;
+		}
+		TRACE_EXIT seg_sz;
+	}
 	TRACE(ft_t_data_flow, "segment %d, result %d", segment, seg_sz);
-	if (seg_sz > 0 && zftape->raw_ecc) {
+	if (seg_sz > 0 && zftape->raw_image) {
 		/*  The deblock buffer holds the entire segment as it
 		 *  was read from the tape, the ECC sectors following
 		 *  the data sectors. ftape_read_segment() only counts
