@@ -32,7 +32,7 @@ Even though QIC tapes have long been obsolete as a backup medium, there is still
 ## Rough instructions
 
 * Make sure your build tools are installed: `sudo apt install build-essential`
-* (You may also need to install Linux headers: ``sudo apt install linux-headers-`uname -r` ``)
+  * (You may also need to install Linux headers: ``sudo apt install linux-headers-`uname -r` ``)
 * Clone this repo.
 * Run `make`!
 
@@ -43,15 +43,19 @@ For convenience, there are scripts for loading the modules in the proper order, 
 * `insert_max.sh` for when you have a Ditto Max drive, specifically, connected to the floppy controller.
 * `insert_parallel.sh` for when you have a drive connected to the parallel port. This script might show warnings when loading, but ignore them and check `dmesg` for the true state of the driver. (And make sure your parallel port is configured for ECP in your BIOS.)
 
-Once all of this is done, and the kernel modules are loaded without errors, you can interact with the tape device files, e.g. `/dev/nqft0`, `/dev/rawqft0` and so on. You can proceed to dump the data from a tape using a command like: `dd if=/dev/nrawqft0 of=out.bin bs=32768`
+Once all of this is done, and the kernel modules are loaded without errors, you can interact with the tape device files, e.g. `/dev/nqft0`, `/dev/rawqft0` and so on. You can proceed to dump the data from a tape using a command like: `dd if=/dev/nrawqft0 of=out.bin bs=10240`
 
-### Raw mode and ECC data
+### Raw mode
 
-When a raw device (`/dev/rawqft0`, `/dev/nrawqft0`) is opened read-only, the driver hands out an unabridged image of every segment: all 0x8000 bytes, i.e. the 29 data sectors *followed by* the 3 ECC sectors, exactly as they were read from the tape. This makes the dump a faithful preservation of the cartridge. (Segments containing bad sectors, as listed in the bad sector map, are correspondingly shorter, since those sectors don't exist on tape.)
+Raw mode is the recommended way to dump the data from the cartridge for preservation.
 
-ECC checking and correction still happen as before, and a corrected segment is dumped in its corrected form. Use the `ft_ignore_ecc_err` module parameter of `ftape-core` if you want segments that fail ECC to be dumped anyway.
+When a raw device (`/dev/rawqft0`, `/dev/nrawqft0`) is opened read-only, the driver hands out an unabridged image of every segment: all 0x8000 bytes, i.e. the 29 data sectors *followed by* the 3 ECC sectors, exactly as they were read from the tape. This makes the dump a completely faithful representation of the cartridge. (Segments containing bad sectors, as listed in the bad sector map, are correspondingly shorter, since those sectors don't exist on tape.)
 
-If a raw device is opened for writing, the ECC sectors are *not* part of the data stream (the driver generates them itself when writing), and the old behavior of 0x7400 bytes per segment applies. The same is true for the `MTIOCRDFTSEG` ioctl, whose user buffer is specified to be 29kb.
+ECC checking and correction still happen as before, and a corrected segment is dumped in its corrected form. Use the `ft_ignore_ecc_err` module parameter if you want segments that fail ECC to be dumped anyway. (If a raw device is opened for _writing_, the ECC sectors are *not* part of the data stream (the driver generates them itself when writing), and the old behavior of 0x7400 bytes per segment applies. The same is true for the `MTIOCRDFTSEG` ioctl, whose user buffer is specified to be 29kb.)
+
+In addition, raw mode also dumps the _header_ segment(s) that appear at the very beginning of the tape (previous versions of `ftape` only dumped the data segments, starting with the volume table). A header segment contains the formatting details of the tape, as well as the bad-sector map, and other metadata. This means that any offsets encoded into the dump are relative to the first data segment (the VTBL segment) instead of the beginning of the dump.
+
+All of this is for the purpose of having a 100% complete image of the tape, not just for proper archiving, but also for potential _emulation_ in software, where an emulated DOS or Linux environment communicates with an emulated QIC drive, using a dumped tape image as the emulated tape.
 
 ## Troubleshooting
 
@@ -59,7 +63,7 @@ Make generous use of `dmesg` and look at the log messages therein. Use the `ft_t
 
 ### Floppy controller
 
-In your BIOS, enable at least one floppy drive in your system (the size/capacity doesn't matter), to make sure that the motherboard enables the floppy controller.
+In your BIOS, make sure the floppy controller is enabled. In certain BIOSes, this means enabling at least one floppy drive (the size/capacity doesn't matter).
 
 Look at `/proc/ioports` and `/proc/interrupts` to see what IO ports and interrupts the system believes are assigned to the floppy controller, and use those assigments as parameters when loading `ftape-internal` (if they are different from the defaults). When the system boots up, it automatically loads the `floppy` module which claims those resources for itself. This is why the `insert_floppy.sh` script in this repo explicitly unloads the `floppy` module before loading the ftape modules, to ensure those resources are freed first.
 
