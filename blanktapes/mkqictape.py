@@ -6,8 +6,8 @@ three carry the ECC (Reed-Solomon parity). The header segment follows
 the documented QIC-113 layout.
 
 Usage:
-    python docs/mkqictape.py <image> [--format NAME] [--label TEXT]
-    python docs/mkqictape.py --list
+    python mkqictape.py <image> [--format NAME] [--label TEXT]
+    python mkqictape.py --list
 """
 
 import argparse
