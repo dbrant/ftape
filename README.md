@@ -60,6 +60,40 @@ This also creates a couple of implications for dealing with raw tape images:
 * When parsing a raw image, remember to take into account (or ignore) the ECC sectors at the end of each segment, and remember to take into account any header segments that come before the volume table.
 * If you ever want to _write_ a raw image back to a new physical tape, you'd need to strip away the header segments and ECC data, so that the driver can add those things on its own.
 
+### Sending raw QIC-117 commands (`ftapecmd`)
+
+The `tools/` directory contains a small userspace utility for sending completely arbitrary QIC commands to the drive:
+
+```
+make tools
+sudo ./tools/ftapecmd -f /dev/nrawqft0 -c 20
+```
+
+The command may be given as a number (`-c 20`, `-c 0x14`) or by name (`-c "report drive status"`), and `ftapecmd --list` prints all the commands that the driver knows about. Other options:
+
+* `-p 3,4` sends up to three parameters (nibbles, 0-15) after the command.
+* `-b 8` reads back a result of the given number of bits, which is how the `report` commands return their data (use `-b 16` for `report error code`).
+* `-w 5000` / `-a 5000` wait up to the given number of milliseconds for the drive to become ready before / after the command, and report the resulting drive status.
+* `-r` switches the driver into raw mode first (via `MTIOCFTMODE`), and `-n` does a dry run, printing what would be sent without touching the drive.
+
+A couple of things to keep in mind:
+
+* This ioctl only works when the driver is in raw mode, which is why the examples use a raw device node (`/dev/rawqft0`, `/dev/nrawqft0`). The `-r` option is there for the case where you've already got the driver in normal mode.
+* This tool can be dangerous if used improperly: it will send commands that are reserved, undefined, or potentially destructive to the tape. Consult the [QIC-117 spec](https://www.qic.org/html/standards/11x.x/qic117j.pdf) before sending things at random.
+
+Some examples:
+
+```
+# ask the drive for its status, and decode the status bits
+sudo ./tools/ftapecmd -c "report drive status" -b 8
+
+# ask for the last error code and the command that caused it
+sudo ./tools/ftapecmd -c "report error code" -b 16
+
+# seek the head to track 3, waiting up to 10 seconds for it to finish
+sudo ./tools/ftapecmd -c "seek head to track" -p 3 -w 1000 -a 10000
+```
+
 ## Troubleshooting
 
 Make generous use of `dmesg` and look at the log messages therein. Use the `ft_tracings` module parameter to increase the verbosity of the messages to narrow down any issues.
