@@ -867,6 +867,10 @@ int zft_dirty(zftape_info_t *zftape)
 {
 	ftape_info_t *ftape = zftape->ftape;
 
+	if (zftape->unit & FTAPE_BARE_MODE) {
+		/* the bare device never touches the cartridge */
+		return 0;
+	}
 	if (!ftape || !ftape->formatted || zftape->offline) { 
 		/* cannot be dirty if not formatted or offline */
 		return 0;
@@ -948,6 +952,19 @@ int _zft_open(unsigned int dev_minor, unsigned int access_mode)
 		zftape->file_access_mode = access_mode;
 		zftape->tracing = &ftape_tracings[sel];
 		zftape->function_nest_level = &ftape_function_nest_levels[sel];
+		if (dev_minor & FTAPE_BARE_MODE) {
+			/*  Bare mode: claim the fdc and stop right here.
+			 *  No wakeup, no drive status, no header
+			 *  segments, no buffers, no door lock. User
+			 *  space runs the QIC-117 interface itself via
+			 *  the MTIOCFTCMD ioctl.
+			 */
+			TRACE_CATCH(ftape_enable_bare(sel),
+				    zftape->unit = old_unit);
+			zftape->ftape = ftape_get_status(sel);
+			TRACE(ft_t_info, "bare mode: no initialization done");
+			TRACE_EXIT 0;
+		}
 		TRACE_CATCH(ftape_enable(sel), zftape->unit = old_unit);
 		ftape = zftape->ftape = ftape_get_status(sel);
 
@@ -1037,7 +1054,17 @@ int _zft_close(zftape_info_t *zftape, unsigned int dev_minor)
 	ftape_info_t *ftape = zftape->ftape;
 	int result = 0;
 	TRACE_FUN(ft_t_flow);
-	
+
+	if (zftape->unit & FTAPE_BARE_MODE) {
+		/*  Bare mode: no buffer flush, no header segment
+		 *  update, no rewind, no door unlock. Just hand the
+		 *  fdc back and leave the drive exactly as user space
+		 *  left it.
+		 */
+		TRACE(ft_t_info, "bare mode: no finalization done");
+		ftape_disable_bare(FTAPE_SEL(zftape->unit));
+		TRACE_EXIT 0;
+	}
 	if (zftape->offline) {
 		(void)ftape_door_lock(ftape, 0); /* unlock the door,
 						  * if supported
@@ -1725,7 +1752,7 @@ static int mtiocftcmd(zftape_info_t *zftape,
 
 	TRACE(ft_t_noise, "Mag tape ioctl command: MTIOCFTCMD");
 
-	if (zftape->qic_mode) {
+	if (zftape->qic_mode && !(zftape->unit & FTAPE_BARE_MODE)) {
 		TRACE_ABORT(-EACCES, ft_t_info,
 			    "driver needs to be in raw mode for this ioctl");
 	} 
@@ -1847,6 +1874,21 @@ int _zft_ioctl(zftape_info_t *zftape, unsigned int command, void * arg)
 		}
 	}
 	TRACE(ft_t_flow, "called with ioctl command: 0x%08x", command);
+	if (zftape->unit & FTAPE_BARE_MODE) {
+		/*  The bare device exists solely to let user space
+		 *  drive the QIC-117 interface by hand. Everything
+		 *  else would need driver state that bare mode
+		 *  deliberately never sets up.
+		 */
+#ifdef MTIOCFTCMD
+		if (command != MTIOCFTCMD)
+#endif
+		{
+			TRACE_ABORT(-EACCES, ft_t_info,
+				    "only MTIOCFTCMD is supported "
+				    "on the bare device");
+		}
+	}
 	switch (command) {
 	case MTIOCTOP:
 		result = mtioctop(zftape, &krnl_arg.mtop, arg_size);

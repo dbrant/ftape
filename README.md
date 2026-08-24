@@ -60,6 +60,14 @@ This also creates a couple of implications for dealing with raw tape images:
 * When parsing a raw image, remember to take into account (or ignore) the ECC sectors at the end of each segment, and remember to take into account any header segments that come before the volume table.
 * If you ever want to _write_ a raw image back to a new physical tape, you'd need to strip away the header segments and ECC data, so that the driver can add those things on its own.
 
+### Bare mode
+
+Bare mode is for talking to the drive directly, with the driver staying out of the way entirely. When a bare device (`/dev/xrawqft0`) is opened, the driver claims the floppy controller and does nothing else
+
+The only thing you can do with such a file descriptor is issue `MTIOCFTCMD` ioctls, i.e. send arbitrary QIC-117 commands to the drive and read back arbitrary result bits. `read()`, `write()` and every other ioctl return `-EACCES`. This is meant for experimenting with drives whose behavior the driver's normal initialization can't cope with, and for reverse-engineering vendor-specific commands.
+
+Bare mode implies raw mode and no-rewind, and it leaves no trace in the driver's state. Because the driver has no idea what the program did to the drive, the next regular open of `/dev/qft0` and friends re-detects the wakeup method and re-initializes the drive from scratch.
+
 ## Troubleshooting
 
 Make generous use of `dmesg` and look at the log messages therein. Use the `ft_tracings` module parameter to increase the verbosity of the messages to narrow down any issues.

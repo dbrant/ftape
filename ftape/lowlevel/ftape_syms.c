@@ -56,6 +56,8 @@ EXPORT_SYMBOL_GPL(ftape_abort_operation);
 EXPORT_SYMBOL_GPL(ftape_get_status);
 EXPORT_SYMBOL_GPL(ftape_enable);
 EXPORT_SYMBOL_GPL(ftape_disable);
+EXPORT_SYMBOL_GPL(ftape_enable_bare);
+EXPORT_SYMBOL_GPL(ftape_disable_bare);
 EXPORT_SYMBOL_GPL(ftape_destroy);
 EXPORT_SYMBOL_GPL(ftape_calibrate_data_rate);
 EXPORT_SYMBOL_GPL(ftape_get_drive_status);

@@ -691,6 +691,40 @@ int ftape_enable(int drive_selection)
 	TRACE_EXIT 0;
 }
 
+/*      OPEN routine for the "bare" device, called by kernel-interface
+ *      code.
+ *
+ *      Claims the fdc and nothing else: the drive is neither woken up
+ *      nor queried nor initialized. Getting the drive into a usable
+ *      state is left entirely to user space, which talks to it by
+ *      hand through the MTIOCFTCMD ioctl.
+ */
+int ftape_enable_bare(int drive_selection)
+{
+	int sel = FTAPE_SEL(drive_selection);
+	ftape_info_t *ftape = ftapes[sel];
+	TRACE_FUN(ft_t_flow);
+
+	if (ftape == NULL) {
+		ftapes[sel] =
+			ftape = ftape_kmalloc(sel, sizeof(*ftapes[sel]), 1);
+		ftape_init_driver(ftape, sel);
+	} else if (ftape->active) { /* already enabled */
+		TRACE_EXIT -EBUSY;
+	}
+	ftape->active    = 1;   /* cleared by ftape_disable_bare() */
+	ftape->failure   = 0;   /* clear and pray */
+	ftape->drive_sel = sel;
+	/*
+	 * init & detect fdc, but leave the tape drive alone: no
+	 * wakeup sequence, no status report, no ftape_init_drive().
+	 */
+	TRACE_CATCH(fdc_init(ftape), ftape->active = 0);
+	clear_history(ftape);
+	TRACE(ft_t_info, "bare mode: drive wakeup and initialization skipped");
+	TRACE_EXIT 0;
+}
+
 static void ftape_print_history(ftape_info_t *ftape)
 {
 	TRACE_FUN(ft_t_flow);
@@ -747,6 +781,32 @@ void ftape_disable(int drive_selection)
 	ftape_detach_drive(ftape);
 	ftape_print_history(ftape);
 	ftape->active = 0;
+	TRACE_EXIT;
+}
+
+/* release routine for the "bare" device, counterpart of
+ * ftape_enable_bare(). Hands the fdc back without touching the drive:
+ * no "put to sleep" command, no history dump.
+ */
+void ftape_disable_bare(int drive_selection)
+{
+	int sel = FTAPE_SEL(drive_selection);
+	ftape_info_t *ftape = ftapes[sel];
+	TRACE_FUN(ft_t_flow);
+
+	if (ftape->fdc) {
+		fdc_disable(ftape->fdc);
+		ftape->fdc = NULL;
+	}
+	ftape->active = 0;
+	/*  User space had unrestricted access to the drive, so we can
+	 *  no longer assume anything about its state. Force the next
+	 *  regular open() to re-detect and re-initialize it.
+	 */
+	ftape->drive_type.wake_up = unknown_wake_up;
+	ftape->init_drive_needed  = 1;
+	ftape->failure            = 1;
+	TRACE(ft_t_info, "bare mode: drive finalization skipped");
 	TRACE_EXIT;
 }
 

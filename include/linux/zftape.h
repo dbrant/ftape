@@ -69,7 +69,8 @@ struct mtblksz {
 /* valid bits of minor device number */
 #define ZFT_MINOR_MASK		(FTAPE_SEL_MASK		|	\
 				 ZFT_MINOR_OP_MASK	|	\
-				 FTAPE_NO_REWIND)
+				 FTAPE_NO_REWIND	|	\
+				 FTAPE_BARE_MODE)
 
 #ifdef __KERNEL__
 

@@ -122,7 +122,9 @@ static int zft_open(struct inode *ino, struct file *filep)
 		TRACE_EXIT -EBUSY;
 	}
 	busy_flag[sel] = 1;
-	if ((MINOR(ino->i_rdev) & ~(ZFT_MINOR_OP_MASK | FTAPE_NO_REWIND))
+	if ((MINOR(ino->i_rdev) & ~(ZFT_MINOR_OP_MASK |
+				    FTAPE_NO_REWIND  |
+				    FTAPE_BARE_MODE))
 	     > 
 	    FTAPE_SEL_D) {
 		busy_flag[sel] = 0;
@@ -225,6 +227,10 @@ static ssize_t zft_read(struct file *fp, char *buff,
 		TRACE_ABORT(-EIO, ft_t_err,
 			    "failed: not busy, failure or wrong unit");
 	}
+	if (MINOR(ino->i_rdev) & FTAPE_BARE_MODE) {
+		TRACE_ABORT(-EACCES, ft_t_err,
+			    "failed: no read access on the bare device");
+	}
 	ft_sigblockall(&old_sigmask); /* save mask */
 	result = _zft_read(zftape, buff, req_len);
 	ft_sigrestore(&old_sigmask);
@@ -256,6 +262,10 @@ static ssize_t zft_write(struct file *fp, const char *buff,
 	    !zftape->ftape || zftape->ftape->failure) {
 		TRACE_ABORT(-EIO, ft_t_err,
 			    "failed: not busy, failure or wrong unit");
+	}
+	if (MINOR(ino->i_rdev) & FTAPE_BARE_MODE) {
+		TRACE_ABORT(-EACCES, ft_t_err,
+			    "failed: no write access on the bare device");
 	}
 	ft_sigblockall(&old_sigmask); /* save mask */
 	result = _zft_write(zftape, buff, req_len);
@@ -366,6 +376,16 @@ static int zft_device_register(void)
 		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE|FTAPE_NO_REWIND),
 			     NULL, "nrawqft%d", sel);
 
+		/* Bare mode device: open()/close() run no drive
+		 * initialization or finalization at all, so that user
+		 * space can issue arbitrary QIC-117 commands through
+		 * the MTIOCFTCMD ioctl without the driver interfering.
+		 */
+		device_create(ftape_class, NULL,
+			     MKDEV(ft_major_device_number,
+				   sel|ZFT_RAW_MODE|FTAPE_NO_REWIND|FTAPE_BARE_MODE),
+			     NULL, "xrawqft%d", sel);
+
 # if defined(CONFIG_ZFT_COMPRESSOR) || defined(CONFIG_ZFT_COMPRESSOR_MODULE)
 		/* Compressed tape devices */
 		device_create(ftape_class, NULL, MKDEV(ft_major_device_number, sel|ZFT_ZIP_MODE),
@@ -422,6 +442,8 @@ static void zft_device_unregister(void)
 			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|FTAPE_NO_REWIND));
 			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE));
 			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_RAW_MODE|FTAPE_NO_REWIND));
+			device_destroy(ftape_class, MKDEV(ft_major_device_number,
+							  sel|ZFT_RAW_MODE|FTAPE_NO_REWIND|FTAPE_BARE_MODE));
 # if defined(CONFIG_ZFT_COMPRESSOR) || defined(CONFIG_ZFT_COMPRESSOR_MODULE)
 			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_ZIP_MODE));
 			device_destroy(ftape_class, MKDEV(ft_major_device_number, sel|ZFT_ZIP_MODE|FTAPE_NO_REWIND));

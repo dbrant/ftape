@@ -187,6 +187,8 @@ extern int ftape_calibrate_data_rate(ftape_info_t *ftape,
 extern int  ftape_destroy(int sel);
 extern int  ftape_enable(int drive_selection);
 extern void ftape_disable(int drive_selection);
+extern int  ftape_enable_bare(int drive_selection);
+extern void ftape_disable_bare(int drive_selection);
 extern void ftape_init_driver(ftape_info_t *ftape, int sel);
 extern int  ftape_get_drive_status(ftape_info_t *ftape);
 

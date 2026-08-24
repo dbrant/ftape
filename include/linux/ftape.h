@@ -64,6 +64,7 @@
 #define FTAPE_SEL_MASK     3
 #define FTAPE_SEL(unit) ((unit) & FTAPE_SEL_MASK)
 #define FTAPE_NO_REWIND 4	/* mask for minor nr */
+#define FTAPE_BARE_MODE 64	/* mask for minor nr */
 
 /* the following two may be reported when MTIOCGET is requested ... */
 typedef union {
