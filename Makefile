@@ -101,20 +101,30 @@ ccflags-y += -Wimplicit-fallthrough=1
 all:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
 
+# userspace utilities (ftapecmd), built separately from the modules
+tools:
+	$(MAKE) -C $(PWD)/tools
+
 clean:
 	$(MAKE) -C $(KDIR) M=$(PWD) clean
 	rm -f *.o *.ko *.mod.c .*.cmd *.markers *.order *.symvers
 	find . -name "*.o" -delete
 	find . -name ".*.cmd" -delete
+	$(MAKE) -C $(PWD)/tools clean
 
 install: all
 	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
 
+install-tools: tools
+	$(MAKE) -C $(PWD)/tools install
+
 help:
 	@echo "Available targets:"
-	@echo "  all      - Build all modules"
-	@echo "  clean    - Clean build files"
-	@echo "  install  - Install modules"
-	@echo "  help     - Show this help"
+	@echo "  all           - Build all modules"
+	@echo "  tools         - Build the userspace utilities (ftapecmd)"
+	@echo "  clean         - Clean build files"
+	@echo "  install       - Install modules"
+	@echo "  install-tools - Install the userspace utilities"
+	@echo "  help          - Show this help"
 
-.PHONY: all clean install help
+.PHONY: all tools clean install install-tools help
