@@ -9,30 +9,55 @@ if [ ! -x "$FTAPECMD" ]; then
 	FTAPECMD=ftapecmd
 fi
 
-# seek QIC track 0
-"$FTAPECMD" -f /dev/xrawqft0 -c 13 -p 0
-sleep 2
+# Proprietary track layout, measured in microsteps from the absolute bottom of
+# the tape: proprietary track 0 sits TRACK0_STEPS microsteps above the bottom,
+# and each successive track is TRACK_PITCH microsteps further up.
+TRACK0_STEPS=24
+TRACK_PITCH=9
 
-# micro-step down all the way
-for ((i = 1; i <= 120; i++)); do
-	"$FTAPECMD" -f /dev/xrawqft0 -c 22
-	sleep 0.1
-done
+# Distance from the bottom of the tape up to each QIC track. Even proprietary
+# tracks are reached from QIC track 0, odd ones from QIC track 1.
+BOTTOM_STEPS_QIC0=107
+BOTTOM_STEPS_QIC1=97
+
+if [ $# -ne 1 ]; then
+	echo "usage: $self <track>" >&2
+	exit 1
+fi
 
 tracknum=$1
-trackpos=$((24 + (tracknum * 9)))
+if ! [[ $tracknum =~ ^[0-9]+$ ]]; then
+	echo "$self: track must be a non-negative integer" >&2
+	exit 1
+fi
 
-echo "Seeking to $trackpos"
+qictrack=$((tracknum % 2))
+if [ "$qictrack" -eq 0 ]; then
+	bottom=$BOTTOM_STEPS_QIC0
+else
+	bottom=$BOTTOM_STEPS_QIC1
+fi
 
-# micro-step up
-for ((i = 1; i <= trackpos; i++)); do
-	"$FTAPECMD" -f /dev/xrawqft0 -c 21
-	sleep 0.1
-done
+# offset of the target track from the QIC track: negative is down, positive is up
+offset=$((TRACK0_STEPS + (tracknum * TRACK_PITCH) - bottom))
 
+# seek QIC track
+"$FTAPECMD" -f /dev/xrawqft0 -c 13 -p "$qictrack"
+sleep 2
 
-
-
-
-
-
+if [ "$offset" -lt 0 ]; then
+	steps=$((-offset))
+	echo "Seeking to track $tracknum ($steps microsteps down from QIC track $qictrack)"
+	for ((i = 1; i <= steps; i++)); do
+		"$FTAPECMD" -f /dev/xrawqft0 -c 22
+		sleep 0.25
+	done
+elif [ "$offset" -gt 0 ]; then
+	echo "Seeking to track $tracknum ($offset microsteps up from QIC track $qictrack)"
+	for ((i = 1; i <= offset; i++)); do
+		"$FTAPECMD" -f /dev/xrawqft0 -c 21
+		sleep 0.25
+	done
+else
+	echo "Seeking to track $tracknum (already at QIC track $qictrack)"
+fi
