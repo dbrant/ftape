@@ -62,10 +62,12 @@ EXPORT_SYMBOL_GPL(ftape_destroy);
 EXPORT_SYMBOL_GPL(ftape_calibrate_data_rate);
 EXPORT_SYMBOL_GPL(ftape_get_drive_status);
 /* from ftape-io.c */
+EXPORT_SYMBOL_GPL(ftape_sleep);
 EXPORT_SYMBOL_GPL(ftape_reset_drive);
 EXPORT_SYMBOL_GPL(ftape_command);
 EXPORT_SYMBOL_GPL(ftape_parameter);
 EXPORT_SYMBOL_GPL(ftape_ready_wait);
+EXPORT_SYMBOL_GPL(ftape_report_drive_status);
 EXPORT_SYMBOL_GPL(ftape_report_operation);
 EXPORT_SYMBOL_GPL(ftape_report_error);
 EXPORT_SYMBOL_GPL(ftape_door_lock);
