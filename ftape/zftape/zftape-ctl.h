@@ -134,4 +134,29 @@ extern int  _zft_open(unsigned int dev_minor, unsigned int access_mode);
 extern int  _zft_close(zftape_info_t *zftape, unsigned int dev_minor);
 extern int  _zft_ioctl(zftape_info_t *zftape,
 		       unsigned int command, void *arg);
+
+struct mtftcmd {
+	unsigned int ft_wait_before; /* timeout to wait for drive to get ready 
+				      * before command is sent. Milliseconds
+				      */
+	qic117_cmd_t ft_cmd;         /* command to send */
+	unsigned char ft_parm_cnt;   /* zero: no parm is sent. */
+	unsigned char ft_parms[3];   /* parameter(s) to send to
+				      * the drive. The parms are nibbles
+				      * driver sends cmd + 2 step pulses */
+	unsigned int ft_result_bits; /* if non zero, number of bits
+				      *	returned by the tape drive
+				      */
+	unsigned int ft_result;      /* the result returned by the tape drive*/
+	unsigned int ft_wait_after;  /* timeout to wait for drive to get ready
+				      * after command is sent. 0: don't wait */
+	int ft_status;	             /* status returned by ready wait
+				      * undefined if timeout was 0.
+				      */
+	int ft_error;                /* error code if error status was set by 
+				      * command
+				      */
+};
+#define MTIOCFTCMD	_IOWR('m', 11, struct mtftcmd) /* send QIC-117 cmd */
+
 #endif
