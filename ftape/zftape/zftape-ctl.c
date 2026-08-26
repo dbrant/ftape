@@ -1769,8 +1769,10 @@ static int mtiocftcmd(zftape_info_t *zftape,
 					     ftcmd->ft_wait_before,
 					     &ftcmd->ft_status),);
 	}
-	if (ftcmd->ft_status & QIC_STATUS_ERROR)
-		goto ftmtcmd_error;
+	
+	//if (ftcmd->ft_status & QIC_STATUS_ERROR)
+	//	goto ftmtcmd_error;
+	
 	if (ftcmd->ft_result_bits != 0) {
 		TRACE_CATCH(ftape_report_operation(ftape,
 						   &ftcmd->ft_result,
@@ -1783,10 +1785,11 @@ static int mtiocftcmd(zftape_info_t *zftape,
 		//	goto ftmtcmd_error;
 		
 		for (i = 0; i < ftcmd->ft_parm_cnt; i++) {
-			TRACE_CATCH(ftape_parameter(ftape,
-						    ftcmd->ft_parms[i]&0x0f),);
-			if (ftcmd->ft_status & QIC_STATUS_ERROR)
-				goto ftmtcmd_error;
+			TRACE_CATCH(ftape_parameter(ftape, ftcmd->ft_parms[i]),);
+			
+			//if (ftcmd->ft_status & QIC_STATUS_ERROR)
+			//	goto ftmtcmd_error;
+			
 		}
 	}
 	if (ftcmd->ft_wait_after != 0) {
