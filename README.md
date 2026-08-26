@@ -62,7 +62,7 @@ This also creates a couple of implications for dealing with raw tape images:
 
 ### Bare mode
 
-Bare mode is for talking to the drive directly, with the driver staying out of the way entirely. When a bare device (`/dev/xrawqft0`) is opened, the driver claims the floppy controller and does nothing else
+Bare mode is for talking to the drive directly, with the driver staying out of the way entirely. When a bare device (`/dev/xrawqft0`) is opened, the driver claims the floppy controller and does nothing else.
 
 The only thing you can do with such a file descriptor is issue `MTIOCFTCMD` ioctls, i.e. send arbitrary QIC-117 commands to the drive and read back arbitrary result bits. `read()`, `write()` and every other ioctl return `-EACCES`. This is meant for experimenting with drives whose behavior the driver's normal initialization can't cope with, and for reverse-engineering vendor-specific commands.
 
