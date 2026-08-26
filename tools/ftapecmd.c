@@ -19,7 +19,7 @@
  *      ftapecmd: send a bare QIC-117 command to a tape drive, using the
  *      MTIOCFTCMD ioctl of the ftape driver.
  *
- *      Example: ftapecmd -f /dev/nrawqft0 -c 20
+ *      Example: ftapecmd -f /dev/xrawqft0 -c 20
  *               ftapecmd -c "report drive status" -b 8
  */
 
@@ -36,7 +36,7 @@
 #include <linux/mtio.h>
 #include <linux/qic117.h>
 
-#define DEFAULT_DEVICE "/dev/nrawqft0"
+#define DEFAULT_DEVICE "/dev/xrawqft0"
 
 #define NR_ITEMS(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -150,11 +150,6 @@ static int parse_parms(const char *str, unsigned char *parms, unsigned int max)
 			fprintf(stderr, "ftapecmd: bad parameter list: %s\n", str);
 			return -1;
 		}
-		if (val > 15) {
-			fprintf(stderr, "ftapecmd: parameter %lu out of range "
-				"(QIC-117 parameters are nibbles, 0-15)\n", val);
-			return -1;
-		}
 		if (count >= max) {
 			fprintf(stderr, "ftapecmd: at most %u parameters "
 				"may be sent\n", max);
@@ -244,15 +239,14 @@ static void usage(FILE *out)
 "\n"
 "Send a bare QIC-117 command to a floppy tape drive, via the MTIOCFTCMD\n"
 "ioctl of the ftape driver. The driver must be in raw mode, which is the\n"
-"case for the raw device nodes (/dev/rawqft*, /dev/nrawqft*), or use -r.\n"
+"case for the raw device nodes (/dev/rawqft*, /dev/xrawqft*), or use -r.\n"
 "\n"
 "Options:\n"
 "  -f, --device <dev>    tape device (default: " DEFAULT_DEVICE ",\n"
 "                        overridden by $FTAPE_DEV)\n"
 "  -c, --command <cmd>   command to send, as a number (e.g. 20, 0x14) or as\n"
 "                        a name (e.g. \"report drive status\"). Required.\n"
-"  -p, --parms <n,...>   up to 3 parameters (nibbles, 0-15) to send after\n"
-"                        the command\n"
+"  -p, --parms <n,...>   up to 3 parameters to send after the command\n"
 "  -b, --bits <n>        number of result bits to read back from the drive\n"
 "                        (for \"report\" commands; 8 or 16 typically)\n"
 "  -w, --wait-before <n> wait up to n milliseconds for the drive to become\n"
@@ -270,7 +264,7 @@ static void usage(FILE *out)
 "the drive reported an error condition.\n"
 "\n"
 "Examples:\n"
-"  ftapecmd -f /dev/nrawqft0 -c 20\n"
+"  ftapecmd -f /dev/xrawqft0 -c 20\n"
 "  ftapecmd -c \"report drive status\" -b 8\n"
 "  ftapecmd -c 6 -b 8 -w 5000\n"
 "  ftapecmd -c \"seek head to track\" -p 3 -w 1000 -a 10000\n");
@@ -432,15 +426,6 @@ int main(int argc, char **argv)
 		printf("command %d (%s), type %s\n", command,
 		       command_name(command),
 		       type_name(qic_cmds[command].cmd_type));
-		if (qic_cmds[command].cmd_type == unused) {
-			printf("note: this command is reserved, undefined or "
-			       "vendor unique in QIC-117;\n"
-			       "      sending it anyway.\n");
-		}
-		if (qic_cmds[command].cmd_type == report && bits == 0) {
-			printf("note: this is a report command, but no result "
-			       "bits were requested (-b).\n");
-		}
 	}
 	if (verbose || dry_run) {
 		int i;
