@@ -1760,6 +1760,10 @@ static int mtiocftcmd(zftape_info_t *zftape,
 		TRACE_ABORT(-EINVAL,
 			    ft_t_info, "bad argument size: %d", arg_size);
 	}
+	
+	// Explicitly go into diagnostic mode.
+	ftape->diagnostic_mode = 1;
+	
 	if (ftcmd->ft_wait_before) {
 		TRACE_CATCH(ftape_ready_wait(ftape,
 					     ftcmd->ft_wait_before,
@@ -1774,8 +1778,10 @@ static int mtiocftcmd(zftape_info_t *zftape,
 						   ftcmd->ft_result_bits),);
 	} else {
 		TRACE_CATCH(ftape_command(ftape, ftcmd->ft_cmd),);
-		if (ftcmd->ft_status & QIC_STATUS_ERROR)
-			goto ftmtcmd_error;
+		
+		//if (ftcmd->ft_status & QIC_STATUS_ERROR)
+		//	goto ftmtcmd_error;
+		
 		for (i = 0; i < ftcmd->ft_parm_cnt; i++) {
 			TRACE_CATCH(ftape_parameter(ftape,
 						    ftcmd->ft_parms[i]&0x0f),);
@@ -1788,6 +1794,8 @@ static int mtiocftcmd(zftape_info_t *zftape,
 					     ftcmd->ft_wait_after,
 					     &ftcmd->ft_status),);
 	}
+	
+	/*
 ftmtcmd_error:	       
 	if (ftcmd->ft_status & QIC_STATUS_ERROR) {
 		TRACE(ft_t_noise, "error status set");
@@ -1795,7 +1803,9 @@ ftmtcmd_error:
 					       &ftcmd->ft_error,
 					       &ftcmd->ft_cmd, 1),);
 	}
-	TRACE_EXIT 0; /* this is not an i/o error */
+	*/
+	
+	TRACE_EXIT 0;
 }
 #endif
 
