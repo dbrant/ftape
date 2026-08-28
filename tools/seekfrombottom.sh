@@ -39,6 +39,12 @@ for ((i = 1; i <= 120; i++)); do
 done
 
 offset=$((TRACK0_STEPS + (tracknum * TRACK_PITCH)))
+
+# Actually, for track >0 let's bump it up one more step.
+if [ "$tracknum" -gt 0 ]; then
+	offset=$((offset + 1))
+fi
+
 echo "Seeking up $offset microsteps..."
 for ((i = 1; i <= offset; i++)); do
 	"$FTAPECMD" -f /dev/xrawqft0 -c 21
