@@ -33,7 +33,7 @@ echo "Seeking to QIC track $qictrack ..."
 sleep 2
 
 echo "Seeking to bottom..."
-for ((i = 1; i <= 120; i++)); do
+for ((i = 1; i <= 140; i++)); do
 	"$FTAPECMD" -f /dev/xrawqft0 -c 22
 	sleep 0.1
 done

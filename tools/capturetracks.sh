@@ -21,14 +21,15 @@ OUTDIR=${OUTDIR:-.}
 
 TOP_TRACK=19
 BOTTOM_TRACK=0
+INITIAL_STEPS=20
 
 # Microsteps between adjacent proprietary tracks, as a fraction: 46/5 = 9.2.
 # A whole-number pitch would drift by a microstep every five tracks, so each
 # transition steps the difference between the rounded cumulative positions,
 # giving 9, 9, 10, 9, 9, 9, 9, 10, ... and keeping the head within half a
 # microstep of the ideal position at every track.
-TRACK_PITCH_NUM=46
-TRACK_PITCH_DEN=5
+TRACK_PITCH_NUM=46  # 513
+TRACK_PITCH_DEN=5   # 56
 
 # Capture length, and how long to wait before the capture is assumed done.
 CAPTURE_SECS=54
@@ -39,12 +40,38 @@ steps_after() {
 	echo $((($1 * TRACK_PITCH_NUM + TRACK_PITCH_DEN / 2) / TRACK_PITCH_DEN))
 }
 
+echo "Stepping down $INITIAL_STEPS microsteps..."
+for ((i = 1; i <= INITIAL_STEPS; i++)); do
+	"$FTAPECMD" -f "$DEV" -c 22
+	sleep 0.25
+done
+
 for ((track = TOP_TRACK; track >= BOTTOM_TRACK; track--)); do
 	out=$OUTDIR/tape_track${track}_flux.bin
+	
+	
+	# tell the drive we'll be spinning forward or reverse
+	# set poke pointer to 0x44
+	"$FTAPECMD" -f /dev/xrawqft0 -c 42 -p 4
+	"$FTAPECMD" -f /dev/xrawqft0 -c 43 -p 4
+	# poke an even value into it
+	"$FTAPECMD" -f /dev/xrawqft0 -c 41
+	"$FTAPECMD" -f /dev/xrawqft0 -c 41
+	trackmod=$((track % 2))
+	#
+	# FLIP the parity of the wind direction, since we're reading
+	# from top to bottom.
+	#
+	if [ "$trackmod" -eq 0 ]; then
+		"$FTAPECMD" -f /dev/xrawqft0 -c 3  # 2
+	else
+		"$FTAPECMD" -f /dev/xrawqft0 -c 2  # 3
+	fi
+
 
 	echo "=== track $track -> $out ==="
-	sigrok-cli --driver fx2lafw --channels D0 --config samplerate=24m \
-		--time=${CAPTURE_SECS}s --output-file "$out" &
+	
+	sigrok-cli -d fx2lafw --channels D0 --config samplerate=24m -O binary --time=${CAPTURE_SECS}s --output-file "$out" &
 	capture_pid=$!
 
 	# logical forward, to get the tape moving under the capture
@@ -64,4 +91,3 @@ for ((track = TOP_TRACK; track >= BOTTOM_TRACK; track--)); do
 	fi
 done
 
-echo "Done: tracks $TOP_TRACK..$BOTTOM_TRACK captured into $OUTDIR"

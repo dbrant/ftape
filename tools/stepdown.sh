@@ -13,6 +13,6 @@ steps=$1
 
 for ((i = 1; i <= steps; i++)); do
 	"$FTAPECMD" -f /dev/xrawqft0 -c 22
-	sleep 0.1
+	sleep 0.2
 done
 
