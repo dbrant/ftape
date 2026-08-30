@@ -22,12 +22,22 @@ OUTDIR=${OUTDIR:-.}
 TOP_TRACK=19
 BOTTOM_TRACK=0
 
-# Microsteps between adjacent proprietary tracks.
-TRACK_PITCH=9
+# Microsteps between adjacent proprietary tracks, as a fraction: 46/5 = 9.2.
+# A whole-number pitch would drift by a microstep every five tracks, so each
+# transition steps the difference between the rounded cumulative positions,
+# giving 9, 9, 10, 9, 9, 9, 9, 10, ... and keeping the head within half a
+# microstep of the ideal position at every track.
+TRACK_PITCH_NUM=46
+TRACK_PITCH_DEN=5
 
 # Capture length, and how long to wait before the capture is assumed done.
 CAPTURE_SECS=54
 CAPTURE_WAIT=56
+
+# Cumulative microsteps below TOP_TRACK after n transitions, rounded.
+steps_after() {
+	echo $((($1 * TRACK_PITCH_NUM + TRACK_PITCH_DEN / 2) / TRACK_PITCH_DEN))
+}
 
 for ((track = TOP_TRACK; track >= BOTTOM_TRACK; track--)); do
 	out=$OUTDIR/tape_track${track}_flux.bin
@@ -43,11 +53,15 @@ for ((track = TOP_TRACK; track >= BOTTOM_TRACK; track--)); do
 	sleep "$CAPTURE_WAIT"
 	wait "$capture_pid"
 
-	echo "Stepping down $TRACK_PITCH microsteps to track $((track - 1))..."
-	for ((i = 1; i <= TRACK_PITCH; i++)); do
-		"$FTAPECMD" -f "$DEV" -c 22
-		sleep 0.25
-	done
+	if [ "$track" -gt "$BOTTOM_TRACK" ]; then
+		n=$((TOP_TRACK - track + 1))
+		steps=$(($(steps_after "$n") - $(steps_after $((n - 1)))))
+		echo "Stepping down $steps microsteps to track $((track - 1))..."
+		for ((i = 1; i <= steps; i++)); do
+			"$FTAPECMD" -f "$DEV" -c 22
+			sleep 0.25
+		done
+	fi
 done
 
 echo "Done: tracks $TOP_TRACK..$BOTTOM_TRACK captured into $OUTDIR"
