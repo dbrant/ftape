@@ -28,10 +28,10 @@ INITIAL_STEPS=19
 # transition steps the difference between the rounded cumulative positions,
 # giving 9, 9, 10, 9, 9, 9, 9, 10, ... and keeping the head within half a
 # microstep of the ideal position at every track.
-#TRACK_PITCH_NUM=46
-#TRACK_PITCH_DEN=5
-TRACK_PITCH_NUM=513
-TRACK_PITCH_DEN=56
+TRACK_PITCH_NUM=46
+TRACK_PITCH_DEN=5
+#TRACK_PITCH_NUM=513
+#TRACK_PITCH_DEN=56
 
 # Capture length, and how long to wait before the capture is assumed done.
 CAPTURE_SECS=54
